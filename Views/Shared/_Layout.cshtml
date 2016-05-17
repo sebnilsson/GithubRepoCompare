@@ -1,0 +1,66 @@
+﻿@{
+    const string SiteTitle = "GitHub Repo-compare";
+    string viewDataTitle = (ViewData["Title"] as string) ?? string.Empty;
+    var title = !string.IsNullOrWhiteSpace(viewDataTitle) ? $"{viewDataTitle} - {SiteTitle}" : SiteTitle;
+}<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@title</title>
+
+    <environment names="Development">
+        <link rel="stylesheet" href="~/jspm_packages/github/twbs/bootstrap@3.3.6/css/bootstrap.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
+              asp-fallback-href="~/jspm_packages/github/twbs/bootstrap@3.3.6/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"/>
+    </environment>
+
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="site-wrap">
+        <div class="container">
+            <h1>GitHub Repo-compare</h1>
+
+            @RenderBody()
+        </div>
+    </div>
+
+<div class="site-footer">
+    <div class="container">
+        <footer class="well well-sm text-info small">
+            &copy; @DateTimeOffset.Now.Year - @SiteTitle
+        </footer>
+    </div>
+</div>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <environment names="Development">
+        <script src="~/jspm_packages/system.js"></script>
+        <script src="~/config.js"></script>
+
+        <script src="~/jspm_packages/npm/jquery@2.2.3/dist/jquery.js"></script>
+        <script src="~/jspm_packages/github/twbs/bootstrap@3.3.6/js/bootstrap.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/jspm_packages/system.js"></script>
+        <script src="~/config.js"></script>
+
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.3.min.js"
+                asp-fallback-src="~/jspm_packages/npm/jquery@2.2.3/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
+                asp-fallback-src="~/jspm_packages/github/twbs/bootstrap@3.3.6/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+        @*<script src="~/js/site.min.js" asp-append-version="true"></script>*@
+    </environment>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

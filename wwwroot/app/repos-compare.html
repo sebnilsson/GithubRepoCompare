@@ -1,0 +1,85 @@
+﻿<template>
+    <require from="./google-chart"></require>
+
+    <div if.bind="!hasReposToCompare" class="panel panel-default">
+        <div class="panel-body bg-warning">
+            Add multiple Repositories to compare
+        </div>
+    </div>
+
+    <div if.bind="hasReposToCompare">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Stats</h2>
+            </div>
+
+            <div class="panel-body">
+                <div class="col-md-4 col-sm-6">
+                    <google-chart data.bind="reposSizes" chart.bind="'PieChart'"
+                                  options.bind="{title: 'Size', pieHole: 0.3}"></google-chart>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <google-chart data.bind="reposWatchers" chart.bind="'PieChart'"
+                                  options.bind="{title: 'Watchers', pieHole: 0.3}"></google-chart>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <google-chart data.bind="reposSubscribers" chart.bind="'PieChart'"
+                                  options.bind="{title: 'Subscribers', pieHole: 0.3}"></google-chart>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <google-chart data.bind="reposForks" chart.bind="'PieChart'"
+                                  options.bind="{title: 'Forks', pieHole: 0.3}"></google-chart>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <google-chart data.bind="reposOpenIssues" chart.bind="'PieChart'"
+                                  options.bind="{title: 'Open Issues', pieHole: 0.3}"></google-chart>
+                </div>
+            </div>
+        </div>
+
+        <!--<div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Contributors Commits</h3>
+            </div>
+            <div class="panel-body">
+                <google-chart data.bind="reposContributorsCommits" chart.bind="'LineChart'"
+                              options.bind="{curveType: 'function', legend: { position: 'bottom' }, height: 400}"></google-chart>
+            </div>
+        </div>-->
+
+        <div if.bind="reposCommitActivity && reposCommitActivity.length" class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Commits</h3>
+            </div>
+            <div class="panel-body">
+                <google-chart data.bind="reposCommitActivity" chart.bind="'LineChart'"
+                              options.bind="{ curveType: 'function', legend: { position: 'bottom' }, height: 400, vAxis: { viewWindow:{ min: 0 } } }"></google-chart>
+            </div>
+        </div>
+
+        <!--<div if.bind="reposPullRequests && reposPullRequests.length" class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Pull requests</h3>
+            </div>
+            <div class="panel-body">
+                <google-chart data.bind="reposPullRequests" chart.bind="'ScatterChart'"
+                              options.bind="{legend: 'none', height: 400}"></google-chart>
+            </div>
+        </div>-->
+        
+        <!--<div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Participation</h3>
+            </div>
+            <div class="panel-body">
+                <google-chart data.bind="reposParticipation" chart.bind="'LineChart'"
+                              options.bind="{curveType: 'function', legend: { position: 'bottom' }, height: 400}"></google-chart>
+            </div>
+        </div>-->
+
+        <!--<div class="col-md-12">
+            <google-chart data.bind="reposPullRequests" chart.bind="'LineChart'"
+                          options.bind="{title: 'Pull Requests', curveType: 'function', legend: { position: 'bottom' }, height: 400}"></google-chart>
+        </div>-->
+    </div>
+</template>

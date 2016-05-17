@@ -1,0 +1,51 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set widths on the form inputs since otherwise they're 100% wide */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+/** {
+  margin: 0;
+}*/
+html, body {
+  height: 100%;
+}
+.site-wrap {
+  min-height: 100%;
+  margin-bottom: -40px; 
+}
+.site-wrap:after {
+  content: "";
+  display: block;
+}
+.site-footer, .site-wrap:after {
+  height: 40px; 
+}
+
+/*.compare-wrapper {
+    width: 100%;
+}
+.compare {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.compare-item {
+    display: inline-block;
+    width: 400px;
+}*/
+.repo-owner-avatar {
+    max-height: 32px;
+    max-width: 32px;
+}
+.repo-owner-avatar-placeholder {
+    display: inline-block;
+    height: 32px;
+    width: 32px;
+}
