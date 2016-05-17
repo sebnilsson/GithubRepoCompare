@@ -24,13 +24,14 @@
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
                 <thead>
-                <tr>
+                <tr class="info">
                     <th>Name</th>
                     <th>Full Name</th>
                     <th>Created</th>
                     <th>Size</th>
                     <th>Watchers</th>
                     <th>Subscribers</th>
+                    <th>Pull requests</th>
                     <th>Forks</th>
                     <th>Open Issues</th>
                     <th>&nbsp;</th>
@@ -51,19 +52,22 @@
                     <td title="${repo.created_at | dateFormat:'YYYY-MM-DD HH:mm:ss'}">
                         ${repo.created_at | dateFormat:'YYYY-MM-DD'}
                     </td>
-                    <td>
+                    <td class="text-right">
                         ${repo.size | numberFormat:'0.00b'}
                     </td>
-                    <td>
+                    <td class="text-right">
                         ${repo.watchers_count | numberFormat:'0,0'}
                     </td>
-                    <td>
+                    <td class="text-right">
                         ${repo.subscribers_count | numberFormat:'0,0'}
                     </td>
-                    <td>
+                    <td class="text-right">
+                        ${repo.stats.pullRequestsCount | numberFormat:'0,0'}
+                    </td>
+                    <td class="text-right">
                         ${repo.forks_count | numberFormat:'0,0'}
                     </td>
-                    <td>
+                    <td class="text-right">
                         ${repo.open_issues_count | numberFormat:'0,0'}
                     </td>
                     <td>

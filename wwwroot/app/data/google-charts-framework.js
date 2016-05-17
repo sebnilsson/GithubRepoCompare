@@ -7,8 +7,8 @@
         this.loadPromise = new Promise(function(resolve) {
             google.charts.setOnLoadCallback(() => resolve());
         });
-        
-        google.charts.load('current', {packages: ['corechart']});
+
+        google.charts.load('current', { packages: [/*'line',*/ 'corechart'] });
     }
     load() {
         return this.loadPromise;

@@ -1,0 +1,10 @@
+﻿<template>
+    <div if.bind="errorItems && errorItems.length" class="container errors-list">
+        <div repeat.for="error of errorItems" class="alert alert-${error.level}">
+            ${error.text}
+            <a click.trigger="remove(error)" href="#" class="pull-right">
+                <span class="glyphicon glyphicon-remove-sign"></span>
+            </a>
+        </div>
+    </div>
+</template>

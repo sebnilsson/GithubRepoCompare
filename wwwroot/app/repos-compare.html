@@ -16,23 +16,27 @@
             <div class="panel-body">
                 <div class="col-md-4 col-sm-6">
                     <google-chart data.bind="reposSizes" chart.bind="'PieChart'"
-                                  options.bind="{title: 'Size', pieHole: 0.3}"></google-chart>
+                                  options.bind="{title: 'Size', pieHole: 0.25, height: 200, chartArea: {'width': '90%', 'height': '85%'}}"></google-chart>
                 </div>
                 <div class="col-md-4 col-sm-6">
                     <google-chart data.bind="reposWatchers" chart.bind="'PieChart'"
-                                  options.bind="{title: 'Watchers', pieHole: 0.3}"></google-chart>
+                                  options.bind="{title: 'Watchers', pieHole: 0.25, height: 200, chartArea: {'width': '90%', 'height': '85%'}}"></google-chart>
                 </div>
                 <div class="col-md-4 col-sm-6">
                     <google-chart data.bind="reposSubscribers" chart.bind="'PieChart'"
-                                  options.bind="{title: 'Subscribers', pieHole: 0.3}"></google-chart>
+                                  options.bind="{title: 'Subscribers', pieHole: 0.25, height: 200, chartArea: {'width': '90%', 'height': '85%'}}"></google-chart>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <google-chart data.bind="reposPullRequests" chart.bind="'PieChart'"
+                                  options.bind="{title: 'Pull requests', pieHole: 0.25, height: 200, chartArea: {'width': '90%', 'height': '85%'}}"></google-chart>
                 </div>
                 <div class="col-md-4 col-sm-6">
                     <google-chart data.bind="reposForks" chart.bind="'PieChart'"
-                                  options.bind="{title: 'Forks', pieHole: 0.3}"></google-chart>
+                                  options.bind="{title: 'Forks', pieHole: 0.25, height: 200, chartArea: {'width': '90%', 'height': '85%'}}"></google-chart>
                 </div>
                 <div class="col-md-4 col-sm-6">
                     <google-chart data.bind="reposOpenIssues" chart.bind="'PieChart'"
-                                  options.bind="{title: 'Open Issues', pieHole: 0.3}"></google-chart>
+                                  options.bind="{title: 'Open Issues', pieHole: 0.25, height: 200, chartArea: {'width': '90%', 'height': '85%'}}"></google-chart>
                 </div>
             </div>
         </div>
@@ -53,7 +57,27 @@
             </div>
             <div class="panel-body">
                 <google-chart data.bind="reposCommitActivity" chart.bind="'LineChart'"
-                              options.bind="{ curveType: 'function', legend: { position: 'bottom' }, height: 400, vAxis: { viewWindow:{ min: 0 } } }"></google-chart>
+                              options.bind="{ curveType: 'function', legend: { position: 'bottom' }, height: 400, chartArea: {'width': '85%', 'height': '70%'}, vAxis: { viewWindow:{ min: 0 }}}"></google-chart>
+            </div>
+        </div>
+
+        <div if.bind="reposParticipation && reposParticipation.length" class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Participation</h3>
+            </div>
+            <div class="panel-body">
+                <google-chart data.bind="reposParticipation" chart.bind="'LineChart'"
+                              options.bind="{curveType: 'function', legend: { position: 'bottom' }, height: 400, chartArea: {'width': '85%', 'height': '70%'}, vAxis: { viewWindow:{ min: 0 }}}"></google-chart>
+            </div>
+        </div>
+
+        <div if.bind="reposCodeFrequency && reposCodeFrequency.length" class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Code-frequency</h3>
+            </div>
+            <div class="panel-body">
+                <google-chart data.bind="reposCodeFrequency" chart.bind="'LineChart'"
+                              options.bind="{curveType: 'function', legend: { position: 'bottom' }, height: 400, chartArea: {'width': '85%', 'height': '70%'}, vAxis: { viewWindow:{ min: 0 } } }"></google-chart>
             </div>
         </div>
 
@@ -66,17 +90,6 @@
                               options.bind="{legend: 'none', height: 400}"></google-chart>
             </div>
         </div>-->
-        
-        <!--<div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Participation</h3>
-            </div>
-            <div class="panel-body">
-                <google-chart data.bind="reposParticipation" chart.bind="'LineChart'"
-                              options.bind="{curveType: 'function', legend: { position: 'bottom' }, height: 400}"></google-chart>
-            </div>
-        </div>-->
-
         <!--<div class="col-md-12">
             <google-chart data.bind="reposPullRequests" chart.bind="'LineChart'"
                           options.bind="{title: 'Pull Requests', curveType: 'function', legend: { position: 'bottom' }, height: 400}"></google-chart>

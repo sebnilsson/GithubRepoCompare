@@ -132,6 +132,30 @@ export class ReposCompare {
             });
         return data;
     }
+    getReposCodeFrequencyData() {
+        let data = this.getLineChartData('Week',
+            repo => repo.stats.codeFrequency,
+            (i, item) => {
+                let week = item[0],
+                    weekDate = new Date(week * 1000),
+                    addCount = item[1],
+                    deleteCount = item[2],
+                    totalCount = addCount + (-deleteCount);
+
+                return { key: week, value: totalCount, title: weekDate };
+            },
+            (a, b) => {
+                let weekA = a[0],
+                    weekB = b[0];
+
+                if (weekA < weekB) {
+                    return -1;
+                }
+                return (weekA > weekB) ? 1 : 0;
+            });
+
+        return data;
+    }
     getReposCommitActivityData() {
         let data = this.getLineChartData('Week',
             repo => repo.stats.commitActivity,
@@ -156,7 +180,7 @@ export class ReposCompare {
     }
     getReposParticipationData() {
         let data = this.getLineChartData('Week',
-            repo => repo.stats.participation.all,
+            repo => ((repo.stats.participation || {}).all) || [],
             (i, item) => {
                 let weekDate = new Date();
                 weekDate.setDate(weekDate.getDate() - (i * 7));
@@ -175,6 +199,13 @@ export class ReposCompare {
     getReposOpenIssuesData() {
         let headers = ['Name', 'Open Issues'];
         let rowFactory = (repo => [repo.name, repo.open_issues_count]);
+        
+        let data = this.getPieChartData(headers, rowFactory);
+        return data;
+    }
+    getReposPullRequestsData() {
+        let headers = ['Name', 'Pull Requests'];
+        let rowFactory = (repo => [repo.name, repo.stats.pullRequestsCount]);
         
         let data = this.getPieChartData(headers, rowFactory);
         return data;
@@ -205,13 +236,15 @@ export class ReposCompare {
         return hasReposToCompare;
     }
     updateDatas() {
+        this.reposCodeFrequency = this.getReposCodeFrequencyData();
         this.reposCommitActivity = this.getReposCommitActivityData();
         //this.reposContributorsCommits = this.getReposContributorsCommitsData();
-        //this.reposParticipation = this.getReposParticipationData();
+        this.reposParticipation = this.getReposParticipationData();
         //this.reposPullRequests = this.getReposPullRequestsData();
-
+        
         this.reposForks = this.getReposForksData();
         this.reposOpenIssues = this.getReposOpenIssuesData();
+        this.reposPullRequests = this.getReposPullRequestsData();
         this.reposSizes = this.getReposSizesData();
         this.reposSubscribers = this.getReposSubscribersData();
         this.reposWatchers = this.getReposWatchersData();

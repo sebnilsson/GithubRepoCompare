@@ -6,7 +6,7 @@ export class ReposList {
         if (!this.repos.items.length) {
             //this.addRepo('jquery/jquery');
             this.addRepo('facebook/react');
-            this.addRepo('emberjs/ember.js');
+            //this.addRepo('emberjs/ember.js');
             this.addRepo('aurelia/framework');
             this.addRepo('angular/angular');
 

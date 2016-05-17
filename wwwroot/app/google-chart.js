@@ -36,7 +36,7 @@ export class GoogleChart {
         }
 
         this.googleChartsFramework.load().then(() => {
-            var chartFunc = google.visualization[this.chart || 'PieChart'];
+            let chartFunc = google.charts[this.chart] || google.visualization[this.chart];
 
             if (typeof (chartFunc) !== 'function') {
                 throw new Error(`Could not find function in google.visualization named '${this.chart}'.`);

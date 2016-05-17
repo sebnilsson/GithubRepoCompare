@@ -1,16 +1,18 @@
-﻿import {GitHubApi} from 'app/data/git-hub-api'
+﻿import {Errors} from 'app/errors';
+import {GitHubApi} from 'app/data/git-hub-api';
 
 let localStorageItemsKey = 'gitHubRepos_items';
 
 export class GitHubRepos {
     static inject() {
-        return [GitHubApi];
+        return [Errors, GitHubApi];
     }
-    constructor(gitHubApi) {
+    constructor(errors, gitHubApi) {
         if (typeof(window.localStorage) === 'undefined') {
             throw new Error('\'window.localStorage\' is undefined.');
         }
 
+        this.errors = errors;
         this.gitHubApi = gitHubApi;
 
         this.items = this.getStoredItems() || [];
@@ -25,8 +27,14 @@ export class GitHubRepos {
 
                     this.sort();
                 },
-                () => {
-                    throw new Error(`Loading repository '${fullName}' failed.`);
+                response => {
+                    let json = response.json();
+
+                    json.then(data => {
+                        let message = `Failed loading repository '${fullName}': ${(data || {}).message || ''}`;
+
+                        this.errors.addDanger(message);
+                    });
                 }
             );
     }
@@ -57,6 +65,7 @@ export class GitHubRepos {
                         html_url: data.html_url,
                         homepage: data.homepage,
                         created_at: data.created_at,
+                        updated_at: data.updated_at,
                         size: data.size,
                         watchers_count: data.watchers_count,
                         language: data.language,
@@ -64,7 +73,11 @@ export class GitHubRepos {
                         open_issues_count: data.open_issues_count,
                         subscribers_count: data.subscribers_count,
                         stats: {
+                            codeFrequency: [],
                             commitActivity: [],
+                            participation: {
+                                all: []
+                            },
                             pullRequests: []
                         }
                     };
@@ -73,8 +86,8 @@ export class GitHubRepos {
                             this.gitHubApi.getRepoPullRequests(fullName),
                             //this.gitHubApi.getRepoStatsContributors(fullName),
                             this.gitHubApi.getRepoStatsCommitActivity(fullName),
-                            //this.gitHubApi.getRepoStatsCodeFrequency(fullName),
-                            //this.gitHubApi.getRepoStatsParticipation(fullName)
+                            this.gitHubApi.getRepoStatsCodeFrequency(fullName),
+                            this.gitHubApi.getRepoStatsParticipation(fullName)
                         ])
                         .then(values => {
                             //let pullRequests = values[0],
@@ -83,10 +96,12 @@ export class GitHubRepos {
                             //    codeFrequency = values[3],
                             //    participation = values[4];
                             let pullRequests = values[0],
-                                commitActivity = values[1];
+                                commitActivity = values[1],
+                                codeFrequency = values[2],
+                                participation = values[3];
 
                             repo.stats = {
-                                pullRequests: pullRequests,
+                                pullRequestsCount: pullRequests.total_count,
                                 //contributors: contributors.map(c => ({
                                 //    total: c.total,
                                 //    weeks: c.weeks.map(week => ({
@@ -95,10 +110,10 @@ export class GitHubRepos {
                                 //    }))
                                 //})),
                                 commitActivity: commitActivity,
-                                //codeFrequency: {},
-                                //participation: {
-                                //    all: participation.all
-                                //}
+                                codeFrequency: codeFrequency,
+                                participation: {
+                                    all: participation.all
+                                }
                             };
 
                             return repo;

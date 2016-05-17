@@ -19,10 +19,10 @@ export class GitHubApi {
             .then(response => response.json());
     }
     getRepoPullRequests(fullName, state) {
-        let stateQs = `state=${state || 'open'}`;
+        let stateQs = state ? `is:${state}` : '';
         let qs = [stateQs].join('&');
 
-        return this.http.fetch(`repos/${fullName}/pulls?${qs}`)
+        return this.http.fetch(`search/issues?q=repo:${fullName}+is:pr+${qs}`)
             .then(response => response.json());
     }
     getRepoStatsContributors(fullName) {

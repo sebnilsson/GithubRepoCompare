@@ -1,9 +1,4 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
-/* Set widths on the form inputs since otherwise they're 100% wide */
+﻿/* Set widths on the form inputs since otherwise they're 100% wide */
 input,
 select,
 textarea {
@@ -40,6 +35,11 @@ html, body {
     display: inline-block;
     width: 400px;
 }*/
+
+.errors-list .alert {
+    margin-bottom: 0;
+}
+
 .repo-owner-avatar {
     max-height: 32px;
     max-width: 32px;
