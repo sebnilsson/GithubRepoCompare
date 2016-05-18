@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNet.Mvc;
 
-namespace GithubRepoCompare.Controllers
+namespace GithubRepoCompare.Website.Website.Controllers
 {
     [Route("github/[action]/{owner}/{repo}")]
     public class GitHubController : Controller
