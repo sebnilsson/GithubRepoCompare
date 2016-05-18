@@ -32,7 +32,7 @@ export class ReposCompare {
         let data = [];
         let dataHash = {};
 
-        for (var i = 0; i < this.repos.items.length; i++) {
+        for (let i = 0; i < this.repos.items.length; i++) {
             let repo = this.repos.items[i];
             if (!repo.name) {
                 throw new Error('Repository needs a name.');
@@ -40,9 +40,9 @@ export class ReposCompare {
 
             header.push(repo.name);
 
-            var items = columnFactory(repo) || [];
+            let items = columnFactory(repo) || [];
             
-            for (var j = 0; j < items.length; j++) {
+            for (let j = 0; j < items.length; j++) {
                 let item = items[j],
                     rowData = rowFactory(j, item);
                 if (!rowData) {
@@ -90,8 +90,8 @@ export class ReposCompare {
 
         let data = [ headers ];
 
-        for (var repo of this.repos.items) {
-            var row = rowFactory(repo);
+        for (let repo of this.repos.items) {
+            let row = rowFactory(repo);
 
             data.push(row);
         }
@@ -102,8 +102,8 @@ export class ReposCompare {
         let data = this.getLineChartData('Week',
             repo => {
                 return repo.stats.contributors.reduce((a, b) => {
-                    var aWeeks = (a ? a.weeks : undefined) || [];
-                    var bWeeks = (b ? b.weeks : undefined) || [];
+                    let aWeeks = (a ? a.weeks : undefined) || [];
+                    let bWeeks = (b ? b.weeks : undefined) || [];
 
                     return aWeeks.concat(bWeeks);
                 });

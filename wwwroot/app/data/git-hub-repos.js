@@ -39,12 +39,12 @@ export class GitHubRepos {
             );
     }
     contains(fullName) {
-        var itemsContains = this.items.findIndex(x => (x.full_name || '').toLowerCase() === fullName.toLowerCase()) >= 0;
+        let itemsContains = this.items.findIndex(x => (x.full_name || '').toLowerCase() === fullName.toLowerCase()) >= 0;
         return itemsContains;
     }
     getStoredItems() {
-        var storedItems = window.localStorage[localStorageItemsKey];
-        var localStorageRepo = storedItems ? JSON.parse(storedItems) : undefined;
+        let storedItems = window.localStorage[localStorageItemsKey];
+        let localStorageRepo = storedItems ? JSON.parse(storedItems) : undefined;
 
         localStorageRepo = (localStorageRepo && typeof(localStorageRepo.indexOf) === 'function') ? localStorageRepo : undefined;
 
@@ -55,7 +55,7 @@ export class GitHubRepos {
         return this.gitHubApi.getRepo(fullName)
             .then(
                 data => {
-                    var repo = {
+                    let repo = {
                         id: data.id,
                         name: data.name,
                         full_name: data.full_name,
@@ -121,7 +121,7 @@ export class GitHubRepos {
                 });
     }
     remove(repo) {
-        var repoIndex = this.items.indexOf(repo);
+        let repoIndex = this.items.indexOf(repo);
         if (repoIndex >= 0) {
             this.items.splice(repoIndex, 1);
 
@@ -129,7 +129,7 @@ export class GitHubRepos {
         }
     }
     setStoredItems() {
-        var repoJson = JSON.stringify(this.items);
+        let repoJson = JSON.stringify(this.items);
 
         console.log('GitHubRepos.setStoredItems - repoJson.length:', repoJson.length);
         window.localStorage[localStorageItemsKey] = repoJson;
@@ -146,7 +146,7 @@ export class GitHubRepos {
         let fullName = repo.full_name;
 
         return this.loadRepo(fullName).then(data => {
-            var index = this.items.indexOf(repo);
+            let index = this.items.indexOf(repo);
 
             this.items.splice(index, 1);
             this.items.splice(index, 0, data);

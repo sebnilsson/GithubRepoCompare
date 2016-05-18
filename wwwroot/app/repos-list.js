@@ -31,7 +31,7 @@ export class ReposList {
             return;
         }
 
-        var isValid = /.+\/.+/.test(fullName) && !this.repos.contains(fullName);
+        let isValid = /.+\/.+/.test(fullName) && !this.repos.contains(fullName);
         return isValid;
     }
     removeRepo(repo) {

@@ -1,5 +1,8 @@
 ﻿import {bindable} from 'aurelia-framework';
 import {GoogleChartsFramework} from 'app/data/google-charts-framework';
+import {WindowEvents} from 'app/window-events';
+import debounce from 'app/debounce';
+//import throttle from 'app/throttle';
 
 export class GoogleChart {
     @bindable chart;
@@ -8,10 +11,11 @@ export class GoogleChart {
 
     googleChart = undefined;
     static inject() {
-        return [GoogleChartsFramework];
+        return [GoogleChartsFramework,  WindowEvents];
     }
-    constructor(googleChartsFramework) {
+    constructor(googleChartsFramework, windowEvents) {
         this.googleChartsFramework = googleChartsFramework;
+        this.windowEvents = windowEvents;
     }
     bind() {
         if (typeof (this.data) === 'undefined' || typeof (this.data.indexOf) === 'undefined') {
@@ -20,10 +24,14 @@ export class GoogleChart {
         if (typeof (this.chart) === 'undefined') {
             throw new Error("Chart is not defined.");
         }
-        
+
         this.options = this.options || {};
-        
+
         this.updateChart();
+
+        this.windowEvents.add('resize', debounce(() => {
+            this.updateChart();
+        }, 500));
     }
     dataChanged() {
         this.updateChart();
@@ -44,7 +52,7 @@ export class GoogleChart {
 
             this.googleChart = new chartFunc(this.element);
 
-            var dataTable = google.visualization.arrayToDataTable(this.data);
+            let dataTable = google.visualization.arrayToDataTable(this.data);
 
             this.googleChart.draw(dataTable, this.options);
         });
