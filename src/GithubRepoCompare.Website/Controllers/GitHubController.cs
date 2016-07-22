@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
-namespace GithubRepoCompare.Website.Website.Controllers
+namespace GithubRepoCompare.Website.Controllers
 {
     [Route("github/[action]/{owner}/{repo}")]
     public class GitHubController : Controller

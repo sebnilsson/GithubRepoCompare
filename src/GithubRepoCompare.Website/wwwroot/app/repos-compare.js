@@ -191,42 +191,42 @@ export class ReposCompare {
     }
     getReposForksData() {
         let headers = ['Name', 'Forks'];
-        let rowFactory = (repo => [repo.name, repo.forks_count]);
+        let rowFactory = (repo => [repo.name, repo.forks_count || 0]);
         
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
     getReposOpenIssuesData() {
         let headers = ['Name', 'Open Issues'];
-        let rowFactory = (repo => [repo.name, repo.open_issues_count]);
+        let rowFactory = (repo => [repo.name, repo.open_issues_count || 0]);
         
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
     getReposPullRequestsData() {
         let headers = ['Name', 'Pull Requests'];
-        let rowFactory = (repo => [repo.name, repo.stats.pullRequestsCount]);
+        let rowFactory = (repo => [repo.name, repo.stats.pullRequestsCount || 0]);
         
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
     getReposSizesData() {
         let headers = ['Name', 'Size'];
-        let rowFactory = (repo => [repo.name, repo.size]);
+        let rowFactory = (repo => [repo.name, repo.size || 0]);
         
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
     getReposSubscribersData() {
         let headers = ['Name', 'Subscribers'];
-        let rowFactory = (repo => [repo.name, repo.subscribers_count]);
+        let rowFactory = (repo => [repo.name, repo.subscribers_count || 0]);
         
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
     getReposWatchersData() {
         let headers = ['Name', 'Watchers'];
-        let rowFactory = (repo => [repo.name, repo.watchers_count]);
+        let rowFactory = (repo => [repo.name, repo.watchers_count || 0]);
         
         let data = this.getPieChartData(headers, rowFactory);
         return data;
