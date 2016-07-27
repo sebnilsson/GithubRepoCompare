@@ -1,0 +1,5 @@
+wwwroot/dist/
+wwwroot/lib/
+wwwroot/jspm_packages/
+node_modules/
+typings/

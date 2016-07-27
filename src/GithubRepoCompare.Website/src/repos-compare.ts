@@ -1,23 +1,37 @@
 ﻿import {bindable} from 'aurelia-framework';
 import {BindingEngine} from 'aurelia-framework';
-import {GoogleChartsFramework} from 'app/data/google-charts-framework';
+import {GoogleCharts} from './charts/google-charts';
 
 export class ReposCompare {
-    @bindable repos;
+    @bindable
+    private repos;
+
+    private reposCodeFrequency;
+    private reposCommitActivity;
+    private reposParticipation;
+    private reposForks;
+    private reposOpenIssues;
+    private reposPullRequests;
+    private reposSizes;
+    private reposSubscribers;
+    private reposSubscription;
+    private reposWatchers;
+
     static inject() {
-        return [BindingEngine, GoogleChartsFramework];
+        return [BindingEngine, GoogleCharts];
     }
-    constructor(bindingEngine, googleChartsFramework) {
-        this.bindingEngine = bindingEngine;
-        this.googleChartsFramework = googleChartsFramework;
+
+    constructor(private bindingEngine: BindingEngine, private googleCharts: GoogleCharts) {
     }
+
     bind() {
         this.updateDatas();
-        
+
         this.reposSubscription = this.bindingEngine.collectionObserver(this.repos.items)
             .subscribe(() => this.updateDatas());
     }
-    getLineChartData(yHeaderTitle, columnFactory, rowFactory, sortFactory, filterFactory) {
+
+    getLineChartData(yHeaderTitle, columnFactory, rowFactory, sortFactory = undefined, filterFactory = undefined) {
         if (typeof(yHeaderTitle) !== 'string') {
             throw new Error('Argument \'yHeaderTitle\' must be a string.');
         }
@@ -41,7 +55,7 @@ export class ReposCompare {
             header.push(repo.name);
 
             let items = columnFactory(repo) || [];
-            
+
             for (let j = 0; j < items.length; j++) {
                 let item = items[j],
                     rowData = rowFactory(j, item);
@@ -52,7 +66,7 @@ export class ReposCompare {
                 let key = rowData.key,
                     title = rowData.title || key,
                     value = rowData.value;
-                
+
                 let row = dataHash[key];
 
                 if (!row) {
@@ -60,9 +74,9 @@ export class ReposCompare {
 
                     data.push(row);
                 }
-                
+
                 row[0] = title;
-                
+
                 let existingValue = row[i + 1];
                 row[i + 1] = !isNaN(existingValue) ? (existingValue + value) : value;
             }
@@ -80,6 +94,7 @@ export class ReposCompare {
 
         return data;
     }
+
     getPieChartData(headers, rowFactory) {
         if (!headers || !headers.indexOf) {
             throw new Error('Argument \'headers\' must be an array.');
@@ -88,7 +103,7 @@ export class ReposCompare {
             throw new Error('Argument \'rowFactory\' must be a function.');
         }
 
-        let data = [ headers ];
+        let data = [headers];
 
         for (let repo of this.repos.items) {
             let row = rowFactory(repo);
@@ -98,6 +113,7 @@ export class ReposCompare {
 
         return data;
     }
+
     getReposContributorsCommitsData() {
         let data = this.getLineChartData('Week',
             repo => {
@@ -127,11 +143,12 @@ export class ReposCompare {
             row => {
                 let columns = row.slice(1),
                     areValid = columns.some(x => !!x);
-                
+
                 return areValid;
             });
         return data;
     }
+
     getReposCodeFrequencyData() {
         let data = this.getLineChartData('Week',
             repo => repo.stats.codeFrequency,
@@ -156,6 +173,7 @@ export class ReposCompare {
 
         return data;
     }
+
     getReposCommitActivityData() {
         let data = this.getLineChartData('Week',
             repo => repo.stats.commitActivity,
@@ -178,6 +196,7 @@ export class ReposCompare {
 
         return data;
     }
+
     getReposParticipationData() {
         let data = this.getLineChartData('Week',
             repo => ((repo.stats.participation || {}).all) || [],
@@ -189,59 +208,67 @@ export class ReposCompare {
             });
         return data;
     }
+
     getReposForksData() {
         let headers = ['Name', 'Forks'];
         let rowFactory = (repo => [repo.name, repo.forks_count || 0]);
-        
+
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
+
     getReposOpenIssuesData() {
         let headers = ['Name', 'Open Issues'];
         let rowFactory = (repo => [repo.name, repo.open_issues_count || 0]);
-        
+
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
+
     getReposPullRequestsData() {
         let headers = ['Name', 'Pull Requests'];
         let rowFactory = (repo => [repo.name, repo.stats.pullRequestsCount || 0]);
-        
+
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
+
     getReposSizesData() {
         let headers = ['Name', 'Size'];
         let rowFactory = (repo => [repo.name, repo.size || 0]);
-        
+
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
+
     getReposSubscribersData() {
         let headers = ['Name', 'Subscribers'];
         let rowFactory = (repo => [repo.name, repo.subscribers_count || 0]);
-        
+
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
+
     getReposWatchersData() {
         let headers = ['Name', 'Watchers'];
         let rowFactory = (repo => [repo.name, repo.watchers_count || 0]);
-        
+
         let data = this.getPieChartData(headers, rowFactory);
         return data;
     }
+
     get hasReposToCompare() {
         let hasReposToCompare = this.repos && this.repos.items && (this.repos.items.length > 1);
         return hasReposToCompare;
     }
+
     updateDatas() {
         this.reposCodeFrequency = this.getReposCodeFrequencyData();
         this.reposCommitActivity = this.getReposCommitActivityData();
         //this.reposContributorsCommits = this.getReposContributorsCommitsData();
         this.reposParticipation = this.getReposParticipationData();
         //this.reposPullRequests = this.getReposPullRequestsData();
-        
+
         this.reposForks = this.getReposForksData();
         this.reposOpenIssues = this.getReposOpenIssuesData();
         this.reposPullRequests = this.getReposPullRequestsData();

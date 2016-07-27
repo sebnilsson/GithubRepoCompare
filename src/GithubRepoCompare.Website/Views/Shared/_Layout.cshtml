@@ -33,12 +33,7 @@
         </div>
     </div>
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-    <script src="~/jspm_packages/system.js"></script>
-    <script src="~/config.js"></script>
-
-    <environment names="Development">
+    @*<environment names="Development">
         <script src="~/jspm_packages/npm/jquery@2.2.4/dist/jquery.js"></script>
         <script src="~/jspm_packages/github/twbs/bootstrap@3.3.6/js/bootstrap.js"></script>
     </environment>
@@ -51,7 +46,7 @@
                 asp-fallback-src="~/jspm_packages/github/twbs/bootstrap@3.3.6/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
         </script>
-    </environment>
+    </environment>*@
 
     @RenderSection("scripts", required: false)
 </body>

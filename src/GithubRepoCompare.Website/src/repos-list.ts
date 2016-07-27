@@ -1,7 +1,12 @@
 ﻿import {bindable} from 'aurelia-framework';
 
 export class ReposList {
-    @bindable repos;
+    @bindable
+    repos;
+
+    isRepoLoading;
+    repoFullName;
+
     bind() {
         if (!this.repos.items.length) {
             //this.addRepo('jquery/jquery');
@@ -13,11 +18,12 @@ export class ReposList {
             this.repoFullName = 'twbs/bootstrap';
         }
     }
+
     addRepo(fullName) {
         if (!this.isRepoFullNameValid(fullName)) {
             return;
         }
-        
+
         this.repoFullName = '';
 
         this.isRepoLoading = true;
@@ -26,6 +32,7 @@ export class ReposList {
             this.isRepoLoading = false;
         });
     }
+
     isRepoFullNameValid(fullName) {
         if (!fullName) {
             return;
@@ -34,9 +41,11 @@ export class ReposList {
         let isValid = /.+\/.+/.test(fullName) && !this.repos.contains(fullName);
         return isValid;
     }
+
     removeRepo(repo) {
         this.repos.remove(repo);
     }
+
     updateRepo(repo) {
         if (repo.isUpdating) {
             return;
@@ -45,7 +54,7 @@ export class ReposList {
         repo.isUpdating = true;
 
         this.repos.update(repo);
-        
+
         repo.isUpdating = false;
     }
 }

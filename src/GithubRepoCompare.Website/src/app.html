@@ -1,13 +1,11 @@
 ﻿<template>
-    <require from="./app/errors-list"></require>
-    <require from="./app/repos-compare"></require>
-    <require from="./app/repos-list"></require>
+    <require from="./errors-list"></require>
+    <require from="./repos-compare"></require>
+    <require from="./repos-list"></require>
 
     <errors-list></errors-list>
 
     <div class="container">
-        <h1>GitHub Repo-compare</h1>
-
         <repos-list repos.bind="repos"></repos-list>
 
         <repos-compare repos.bind="repos"></repos-compare>

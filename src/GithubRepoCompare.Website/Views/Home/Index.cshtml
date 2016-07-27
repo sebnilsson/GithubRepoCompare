@@ -1,7 +1,16 @@
 ﻿@section scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script src="~/jspm_packages/system.js"></script>
+    <script src="~/config.js"></script>
+    
     <script>
         SystemJS.import('aurelia-bootstrapper');
     </script>
 }
 
-<div aurelia-app></div>
+<div class="container">
+    <h1>GitHub Repo-compare</h1>
+</div>
+
+<div aurelia-app="main"></div>

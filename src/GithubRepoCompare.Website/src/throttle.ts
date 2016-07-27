@@ -12,7 +12,7 @@
         if (last && now < last + threshhold) {
             clearTimeout(deferTimer);
 
-            deferTimer = setTimeout(function() {
+            deferTimer = setTimeout(() => {
                 last = now;
                 fn.apply(context, args);
             }, threshhold);

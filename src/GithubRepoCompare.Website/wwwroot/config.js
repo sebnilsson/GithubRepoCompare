@@ -1,21 +1,12 @@
 System.config({
   baseURL: "/",
   defaultJSExtensions: true,
-  transpiler: "babel",
-  babelOptions: {
-    "optional": [
-      "es7.decorators",
-      "es7.classProperties",
-      "runtime",
-      "optimisation.modules.system"
-    ]
-  },
+  transpiler: false,
   paths: {
-    //"*": "dist/*",
+    "*": "dist/*",
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
-  
   map: {
     "aurelia-bootstrapper": "npm:aurelia-bootstrapper@1.0.0-rc.1.0.1",
     "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0-rc.1.0.1",
@@ -24,9 +15,11 @@ System.config({
     "babel-runtime": "npm:babel-runtime@5.8.38",
     "bootstrap": "github:twbs/bootstrap@3.3.6",
     "core-js": "npm:core-js@1.2.7",
+    "fetch": "github:github/fetch@1.0.0",
     "jquery": "npm:jquery@2.2.4",
     "moment": "npm:moment@2.14.1",
     "numeral": "npm:numeral@1.5.3",
+    "text": "github:systemjs/plugin-text@0.0.8",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.4.1"
     },

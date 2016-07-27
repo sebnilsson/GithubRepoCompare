@@ -1,7 +1,6 @@
 ﻿export class WindowEvents {
-    constructor() {
-        this.eventHandlers = [];
-    }
+    private eventHandlers = [];
+
     add(type, eventHandler) {
         if (typeof(type) !== 'string' || !type) {
             throw new Error('Event-type must be a string.');
@@ -16,6 +15,7 @@
 
         console.log('WindowsEvents.add - this.eventHandlers.length:', this.eventHandlers.length);
     }
+
     remove(type, eventHandler) {
         if (typeof(type) !== 'string' || !type) {
             throw new Error('Event-type must be a string.');
@@ -31,6 +31,7 @@
 
         window.removeEventListener(type, eventHandler);
     }
+
     detached() {
         for (let item of this.eventHandlers) {
             let type = item.type,

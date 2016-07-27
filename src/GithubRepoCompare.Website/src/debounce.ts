@@ -1,4 +1,4 @@
-﻿export default function debounce(fn, delay, scope) {
+﻿export default function debounce(fn, delay = undefined, scope = undefined) {
     delay = delay || 250;
 
     let timer = null;
@@ -8,7 +8,7 @@
 
         clearTimeout(timer);
 
-        timer = setTimeout(function() {
+        timer = setTimeout(() => {
             fn.apply(context, args);
         }, delay);
     };

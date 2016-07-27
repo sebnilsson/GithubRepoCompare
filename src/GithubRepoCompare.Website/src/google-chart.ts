@@ -1,22 +1,25 @@
-﻿import {bindable} from 'aurelia-framework';
-import {GoogleChartsFramework} from 'app/data/google-charts-framework';
-import {WindowEvents} from 'app/window-events';
-import debounce from 'app/debounce';
-//import throttle from 'app/throttle';
+﻿import {autoinject} from 'aurelia-framework';
+import {bindable} from 'aurelia-framework';
+import {GoogleCharts} from './charts/google-charts';
+import {WindowEvents} from './window-events';
+import debounce from './debounce';
 
+@autoinject
 export class GoogleChart {
-    @bindable chart;
-    @bindable data;
-    @bindable options;
+    @bindable
+    private chart;
+    @bindable
+    private data;
+    @bindable
+    private options;
 
-    googleChart = undefined;
-    static inject() {
-        return [GoogleChartsFramework,  WindowEvents];
+    private googleChart = undefined;
+
+    constructor(private element: Element,
+        private googleCharts: GoogleCharts,
+        private windowEvents: WindowEvents) {
     }
-    constructor(googleChartsFramework, windowEvents) {
-        this.googleChartsFramework = googleChartsFramework;
-        this.windowEvents = windowEvents;
-    }
+
     bind() {
         if (typeof (this.data) === 'undefined' || typeof (this.data.indexOf) === 'undefined') {
             throw new Error("Data is not valid array.");
@@ -33,9 +36,11 @@ export class GoogleChart {
             this.updateChart();
         }, 500));
     }
+
     dataChanged() {
         this.updateChart();
     }
+
     updateChart() {
         this.googleChart = this.googleChart || {};
 
@@ -43,8 +48,8 @@ export class GoogleChart {
             this.googleChart.clearChart();
         }
 
-        this.googleChartsFramework.load().then(() => {
-            let chartFunc = google.charts[this.chart] || google.visualization[this.chart];
+        this.googleCharts.load().then(visualization => {
+            let chartFunc = this.googleCharts[this.chart] || visualization[this.chart];
 
             if (typeof (chartFunc) !== 'function') {
                 throw new Error(`Could not find function in google.visualization named '${this.chart}'.`);
@@ -52,7 +57,7 @@ export class GoogleChart {
 
             this.googleChart = new chartFunc(this.element);
 
-            let dataTable = google.visualization.arrayToDataTable(this.data);
+            let dataTable = visualization.arrayToDataTable(this.data);
 
             this.googleChart.draw(dataTable, this.options);
         });

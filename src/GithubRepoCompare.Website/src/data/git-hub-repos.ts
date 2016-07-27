@@ -1,24 +1,21 @@
-﻿import {Errors} from 'app/errors';
-import {GitHubApi} from 'app/data/git-hub-api';
+﻿import {autoinject} from 'aurelia-framework';
+import {Errors} from '../errors';
+import {GitHubApi} from './git-hub-api';
 
 let localStorageItemsKey = 'gitHubRepos_items';
 
+@autoinject
 export class GitHubRepos {
-    static inject() {
-        return [Errors, GitHubApi];
-    }
-    constructor(errors, gitHubApi) {
+    items = this.getStoredItems() || [];
+
+    constructor(private errors: Errors, private gitHubApi: GitHubApi) {
         if (typeof(window.localStorage) === 'undefined') {
             throw new Error('\'window.localStorage\' is undefined.');
         }
 
-        this.errors = errors;
-        this.gitHubApi = gitHubApi;
-
-        this.items = this.getStoredItems() || [];
-
         this.sort();
     }
+
     add(fullName) {
         return this.loadRepo(fullName)
             .then(
@@ -38,10 +35,12 @@ export class GitHubRepos {
                 }
             );
     }
+
     contains(fullName) {
         let itemsContains = this.items.findIndex(x => (x.full_name || '').toLowerCase() === fullName.toLowerCase()) >= 0;
         return itemsContains;
     }
+
     getStoredItems() {
         let storedItems = window.localStorage[localStorageItemsKey];
         let localStorageRepo = storedItems ? JSON.parse(storedItems) : undefined;
@@ -51,6 +50,7 @@ export class GitHubRepos {
         console.log('GitHubRepos.getStoredItems - localStorageRepo:', localStorageRepo);
         return localStorageRepo;
     }
+
     loadRepo(fullName) {
         return this.gitHubApi.getRepo(fullName)
             .then(
@@ -78,7 +78,8 @@ export class GitHubRepos {
                             participation: {
                                 all: []
                             },
-                            pullRequests: []
+                            pullRequests: [],
+                            pullRequestsCount: 0
                         }
                     };
 
@@ -100,26 +101,27 @@ export class GitHubRepos {
                                 codeFrequency = values[2],
                                 participation = values[3];
 
-                            repo.stats = {
-                                pullRequestsCount: pullRequests.total_count,
-                                //contributors: contributors.map(c => ({
-                                //    total: c.total,
-                                //    weeks: c.weeks.map(week => ({
-                                //        w: week.w,
-                                //        c: week.c
-                                //    }))
-                                //})),
-                                commitActivity: commitActivity,
-                                codeFrequency: codeFrequency,
-                                participation: {
-                                    all: participation.all
-                                }
+                            //repo.stats = {
+                            //    pullRequestsCount: pullRequests.total_count,
+                            //    commitActivity: commitActivity,
+                            //    codeFrequency: codeFrequency,
+                            //    participation: {
+                            //        all: participation.all
+                            //    }
+                            //};
+
+                            repo.stats.pullRequestsCount = pullRequests.total_count;
+                            repo.stats.commitActivity = commitActivity;
+                            repo.stats.codeFrequency = codeFrequency;
+                            repo.stats.participation = {
+                                all: participation.all
                             };
 
                             return repo;
                         });
                 });
     }
+
     remove(repo) {
         let repoIndex = this.items.indexOf(repo);
         if (repoIndex >= 0) {
@@ -128,12 +130,14 @@ export class GitHubRepos {
             this.sort();
         }
     }
+
     setStoredItems() {
         let repoJson = JSON.stringify(this.items);
 
         console.log('GitHubRepos.setStoredItems - repoJson.length:', repoJson.length);
         window.localStorage[localStorageItemsKey] = repoJson;
     }
+
     sort() {
         this.items.sort((a, b) => {
             if (a.name < b.name) {
@@ -142,6 +146,7 @@ export class GitHubRepos {
             return (a.name > b.name) ? 1 : 0;
         });
     }
+
     update(repo) {
         let fullName = repo.full_name;
 

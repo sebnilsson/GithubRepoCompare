@@ -1,18 +1,14 @@
-﻿import {BindingEngine} from 'aurelia-framework';
-import {Errors} from 'app/errors';
-import {GitHubRepos} from 'app/data/git-hub-repos';
+﻿import {autoinject} from 'aurelia-framework';
+import {BindingEngine} from 'aurelia-framework';
+import {Errors} from './errors';
+import {GitHubRepos} from './data/git-hub-repos';
 
+@autoinject
 export class App {
+    private reposSubscription;
     repoSubscriptions = [];
 
-    static inject() {
-        return [BindingEngine, Errors, GitHubRepos];
-    }
-    constructor(bindingEngine, errors, gitHubRepos) {
-        this.bindingEngine = bindingEngine;
-        this.errors = errors;
-        this.repos = gitHubRepos;
-
+    constructor(private bindingEngine: BindingEngine, private repos: GitHubRepos, private errors: Errors) {
         this.reposSubscription = this.bindingEngine.collectionObserver(this.repos.items)
             .subscribe(() => {
                 this.resetRepoSubscriptions();
@@ -21,9 +17,8 @@ export class App {
             });
 
         this.resetRepoSubscriptions();
-
-        //this.errors.addInfo('App constructor', 5000);
     }
+
     detached() {
         this.reposSubscription.dispose();
 
@@ -31,6 +26,7 @@ export class App {
             subscription.dispose();
         }
     }
+
     resetRepoSubscriptions() {
         for (var repoSubscription of this.repoSubscriptions) {
             repoSubscription.dispose();
