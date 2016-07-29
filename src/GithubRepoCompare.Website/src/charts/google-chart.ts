@@ -12,25 +12,29 @@ export class GoogleChart {
     private data;
     @bindable
     private options;
+    @bindable
+    private debugData: boolean;
 
     private googleChart = undefined;
+    private googleChartsElement;
 
     private onWindowResize = debounce(() => {
         this.updateChart();
     }, 500);
 
-    constructor(private element: Element,
-        private googleCharts: GoogleCharts,
+    constructor(private googleCharts: GoogleCharts,
         private windowEvents: WindowEvents) {
     }
 
     bind() {
-        if (typeof (this.data) === 'undefined' || typeof (this.data.indexOf) === 'undefined') {
+        if (typeof (this.data) === 'undefined' || !(this.data instanceof Array)) {
             throw new Error("Data is not valid array.");
         }
-        if (typeof (this.chart) === 'undefined') {
+        if (typeof (this.chart) === 'undefined' || !this.chart) {
             throw new Error("Chart is not defined.");
         }
+
+        console.log('GoogleChart.bind -- this.debugData:', this.debugData);
 
         this.options = this.options || {};
 
@@ -39,12 +43,13 @@ export class GoogleChart {
         this.updateChart();
     }
 
-    unbind() {
-        this.windowEvents.remove('resize', this.onWindowResize);
+    dataChanged() {
+        console.log('GoogleChart.dataChanged');
+        this.updateChart();
     }
 
-    dataChanged() {
-        this.updateChart();
+    unbind() {
+        this.windowEvents.remove('resize', this.onWindowResize);
     }
 
     private updateChart() {
@@ -61,7 +66,7 @@ export class GoogleChart {
                 throw new Error(`Could not find function in google.visualization named '${this.chart}'.`);
             }
 
-            this.googleChart = new chartFunc(this.element);
+            this.googleChart = new chartFunc(this.googleChartsElement);
 
             let dataTable = visualization.arrayToDataTable(this.data);
 

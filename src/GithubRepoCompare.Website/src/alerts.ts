@@ -1,7 +1,11 @@
 let defaultTimeout = 5000;
 
 export class Alerts {
-    private items: Array<Alert> = [];
+    private _items: Array<Alert> = [];
+
+    get items(): Array<Alert> {
+        return this._items;
+    }
 
     constructor() {
         console.log('Alerts.constructor');
@@ -41,7 +45,7 @@ export class Alerts {
     }
 }
 
-class Alert {
+export class Alert {
     text: string;
     level: string;
 }

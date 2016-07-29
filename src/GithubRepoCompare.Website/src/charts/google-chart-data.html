@@ -1,0 +1,20 @@
+﻿<template>
+    <require from="../value-converters/json-format"></require>
+
+    <span>
+        <button click.trigger="debugChartData(modalElement)" title="Show data"
+                 class="btn btn-default btn-xs">
+            <span class="glyphicon glyphicon-list"></span> Data
+        </button>
+    </span>
+
+    <div class="modal" ref="modalElement">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <pre><code>${data | jsonFormat}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

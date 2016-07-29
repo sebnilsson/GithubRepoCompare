@@ -55,6 +55,9 @@
   },
 
   "publishOptions": {
+    "exclude": [
+      "src"
+    ],
     "include": [
       "wwwroot",
       "Views",

@@ -1,8 +1,8 @@
 ﻿<template>
-    <div class="container errors-list">
-        <div repeat.for="error of errors.items" class="alert alert-${error.level}">
-            ${error.text}
-            <a click.trigger="errors.remove(error)" href="#" class="pull-right">
+    <div class="container alerts-list">
+        <div repeat.for="alert of items" class="alert alert-${alert.level}">
+            ${alert.text}
+            <a click.trigger="alert.remove(alert)" href="#" class="pull-right">
                 <span class="glyphicon glyphicon-remove-sign"></span>
             </a>
         </div>

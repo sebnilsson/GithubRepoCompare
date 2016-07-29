@@ -13,11 +13,11 @@ export class ChartData {
         for (let i = 0; i < repos.length; i++) {
             let repo = repos[i];
 
-            if (!repo.name) {
+            if (!repo.full_name) {
                 throw new Error('Repository needs a name.');
             }
 
-            header.push(repo.name);
+            header.push(repo.full_name);
 
             let items = columnFactory(repo) || [];
 

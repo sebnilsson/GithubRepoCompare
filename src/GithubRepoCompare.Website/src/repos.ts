@@ -29,7 +29,9 @@ export class Repos {
     }
 
     add(fullName: string): Promise<any> {
-        return this.loadRepo(fullName)
+        var loadPromise = this.loadRepo(fullName);
+
+        loadPromise
             .then(
                 data => {
                     this.items.push(data);
@@ -37,17 +39,9 @@ export class Repos {
                     this.sort();
 
                     this.setStoredItems();
-                },
-                response => {
-                    let json = response.json();
+                });
 
-                    json.then(data => {
-                        let message = `Failed loading repository '${fullName}': ${(data || {}).message || ''}`;
-
-                        this.alerts.addDanger(message);
-                    });
-                }
-            );
+        return loadPromise;
     }
 
     contains(fullName: string): boolean {
@@ -74,7 +68,9 @@ export class Repos {
     update(repo): Promise<any> {
         let fullName = repo.full_name;
 
-        return this.loadRepo(fullName).then(data => {
+        var loadPromise = this.loadRepo(fullName);
+
+        loadPromise.then(data => {
             let index = this.items.indexOf(repo);
 
             this.items.splice(index, 1);
@@ -82,6 +78,8 @@ export class Repos {
 
             this.setStoredItems();
         });
+
+        return loadPromise;
     }
 
     private loadRepo(fullName: string): Promise<any> {
@@ -118,30 +116,15 @@ export class Repos {
 
                     return Promise.all([
                             this.gitHubApi.getRepoPullRequests(fullName),
-                            //this.gitHubApi.getRepoStatsContributors(fullName),
                             this.gitHubApi.getRepoStatsCommitActivity(fullName),
                             this.gitHubApi.getRepoStatsCodeFrequency(fullName),
                             this.gitHubApi.getRepoStatsParticipation(fullName)
                         ])
                         .then(values => {
-                            //let pullRequests = values[0],
-                            //    contributors = values[1],
-                            //    commitActivity = values[2],
-                            //    codeFrequency = values[3],
-                            //    participation = values[4];
                             let pullRequests = values[0],
                                 commitActivity = values[1],
                                 codeFrequency = values[2],
                                 participation = values[3];
-
-                            //repo.stats = {
-                            //    pullRequestsCount: pullRequests.total_count,
-                            //    commitActivity: commitActivity,
-                            //    codeFrequency: codeFrequency,
-                            //    participation: {
-                            //        all: participation.all
-                            //    }
-                            //};
 
                             repo.stats.pullRequestsCount = pullRequests.total_count;
                             repo.stats.commitActivity = commitActivity;
@@ -164,6 +147,7 @@ export class Repos {
             if (a.name < b.name) {
                 return -1;
             }
+
             return (a.name > b.name) ? 1 : 0;
         });
     }

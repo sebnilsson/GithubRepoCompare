@@ -1,5 +1,6 @@
 ﻿import {autoinject, computedFrom} from 'aurelia-framework';
 
+import {Alerts} from './alerts';
 import {Repos} from './repos';
 
 @autoinject
@@ -7,10 +8,10 @@ export class ReposGrid {
     private isRepoLoading;
     private repoFullName;
 
-    constructor(private repos: Repos) {}
+    constructor(private alerts: Alerts, private repos: Repos) {}
 
     @computedFrom('repoFullName', 'repos.items.length')
-    get isRepoFullNameValid() : boolean {
+    get isRepoFullNameValid(): boolean {
         if (!this.repoFullName) {
             return false;
         }
@@ -22,12 +23,12 @@ export class ReposGrid {
     bind() {
         if (!this.repos.items.length) {
             this.addRepo('facebook/react');
-            //this.addRepo('emberjs/ember.js');
+            //this.addRepo('jquery/jquery');
             this.addRepo('aurelia/framework');
             this.addRepo('angular/angular');
         }
 
-        let defaultRepoFullName = 'jquery/jquery';
+        let defaultRepoFullName = 'emberjs/ember.js';
 
         if (!this.repos.contains(defaultRepoFullName)) {
             this.repoFullName = defaultRepoFullName;
@@ -39,13 +40,23 @@ export class ReposGrid {
             return;
         }
 
-        this.repoFullName = '';
-
         this.isRepoLoading = true;
 
-        this.repos.add(fullName).then(() => {
-            this.isRepoLoading = false;
-        });
+        this.repos.add(fullName)
+            .then(() => {
+                this.repoFullName = '';
+            }, response => {
+                let json = response.json();
+
+                json.then(data => {
+                    let message = `Failed loading repository '${fullName}': ${(data || {}).message || ''}`;
+
+                    this.alerts.addDanger(message);
+                });
+            })
+            .then(() => {
+                this.isRepoLoading = false;
+            });
     }
 
     removeRepo(repo) {
@@ -56,10 +67,19 @@ export class ReposGrid {
         if (repo.isUpdating) {
             return;
         }
-
+        
         repo.isUpdating = true;
 
-        this.repos.update(repo);
+        this.repos.update(repo).then(() => {},
+            response => {
+                let json = response.json();
+
+                json.then(data => {
+                    let message = `Failed updating repository '${repo.full_name}': ${(data || {}).message || ''}`;
+
+                    this.alerts.addDanger(message);
+                });
+            });
 
         repo.isUpdating = false;
     }
