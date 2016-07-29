@@ -1,13 +1,15 @@
 ﻿<template>
-    <require from="./errors-list"></require>
+    <require from="./alerts-list"></require>
     <require from="./repos-compare"></require>
-    <require from="./repos-list"></require>
+    <require from="./repos-grid"></require>
 
-    <errors-list></errors-list>
+    <alerts-list></alerts-list>
 
     <div class="container">
-        <repos-list repos.bind="repos"></repos-list>
+        <h1>GitHub Repo-compare</h1>
 
-        <repos-compare repos.bind="repos"></repos-compare>
+        <repos-grid></repos-grid>
+
+        <repos-compare></repos-compare>
     </div>
 </template>

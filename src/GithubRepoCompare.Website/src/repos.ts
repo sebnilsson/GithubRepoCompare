@@ -1,28 +1,42 @@
-﻿import {autoinject} from 'aurelia-framework';
-import {Errors} from '../errors';
-import {GitHubApi} from './git-hub-api';
+﻿import {autoinject, BindingEngine, Disposable} from 'aurelia-framework';
+
+import {Alerts} from './alerts';
+import {GitHubApi} from './git-hub/git-hub-api';
+import {JsonLocalStorage} from "./json-local-storage";
 
 let localStorageItemsKey = 'gitHubRepos_items';
 
 @autoinject
-export class GitHubRepos {
-    items = this.getStoredItems() || [];
+export class Repos {
+    private _items: Array<any>;
+    private itemsObserver;
 
-    constructor(private errors: Errors, private gitHubApi: GitHubApi) {
-        if (typeof(window.localStorage) === 'undefined') {
-            throw new Error('\'window.localStorage\' is undefined.');
-        }
+    get items(): Array<any> {
+        return this._items;
+    }
+
+    constructor(private alerts: Alerts,
+        private bindingEngine: BindingEngine,
+        private gitHubApi: GitHubApi,
+        private jsonLocalStorage: JsonLocalStorage) {
+        console.log('Repos.constructor');
+
+        this._items = jsonLocalStorage.get(localStorageItemsKey, Array) || [];
+
+        this.itemsObserver = this.bindingEngine.collectionObserver(this.items);
 
         this.sort();
     }
 
-    add(fullName) {
+    add(fullName: string): Promise<any> {
         return this.loadRepo(fullName)
             .then(
                 data => {
                     this.items.push(data);
 
                     this.sort();
+
+                    this.setStoredItems();
                 },
                 response => {
                     let json = response.json();
@@ -30,28 +44,47 @@ export class GitHubRepos {
                     json.then(data => {
                         let message = `Failed loading repository '${fullName}': ${(data || {}).message || ''}`;
 
-                        this.errors.addDanger(message);
+                        this.alerts.addDanger(message);
                     });
                 }
             );
     }
 
-    contains(fullName) {
+    contains(fullName: string): boolean {
         let itemsContains = this.items.findIndex(x => (x.full_name || '').toLowerCase() === fullName.toLowerCase()) >= 0;
         return itemsContains;
     }
 
-    getStoredItems() {
-        let storedItems = window.localStorage[localStorageItemsKey];
-        let localStorageRepo = storedItems ? JSON.parse(storedItems) : undefined;
+    remove(repo): void {
+        let repoIndex = this.items.indexOf(repo);
+        if (repoIndex >= 0) {
+            this.items.splice(repoIndex, 1);
 
-        localStorageRepo = (localStorageRepo && typeof(localStorageRepo.indexOf) === 'function') ? localStorageRepo : undefined;
+            this.sort();
 
-        console.log('GitHubRepos.getStoredItems - localStorageRepo:', localStorageRepo);
-        return localStorageRepo;
+            this.setStoredItems();
+        }
     }
 
-    loadRepo(fullName) {
+    subscribe(callback: any): Disposable {
+        let subscription = this.itemsObserver.subscribe(callback);
+        return subscription;
+    }
+
+    update(repo): Promise<any> {
+        let fullName = repo.full_name;
+
+        return this.loadRepo(fullName).then(data => {
+            let index = this.items.indexOf(repo);
+
+            this.items.splice(index, 1);
+            this.items.splice(index, 0, data);
+
+            this.setStoredItems();
+        });
+    }
+
+    private loadRepo(fullName: string): Promise<any> {
         return this.gitHubApi.getRepo(fullName)
             .then(
                 data => {
@@ -122,39 +155,16 @@ export class GitHubRepos {
                 });
     }
 
-    remove(repo) {
-        let repoIndex = this.items.indexOf(repo);
-        if (repoIndex >= 0) {
-            this.items.splice(repoIndex, 1);
-
-            this.sort();
-        }
+    private setStoredItems(): void {
+        this.jsonLocalStorage.set(localStorageItemsKey, this.items);
     }
 
-    setStoredItems() {
-        let repoJson = JSON.stringify(this.items);
-
-        console.log('GitHubRepos.setStoredItems - repoJson.length:', repoJson.length);
-        window.localStorage[localStorageItemsKey] = repoJson;
-    }
-
-    sort() {
+    private sort(): void {
         this.items.sort((a, b) => {
             if (a.name < b.name) {
                 return -1;
             }
             return (a.name > b.name) ? 1 : 0;
-        });
-    }
-
-    update(repo) {
-        let fullName = repo.full_name;
-
-        return this.loadRepo(fullName).then(data => {
-            let index = this.items.indexOf(repo);
-
-            this.items.splice(index, 1);
-            this.items.splice(index, 0, data);
         });
     }
 }

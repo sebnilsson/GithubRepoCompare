@@ -1,30 +1,15 @@
 ﻿export class WindowEvents {
     private eventHandlers = [];
 
-    add(type, eventHandler) {
-        if (typeof(type) !== 'string' || !type) {
-            throw new Error('Event-type must be a string.');
-        }
-        if (typeof(eventHandler) !== 'function') {
-            throw new Error('Event-handler must be a function.');
-        }
-
+    add(type: string, eventHandler: EventListener) {
         this.eventHandlers.push({ type: type, eventHandler: eventHandler });
 
         window.addEventListener(type, eventHandler);
-
-        console.log('WindowsEvents.add - this.eventHandlers.length:', this.eventHandlers.length);
     }
 
-    remove(type, eventHandler) {
-        if (typeof(type) !== 'string' || !type) {
-            throw new Error('Event-type must be a string.');
-        }
-        if (typeof(eventHandler) !== 'function') {
-            throw new Error('Event-handler must be a function.');
-        }
-
+    remove(type: string, eventHandler: EventListener) {
         let index = this.eventHandlers.indexOf(eventHandler);
+
         if (index >= 0) {
             this.eventHandlers.splice(index, 1);
         }

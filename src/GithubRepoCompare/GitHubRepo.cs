@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace GithubRepoCompare
+namespace GitHubRepoCompare
 {
     public class GitHubRepo
     {

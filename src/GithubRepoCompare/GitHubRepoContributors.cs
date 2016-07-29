@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
-namespace GithubRepoCompare
+namespace GitHubRepoCompare
 {
     public class GitHubRepoContributors
     {

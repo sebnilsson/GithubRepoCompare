@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace GithubRepoCompare
+namespace GitHubRepoCompare
 {
     public static class GitHubApiUrl
     {

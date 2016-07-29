@@ -1,26 +1,41 @@
-﻿import {bindable} from 'aurelia-framework';
+﻿import {autoinject, computedFrom} from 'aurelia-framework';
 
-export class ReposList {
-    @bindable
-    repos;
+import {Repos} from './repos';
 
-    isRepoLoading;
-    repoFullName;
+@autoinject
+export class ReposGrid {
+    private isRepoLoading;
+    private repoFullName;
+
+    constructor(private repos: Repos) {}
+
+    @computedFrom('repoFullName', 'repos.items.length')
+    get isRepoFullNameValid() : boolean {
+        if (!this.repoFullName) {
+            return false;
+        }
+
+        let isValid = /.+\/.+/.test(this.repoFullName) && !this.repos.contains(this.repoFullName);
+        return isValid;
+    }
 
     bind() {
         if (!this.repos.items.length) {
-            //this.addRepo('jquery/jquery');
             this.addRepo('facebook/react');
             //this.addRepo('emberjs/ember.js');
             this.addRepo('aurelia/framework');
             this.addRepo('angular/angular');
+        }
 
-            this.repoFullName = 'twbs/bootstrap';
+        let defaultRepoFullName = 'jquery/jquery';
+
+        if (!this.repos.contains(defaultRepoFullName)) {
+            this.repoFullName = defaultRepoFullName;
         }
     }
 
     addRepo(fullName) {
-        if (!this.isRepoFullNameValid(fullName)) {
+        if (!this.isRepoFullNameValid) {
             return;
         }
 
@@ -31,15 +46,6 @@ export class ReposList {
         this.repos.add(fullName).then(() => {
             this.isRepoLoading = false;
         });
-    }
-
-    isRepoFullNameValid(fullName) {
-        if (!fullName) {
-            return;
-        }
-
-        let isValid = /.+\/.+/.test(fullName) && !this.repos.contains(fullName);
-        return isValid;
     }
 
     removeRepo(repo) {

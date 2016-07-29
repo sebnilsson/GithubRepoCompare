@@ -12,12 +12,12 @@ export class GitHubApi {
         });
     }
 
-    getRepo(fullName) {
+    getRepo(fullName: string): Promise<any> {
         return this.http.fetch(`repos/${fullName}`)
             .then(response => response.json());
     }
 
-    getRepoPullRequests(fullName, state = undefined) {
+    getRepoPullRequests(fullName: string, state: string = undefined): Promise<any> {
         let stateQs = state ? `is:${state}` : '';
         let qs = [stateQs].join('&');
 
@@ -25,22 +25,22 @@ export class GitHubApi {
             .then(response => response.json());
     }
 
-    getRepoStatsContributors(fullName) {
+    getRepoStatsContributors(fullName: string): Promise<any> {
         return this.http.fetch(`repos/${fullName}/stats/contributors`)
             .then(response => response.json());
     }
 
-    getRepoStatsCommitActivity(fullName) {
+    getRepoStatsCommitActivity(fullName: string): Promise<any> {
         return this.http.fetch(`repos/${fullName}/stats/commit_activity`)
             .then(response => response.json());
     }
 
-    getRepoStatsCodeFrequency(fullName) {
+    getRepoStatsCodeFrequency(fullName: string): Promise<any> {
         return this.http.fetch(`repos/${fullName}/stats/code_frequency`)
             .then(response => response.json());
     }
 
-    getRepoStatsParticipation(fullName) {
+    getRepoStatsParticipation(fullName: string): Promise<any> {
         return this.http.fetch(`repos/${fullName}/stats/participation`)
             .then(response => response.json());
     }

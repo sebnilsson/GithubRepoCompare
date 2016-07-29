@@ -1,7 +1,6 @@
-﻿export default function debounce(fn, delay = undefined, scope = undefined) {
-    delay = delay || 250;
+﻿export default function debounce(fn: Function, delay: number = 250, scope = undefined) {
+    let timer: number;
 
-    let timer = null;
     return function() {
         let context = scope || this,
             args = arguments;

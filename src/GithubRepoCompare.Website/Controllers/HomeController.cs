@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace GithubRepoCompare.Website.Controllers
+namespace GitHubRepoCompare.Website.Controllers
 {
     public class HomeController : Controller
     {

@@ -1,8 +1,6 @@
-﻿export default function throttle(fn, threshhold, scope) {
-    threshhold = threshhold || 250;
-
-    let last,
-        deferTimer;
+﻿export default function throttle(fn: Function, threshhold: number = 250, scope) {
+    let last: number,
+        timer: number;
 
     return function() {
         let context = scope || this,
@@ -10,9 +8,9 @@
             args = arguments;
 
         if (last && now < last + threshhold) {
-            clearTimeout(deferTimer);
+            clearTimeout(timer);
 
-            deferTimer = setTimeout(() => {
+            timer = setTimeout(() => {
                 last = now;
                 fn.apply(context, args);
             }, threshhold);

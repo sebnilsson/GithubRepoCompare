@@ -1,8 +1,8 @@
-﻿import {autoinject} from 'aurelia-framework';
-import {bindable} from 'aurelia-framework';
-import {GoogleCharts} from './charts/google-charts';
-import {WindowEvents} from './window-events';
-import debounce from './debounce';
+﻿import {autoinject, bindable} from 'aurelia-framework';
+
+import {GoogleCharts} from './google-charts';
+import {WindowEvents} from '../window-events';
+import debounce from '../debounce';
 
 @autoinject
 export class GoogleChart {
@@ -14,6 +14,10 @@ export class GoogleChart {
     private options;
 
     private googleChart = undefined;
+
+    private onWindowResize = debounce(() => {
+        this.updateChart();
+    }, 500);
 
     constructor(private element: Element,
         private googleCharts: GoogleCharts,
@@ -30,25 +34,27 @@ export class GoogleChart {
 
         this.options = this.options || {};
 
-        this.updateChart();
+        this.windowEvents.add('resize', this.onWindowResize);
 
-        this.windowEvents.add('resize', debounce(() => {
-            this.updateChart();
-        }, 500));
+        this.updateChart();
+    }
+
+    unbind() {
+        this.windowEvents.remove('resize', this.onWindowResize);
     }
 
     dataChanged() {
         this.updateChart();
     }
 
-    updateChart() {
+    private updateChart() {
         this.googleChart = this.googleChart || {};
 
         if (typeof (this.googleChart) !== 'undefined' && typeof (this.googleChart.clearChart) === 'function') {
             this.googleChart.clearChart();
         }
 
-        this.googleCharts.load().then(visualization => {
+        this.googleCharts.load().then((visualization: any) => {
             let chartFunc = this.googleCharts[this.chart] || visualization[this.chart];
 
             if (typeof (chartFunc) !== 'function') {

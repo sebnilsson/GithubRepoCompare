@@ -1,7 +1,7 @@
 declare const google: any;
 
 export class GoogleCharts {
-    private loadPromise;
+    private loadPromise: Promise<any>;
 
     constructor() {
         let charts = google ? google.charts : undefined;
@@ -25,7 +25,7 @@ export class GoogleCharts {
         charts.load('current', { packages: ['corechart'] });
     }
 
-    load() {
+    load(): Promise<any> {
         return this.loadPromise;
     }
 }
