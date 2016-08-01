@@ -1,0 +1,84 @@
+﻿<template>
+    <require from="./value-converters/date-format"></require>
+    <require from="./value-converters/date-format-relative"></require>
+    <require from="./value-converters/number-format"></require>
+
+    <div if.bind="coreReset" class="panel panel-info">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                GitHub API Status
+                <button click.trigger="update()" title="Update"
+                        class="btn btn-default btn-xs ${isUpdating ? 'disabled' : ''}">
+                    <span class="glyphicon ${!isUpdating ? 'glyphicon-refresh' : 'glyphicon-hourglass'} ${isUpdating ? 'disabled' : ''}"></span>
+                </button>
+            </h2>
+        </div>
+        <div class="panel-body">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Core</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="progress">
+                            <div class="progress-bar ${coreRemainingPercent <= 25 ? 'progress-bar-danger' : (coreRemainingPercent <= 50 ? 'progress-bar-warning' : 'progress-bar-success')}"
+                                 style.bind="{width: coreRemainingPercent + '%'}"
+                                 title="${coreRemainingPercent + '%'} remaining">
+                                <span class="sr-only">${coreRemaining | numberFormat:'0,0'} / ${coreLimit | numberFormat:'0,0'} remaining</span>
+                            </div>
+                        </div>
+
+                        <span class="glyphicon glyphicon glyphicon-user"></span>
+                        <strong>Limit:</strong>
+                        <code>${coreLimit | numberFormat:'0,0'}</code>
+
+                        <span class="glyphicon glyphicon-credit-card"></span>
+                        <strong>Remaining:</strong>
+                        <code>${coreRemaining | numberFormat:'0,0'}</code>
+                    </div>
+                    <div class="panel-footer">
+                        <span class="glyphicon glyphicon-time"></span>
+                        <strong>Reset:</strong>
+                        <code>
+                            <em>${coreReset | dateFormatRelative}</em>
+                            (${coreReset | dateFormat:'YYYY-MM-DD HH:mm:ss'})
+                        </code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">Search</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="progress">
+                            <div class="progress-bar ${searchRemainingPercent <= 25 ? 'progress-bar-danger' : (searchRemainingPercent <= 50 ? 'progress-bar-warning' : 'progress-bar-success')}"
+                                 style.bind="{width: searchRemainingPercent + '%'}"
+                                 title="${searchRemainingPercent + '%'} remaining">
+                                <span class="sr-only">${searchRemaining | numberFormat:'0,0'} / ${searchLimit | numberFormat:'0,0'} remaining</span>
+                            </div>
+                        </div>
+
+                        <span class="glyphicon glyphicon glyphicon-user"></span>
+                        <strong>Limit:</strong>
+                        <code>${searchLimit | numberFormat:'0,0'}</code>
+
+                        <span class="glyphicon glyphicon-credit-card"></span>
+                        <strong>Remaining:</strong>
+                        <code>${searchRemaining | numberFormat:'0,0'}</code>
+                    </div>
+                    <div class="panel-footer">
+                        <span class="glyphicon glyphicon-time"></span>
+                        <strong>Reset:</strong>
+                        <code>
+                            <em>${searchReset | dateFormatRelative}</em>
+                            (${searchReset | dateFormat:'YYYY-MM-DD HH:mm:ss'})
+                        </code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -71,15 +71,15 @@
                         ${repo.open_issues_count | numberFormat:'0,0'}
                     </td>
                     <td>
-                        <a click.trigger="updateRepo(repo)" title="Update"
+                        <button click.trigger="updateRepo(repo)" title="Update"
                            class="btn btn-info btn-sm ${repo.isUpdating ? 'disabled' : ''}">
                             <span class="glyphicon ${!repo.isUpdating ? 'glyphicon-refresh' : 'glyphicon-hourglass'} ${repo.isUpdating ? 'disabled' : ''}"></span>
-                        </a>
+                        </button>
                         &nbsp;
-                        <a click.trigger="removeRepo(repo)" title="Remove"
+                        <button click.trigger="removeRepo(repo)" title="Remove"
                            class="btn btn-danger btn-sm">
                             <span class="glyphicon glyphicon-trash"></span>
-                        </a>
+                        </button>
                     </td>
                 </tr>
                 </tbody>

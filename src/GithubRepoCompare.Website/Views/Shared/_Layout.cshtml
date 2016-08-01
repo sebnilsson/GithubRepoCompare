@@ -10,11 +10,11 @@
     <title>@title</title>
 
     <environment names="Development">
-        <link rel="stylesheet" href="~/jspm_packages/github/twbs/bootstrap@3.3.6/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/jspm_packages/github/twbs/bootstrap@3.3.7/css/bootstrap.css" />
     </environment>
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
-              asp-fallback-href="~/jspm_packages/github/twbs/bootstrap@3.3.6/css/bootstrap.min.css"
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/jspm_packages/github/twbs/bootstrap@3.3.7/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"/>
     </environment>
 
@@ -32,22 +32,7 @@
             </footer>
         </div>
     </div>
-
-    @*<environment names="Development">
-        <script src="~/jspm_packages/npm/jquery@2.2.4/dist/jquery.js"></script>
-        <script src="~/jspm_packages/github/twbs/bootstrap@3.3.6/js/bootstrap.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.4.min.js"
-                asp-fallback-src="~/jspm_packages/npm/jquery@2.2.4/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"
-                asp-fallback-src="~/jspm_packages/github/twbs/bootstrap@3.3.6/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-        </script>
-    </environment>*@
-
+    
     @RenderSection("scripts", required: false)
 </body>
 </html>

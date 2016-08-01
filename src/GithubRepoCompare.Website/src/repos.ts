@@ -114,27 +114,25 @@ export class Repos {
                         }
                     };
 
+                    let commitActivityPromise = this.gitHubApi.getRepoStatsCommitActivity(fullName)
+                        .then(data => repo.stats.commitActivity = data);
+
+                    let codeFrequencyPromise = this.gitHubApi.getRepoStatsCodeFrequency(fullName)
+                        .then(data => repo.stats.codeFrequency = data);
+
+                    let participationPromise = this.gitHubApi.getRepoStatsParticipation(fullName)
+                        .then(data => repo.stats.participation.all = data.all);
+
+                    let pullRequestsPromise = this.gitHubApi.getRepoPullRequests(fullName)
+                        .then(data => repo.stats.pullRequestsCount = data.total_count);
+
                     return Promise.all([
-                            this.gitHubApi.getRepoPullRequests(fullName),
-                            this.gitHubApi.getRepoStatsCommitActivity(fullName),
-                            this.gitHubApi.getRepoStatsCodeFrequency(fullName),
-                            this.gitHubApi.getRepoStatsParticipation(fullName)
+                            pullRequestsPromise,
+                            commitActivityPromise,
+                            codeFrequencyPromise,
+                            participationPromise
                         ])
-                        .then(values => {
-                            let pullRequests = values[0],
-                                commitActivity = values[1],
-                                codeFrequency = values[2],
-                                participation = values[3];
-
-                            repo.stats.pullRequestsCount = pullRequests.total_count;
-                            repo.stats.commitActivity = commitActivity;
-                            repo.stats.codeFrequency = codeFrequency;
-                            repo.stats.participation = {
-                                all: participation.all
-                            };
-
-                            return repo;
-                        });
+                        .then(() => repo);
                 });
     }
 
