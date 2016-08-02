@@ -57,6 +57,8 @@ export class ChartData {
 
         data.unshift(header);
 
+        this.removeEmptyColumns(data);
+
         return data;
     }
 
@@ -70,5 +72,51 @@ export class ChartData {
         }
 
         return data;
+    }
+
+    private static removeEmptyColumns(data: Array<any>) {
+        let dataHeaders = data[0];
+        let dataHeadersLength = dataHeaders ? dataHeaders.length : 0;
+
+        let dataRows = data.slice(1);
+        let dataRowsLength = dataRows ? dataRows.length : 0;
+
+        if (!dataHeaders || !dataHeadersLength || !dataRows || !dataRowsLength) {
+            return;
+        }
+
+        let emptyColumnIndexes = [];
+
+        for (let i = 0; i < dataHeadersLength; i++) {
+            let hasColumnData;
+
+            for (var j = 0; j < dataRowsLength; j++) {
+                let dataRow = dataRows[j];
+                let dataItem = dataRow ? dataRow[i] : undefined;
+                let dataType = (dataItem !== null) ? (typeof dataItem) : 'undefined';
+
+                if (dataType !== 'undefined') {
+                    hasColumnData = true;
+                    break;
+                }
+            }
+
+            if (!hasColumnData) {
+                emptyColumnIndexes.push(i);
+            }
+        }
+
+        let emptyColumnIndexesLength = emptyColumnIndexes.length;
+
+        let dataLength = data.length;
+
+        for (let i = (emptyColumnIndexesLength - 1); i >= 0; i--) {
+            let emptyColumnIndex = emptyColumnIndexes[i];
+
+            for (let j = 0; j < dataLength; j++) {
+                let dataRow = data[j];
+                dataRow.splice(emptyColumnIndex, 1);
+            }
+        }
     }
 }

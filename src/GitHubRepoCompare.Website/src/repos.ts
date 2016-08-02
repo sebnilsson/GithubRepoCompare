@@ -6,6 +6,9 @@ import {LocalStorage} from "./local-storage";
 
 let localStorageItemsKey = 'gitHubRepos_items';
 
+let repoDataUpdateOutdatedMinutes = 2 * 60;
+let repoDataUpdateOutdated = repoDataUpdateOutdatedMinutes * 60 * 1000; // ms
+
 @autoinject
 export class Repos {
     private _items: Array<any>;
@@ -22,6 +25,8 @@ export class Repos {
         console.log('Repos.constructor');
 
         this._items = localStorage.getJson(localStorageItemsKey, Array) || [];
+
+        //this.updateOutdatedItems();
 
         this.itemsObserver = this.bindingEngine.collectionObserver(this.items);
 
@@ -45,7 +50,7 @@ export class Repos {
     }
 
     contains(fullName: string): boolean {
-        let itemsContains = this.items.findIndex(x => (x.full_name || '').toLowerCase() === fullName.toLowerCase()) >= 0;
+        let itemsContains = this.items.some(x => (x.full_name || '').toLowerCase() === fullName.toLowerCase());
         return itemsContains;
     }
 
@@ -111,7 +116,8 @@ export class Repos {
                             },
                             pullRequests: [],
                             pullRequestsCount: 0
-                        }
+                        },
+                        dataUpdated: new Date()
                     };
 
                     let commitActivityPromise = this.gitHubApi.getRepoStatsCommitActivity(fullName)
@@ -147,6 +153,25 @@ export class Repos {
             }
 
             return (a.name > b.name) ? 1 : 0;
+        });
+    }
+
+    private updateOutdatedItems(): void {
+        let nowTime = new Date().getTime();
+
+        let outdatedItems = this._items
+            .map(x => {
+                let updated = x.dataUpdated ? new Date(x.dataUpdated) : new Date(0);
+                let updatedTime = updated.getTime();
+                let updatedDiff = nowTime - updatedTime;
+
+                return { item: x, updated: updated, updatedTime: updatedTime, updatedDiff: updatedDiff }
+            })
+            .filter(x => x.updatedTime <= 0 || (x.updatedDiff > repoDataUpdateOutdated))
+            .map(x => x.item);
+
+        outdatedItems.forEach(x => {
+            this.update(x);
         });
     }
 }

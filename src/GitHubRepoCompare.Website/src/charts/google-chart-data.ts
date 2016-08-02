@@ -35,8 +35,6 @@ export class GoogleChartData {
             }
         }
 
-        console.log('GoogleChartData.dataDiscrepancy -- dataTypes:', dataTypes);
-
         let everyDataTypeHasValue = dataTypes.every(x => (typeof x !== 'undefined') && x !== null);
         if (!everyDataTypeHasValue) {
             return [];
@@ -76,14 +74,5 @@ export class GoogleChartData {
         this.$modalElement = this.$modalElement || $(this.modalElement);
 
         this.$modalElement.modal('toggle');
-    }
-
-    private isOfTypeOrNull(obj, type): boolean {
-        if (obj === null) {
-            return true;
-        }
-
-        let isOfType = (typeof obj === type);
-        return isOfType;
     }
 }

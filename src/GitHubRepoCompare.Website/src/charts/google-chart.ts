@@ -34,9 +34,7 @@ export class GoogleChart {
         if (typeof (this.chart) === 'undefined' || !this.chart) {
             throw new Error("Chart is not defined.");
         }
-
-        console.log('GoogleChart.bind -- this.debugData:', this.debugData);
-
+        
         this.options = this.options || {};
 
         this.windowEvents.add('resize', this.onWindowResize);
@@ -45,7 +43,6 @@ export class GoogleChart {
     }
 
     dataChanged() {
-        console.log('GoogleChart.dataChanged');
         this.updateChart();
     }
 
