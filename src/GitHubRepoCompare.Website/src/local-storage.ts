@@ -1,4 +1,4 @@
-export class JsonLocalStorage {
+export class LocalStorage {
     private localStorage;
 
     constructor() {
@@ -9,15 +9,15 @@ export class JsonLocalStorage {
         }
     }
 
-    get(key: string, type = undefined) {
+    getJson(key: string, type = undefined) {
         let json = this.localStorage[key];
         let object = (typeof json === 'string') ? JSON.parse(json) : undefined;
         let isValidType = (typeof type === 'undefined' || object instanceof type);
-
+        
         return isValidType ? object : undefined;
     }
 
-    set(key: string, object) {
+    setJson(key: string, object) {
         let json = JSON.stringify(object);
 
         if (typeof json !== 'undefined') {

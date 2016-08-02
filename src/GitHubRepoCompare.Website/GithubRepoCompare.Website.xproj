@@ -15,7 +15,6 @@
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
     <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
-    <TypeScriptTarget>ES6</TypeScriptTarget>
   </PropertyGroup>
   <ItemGroup>
     <DnxInvisibleFolder Include="typings\" />

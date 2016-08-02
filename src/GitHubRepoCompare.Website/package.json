@@ -15,10 +15,10 @@
     "gulp-plumber": "^1.1.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^2.13.6",
-    "jspm": "^0.16.41",
+    "jspm": "^0.16.42",
     "object.assign": "^4.0.4",
     "run-sequence": "^1.2.2",
-    "systemjs": "^0.19.35",
+    "systemjs": "^0.19.36",
     "typescript": "^2.0.0",
     "typings": "^1.3.2",
     "vinyl-paths": "^2.1.0"
@@ -48,5 +48,8 @@
     "postinstall": "npm run jspm-install && npm run typings-install",
     "jspm-install": "./node_modules/.bin/jspm install -y",
     "typings-install": "./node_modules/.bin/typings install"
+  },
+  "dependencies": {
+    "@types/es6-promise": "0.0.28"
   }
 }

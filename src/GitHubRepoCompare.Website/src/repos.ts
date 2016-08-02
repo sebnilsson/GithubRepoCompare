@@ -2,7 +2,7 @@
 
 import {Alerts} from './alerts';
 import {GitHubApi} from './git-hub/git-hub-api';
-import {JsonLocalStorage} from "./json-local-storage";
+import {LocalStorage} from "./local-storage";
 
 let localStorageItemsKey = 'gitHubRepos_items';
 
@@ -18,10 +18,10 @@ export class Repos {
     constructor(private alerts: Alerts,
         private bindingEngine: BindingEngine,
         private gitHubApi: GitHubApi,
-        private jsonLocalStorage: JsonLocalStorage) {
+        private localStorage: LocalStorage) {
         console.log('Repos.constructor');
 
-        this._items = jsonLocalStorage.get(localStorageItemsKey, Array) || [];
+        this._items = localStorage.getJson(localStorageItemsKey, Array) || [];
 
         this.itemsObserver = this.bindingEngine.collectionObserver(this.items);
 
@@ -29,7 +29,7 @@ export class Repos {
     }
 
     add(fullName: string): Promise<any> {
-        var loadPromise = this.loadRepo(fullName);
+        let loadPromise = this.loadRepo(fullName);
 
         loadPromise
             .then(
@@ -68,7 +68,7 @@ export class Repos {
     update(repo): Promise<any> {
         let fullName = repo.full_name;
 
-        var loadPromise = this.loadRepo(fullName);
+        let loadPromise = this.loadRepo(fullName);
 
         loadPromise.then(data => {
             let index = this.items.indexOf(repo);
@@ -137,7 +137,7 @@ export class Repos {
     }
 
     private setStoredItems(): void {
-        this.jsonLocalStorage.set(localStorageItemsKey, this.items);
+        this.localStorage.setJson(localStorageItemsKey, this.items);
     }
 
     private sort(): void {

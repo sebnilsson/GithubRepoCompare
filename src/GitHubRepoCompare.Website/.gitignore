@@ -1,3 +1,4 @@
+!build/
 wwwroot/dist/
 wwwroot/lib/
 wwwroot/jspm_packages/

@@ -11,7 +11,12 @@
     <div class="modal" ref="modalElement">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
+                <div if.bind="dataDiscrepancy.length" class="modal-body">
+                    <h2>Data discrepancy</h2>
+                    <pre><code>${dataDiscrepancy | jsonFormat}</code></pre>
+                </div>
                 <div class="modal-body">
+                    <h2>Data</h2>
                     <pre><code>${data | jsonFormat}</code></pre>
                 </div>
             </div>

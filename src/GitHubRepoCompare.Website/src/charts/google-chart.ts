@@ -1,28 +1,29 @@
 ﻿import {autoinject, bindable} from 'aurelia-framework';
 
-import {GoogleCharts} from './google-charts';
+import {GoogleChartsBootstrapper} from './google-charts-bootstrapper';
 import {WindowEvents} from '../window-events';
 import debounce from '../debounce';
 
 @autoinject
 export class GoogleChart {
     @bindable
-    private chart;
+    chart;
     @bindable
-    private data;
+    data;
     @bindable
-    private options;
+    options;
     @bindable
-    private debugData: boolean;
+    debugData: boolean;
 
     private googleChart = undefined;
     private googleChartsElement;
 
     private onWindowResize = debounce(() => {
-        this.updateChart();
-    }, 500);
+            this.updateChart();
+        },
+        500);
 
-    constructor(private googleCharts: GoogleCharts,
+    constructor(private googleChartsBootstrapper: GoogleChartsBootstrapper,
         private windowEvents: WindowEvents) {
     }
 
@@ -59,18 +60,22 @@ export class GoogleChart {
             this.googleChart.clearChart();
         }
 
-        this.googleCharts.load().then((visualization: any) => {
-            let chartFunc = this.googleCharts[this.chart] || visualization[this.chart];
+        this.googleChartsBootstrapper.load()
+            .then((resolve: any) => {
+                let charts = resolve.charts;
+                let visualization = resolve.visualization;
 
-            if (typeof (chartFunc) !== 'function') {
-                throw new Error(`Could not find function in google.visualization named '${this.chart}'.`);
-            }
+                let chartFunc = charts[this.chart] || visualization[this.chart];
 
-            this.googleChart = new chartFunc(this.googleChartsElement);
+                if (typeof (chartFunc) !== 'function') {
+                    throw new Error(`Could not find function in google.visualization named '${this.chart}'.`);
+                }
 
-            let dataTable = visualization.arrayToDataTable(this.data);
+                this.googleChart = new chartFunc(this.googleChartsElement);
 
-            this.googleChart.draw(dataTable, this.options);
-        });
+                let dataTable = visualization.arrayToDataTable(this.data);
+
+                this.googleChart.draw(dataTable, this.options);
+            });
     }
 }

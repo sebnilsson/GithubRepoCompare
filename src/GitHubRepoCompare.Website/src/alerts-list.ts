@@ -11,8 +11,8 @@ export class AlertsList {
         return this.alerts.items;
     }
 
-    bind() {
-        this.alerts.addInfo('Test-info');
-        this.alerts.addWarning('Test-warning', 10000);
-    }
+    //bind() {
+    //    this.alerts.addInfo('Test-info');
+    //    this.alerts.addWarning('Test-warning', 10000);
+    //}
 }
