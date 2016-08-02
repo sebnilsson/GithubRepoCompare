@@ -54,7 +54,7 @@ export class Repos {
         return itemsContains;
     }
 
-    remove(repo): void {
+    remove(repo) {
         let repoIndex = this.items.indexOf(repo);
         if (repoIndex >= 0) {
             this.items.splice(repoIndex, 1);
@@ -142,11 +142,11 @@ export class Repos {
                 });
     }
 
-    private setStoredItems(): void {
+    private setStoredItems() {
         this.localStorage.setJson(localStorageItemsKey, this.items);
     }
 
-    private sort(): void {
+    private sort() {
         this.items.sort((a, b) => {
             if (a.name < b.name) {
                 return -1;
@@ -156,7 +156,7 @@ export class Repos {
         });
     }
 
-    private updateOutdatedItems(): void {
+    private updateOutdatedItems() {
         let nowTime = new Date().getTime();
 
         let outdatedItems = this._items

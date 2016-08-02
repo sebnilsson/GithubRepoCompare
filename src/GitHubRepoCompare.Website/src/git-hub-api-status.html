@@ -40,7 +40,7 @@
                         <span class="glyphicon glyphicon-time"></span>
                         <strong>Reset:</strong>
                         <code>
-                            <em>${coreReset | dateFormatRelative}</em>
+                            <em>${coreReset | dateFormatRelative & signal:'reset-signal'}</em>
                             (${coreReset | dateFormat:'YYYY-MM-DD HH:mm:ss'})
                         </code>
                     </div>
@@ -73,7 +73,7 @@
                         <span class="glyphicon glyphicon-time"></span>
                         <strong>Reset:</strong>
                         <code>
-                            <em>${searchReset | dateFormatRelative}</em>
+                            <em>${searchReset | dateFormatRelative & signal:'reset-signal'}</em>
                             (${searchReset | dateFormat:'YYYY-MM-DD HH:mm:ss'})
                         </code>
                     </div>

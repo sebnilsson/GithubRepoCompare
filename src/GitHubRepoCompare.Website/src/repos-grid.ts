@@ -1,14 +1,20 @@
 ﻿import {autoinject, computedFrom} from 'aurelia-framework';
+import {BindingSignaler} from 'aurelia-templating-resources';
+import * as $ from 'jquery';
 
 import {Alerts} from './alerts';
 import {Repos} from './repos';
 
+let repoDataUpdateOutdatedMinutes = 1 * 60;
+let repoDataUpdateOutdated = repoDataUpdateOutdatedMinutes * 60 * 1000; // ms
+
 @autoinject
 export class ReposGrid {
-    private isRepoLoading;
-    private repoFullName;
+    private isRepoLoading: boolean;
+    private repoFullName: string;
+    private outdatedSignalIntervalId: number;
 
-    constructor(private alerts: Alerts, private repos: Repos) {}
+    constructor(private alerts: Alerts, private bindingSignaler: BindingSignaler, private repos: Repos) {}
 
     @computedFrom('repoFullName', 'repos.items.length')
     get isRepoFullNameValid(): boolean {
@@ -18,6 +24,11 @@ export class ReposGrid {
 
         let isValid = /.+\/.+/.test(this.repoFullName) && !this.repos.contains(this.repoFullName);
         return isValid;
+    }
+
+    attached() {
+        this.outdatedSignalIntervalId =
+            setInterval(() => this.bindingSignaler.signal('outdated-signal'), 10000);
     }
 
     bind() {
@@ -35,6 +46,10 @@ export class ReposGrid {
         }
     }
 
+    detached() {
+        clearInterval(this.outdatedSignalIntervalId);
+    }
+
     addRepo(fullName) {
         if (!this.isRepoFullNameValid) {
             return;
@@ -44,42 +59,68 @@ export class ReposGrid {
 
         this.repos.add(fullName)
             .then(() => {
-                this.repoFullName = '';
-            }, response => {
-                let json = response.json();
+                    this.repoFullName = '';
+                },
+                response => {
+                    let json = response.json();
 
-                json.then(data => {
-                    let message = `Failed loading repository '${fullName}': ${(data || {}).message || ''}`;
+                    json.then(data => {
+                        let message = `Failed loading repository '${fullName}': ${(data || {}).message || ''}`;
 
-                    this.alerts.addDanger(message);
-                });
-            })
+                        this.alerts.addDanger(message);
+                    });
+                })
             .then(() => {
                 this.isRepoLoading = false;
             });
     }
 
+    isRepoOutdated(repo) {
+        let nowTime = (new Date()).getTime();
+
+        let updated = repo.dataUpdated ? new Date(repo.dataUpdated) : new Date(0);
+        let updatedTime = updated.getTime();
+        let updatedDiff = nowTime - updatedTime;
+
+        let isOutdated = updatedTime <= 0 || updatedDiff > repoDataUpdateOutdated;
+        return isOutdated;
+    }
+
+    toogleCollapse(collapsible) {
+        collapsible.isShown = !collapsible.isShown;
+
+        let $collapsible = $(collapsible);
+
+        // TODO: Import Bootstrap
+        $collapsible['collapse']('toggle');
+    }
+
     removeRepo(repo) {
-        this.repos.remove(repo);
+        let isConfirmed = confirm(`Are you sure you want to remove '${repo.full_name}'?`);
+
+        if (isConfirmed) {
+            this.repos.remove(repo);
+        }
     }
 
     updateRepo(repo) {
         if (repo.isUpdating) {
             return;
         }
-        
+
         repo.isUpdating = true;
 
-        this.repos.update(repo).then(() => {},
-            response => {
-                let json = response.json();
+        this.repos.update(repo)
+            .then(() => {},
+                response => {
+                    let json = response.json();
 
-                json.then(data => {
-                    let message = `Failed updating repository '${repo.full_name}': ${(data || {}).message || ''}`;
+                    json.then(data => {
+                        let message = `Failed updating repository '${repo.full_name}': ${(data || {}).message || ''}`;
 
-                    this.alerts.addDanger(message);
+                        this.alerts.addDanger(message);
+                    });
                 });
-            });
 
         repo.isUpdating = false;
     }

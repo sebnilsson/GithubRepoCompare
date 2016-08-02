@@ -6,10 +6,12 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
+
   map: {
     "aurelia-bootstrapper": "npm:aurelia-bootstrapper@1.0.0",
     "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0",
     "aurelia-framework": "npm:aurelia-framework@1.0.1",
+    "aurelia-templating-resources": "npm:aurelia-templating-resources@1.0.0",
     "babel": "npm:babel-core@6.11.4",
     "babel-runtime": "npm:babel-runtime@6.11.6",
     "bootstrap": "github:twbs/bootstrap@3.3.7",

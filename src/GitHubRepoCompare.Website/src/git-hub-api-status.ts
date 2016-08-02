@@ -1,4 +1,5 @@
 ﻿import {autoinject, computedFrom, Disposable} from 'aurelia-framework';
+import {BindingSignaler} from 'aurelia-templating-resources';
 
 import {GitHubApi, GitHubApiRateLimit} from './git-hub/git-hub-api';
 
@@ -10,13 +11,12 @@ export class GitHubApiStatus {
     private _searchLimit: number;
     private _searchRemaining: number;
     private _searchReset: Date;
-    private cancelRateLimitCoreChangeSubscription: () => void;
-    private cancelRateLimitSearchChangeSubscription: () => void;
+    private cancelCoreRateLimitChangeSubscription: () => void;
+    private cancelSearchRateLimitChangeSubscription: () => void;
+    private resetRelativeIntervalId: number;
     private isUpdating: boolean = false;
 
-    constructor(private gitHubApi: GitHubApi) {
-        this.update();
-    }
+    constructor(private bindingSignaler: BindingSignaler, private gitHubApi: GitHubApi) {}
 
     @computedFrom('_coreLimit')
     get coreLimit(): number {
@@ -60,16 +60,27 @@ export class GitHubApiStatus {
         return this._searchReset;
     }
 
+    attached() {
+        this.resetRelativeIntervalId =
+            setInterval(() => this.bindingSignaler.signal('reset-signal'), 5000);
+    }
+
     bind() {
-        this.cancelRateLimitCoreChangeSubscription =
+        this.update();
+
+        this.cancelCoreRateLimitChangeSubscription =
             this.gitHubApi.rateLimitChangeCore.subscribe(limit => this.onRateLimitCoreChange(limit));
-        this.cancelRateLimitSearchChangeSubscription =
+        this.cancelSearchRateLimitChangeSubscription =
             this.gitHubApi.rateLimitChangeSearch.subscribe(limit => this.onRateLimitSearchChange(limit));
     }
 
+    detached() {
+        clearInterval(this.resetRelativeIntervalId);
+    }
+
     undbind() {
-        this.cancelRateLimitCoreChangeSubscription();
-        this.cancelRateLimitSearchChangeSubscription();
+        this.cancelCoreRateLimitChangeSubscription();
+        this.cancelSearchRateLimitChangeSubscription();
     }
 
     update() {
@@ -87,16 +98,15 @@ export class GitHubApiStatus {
                 this.onRateLimitCoreChange(coreLimit);
             })
             .then(() => { this.isUpdating = false; });
-
     }
 
-    private onRateLimitCoreChange(limit: GitHubApiRateLimit): void {
+    private onRateLimitCoreChange(limit: GitHubApiRateLimit) {
         this._coreLimit = limit.limit;
         this._coreRemaining = limit.remaining;
         this._coreReset = limit.reset;
     }
 
-    private onRateLimitSearchChange(limit: GitHubApiRateLimit): void {
+    private onRateLimitSearchChange(limit: GitHubApiRateLimit) {
         this._searchLimit = limit.limit;
         this._searchRemaining = limit.remaining;
         this._searchReset = limit.reset;

@@ -1,5 +1,6 @@
 ﻿<template>
     <require from="./value-converters/date-format"></require>
+    <require from="./value-converters/date-format-relative"></require>
     <require from="./value-converters/number-format"></require>
 
     <div class="panel panel-primary">
@@ -38,6 +39,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                <!-- title="Updated ${repo.dataUpdated | dateFormatRelative} (${repo.dataUpdated | dateFormat:'YYYY-MM-DD HH:mm:ss'})" -->
                 <tr repeat.for="repo of repos.items">
                     <td>
                         <a href.one-time="repo.html_url">
@@ -71,15 +73,29 @@
                         ${repo.open_issues_count | numberFormat:'0,0'}
                     </td>
                     <td>
-                        <button click.trigger="updateRepo(repo)" title="Update"
-                           class="btn btn-info btn-sm ${repo.isUpdating ? 'disabled' : ''}">
+                        <button click.trigger="updateRepo(repo)" title="Update (Last: ${repo.dataUpdated | dateFormatRelative})"
+                                class="btn btn-sm ${isRepoOutdated(repo) ? 'btn-warning' : 'btn-success' & signal:'outdated-signal'} ${repo.isUpdating ? 'disabled' : ''}">
                             <span class="glyphicon ${!repo.isUpdating ? 'glyphicon-refresh' : 'glyphicon-hourglass'} ${repo.isUpdating ? 'disabled' : ''}"></span>
                         </button>
                         &nbsp;
                         <button click.trigger="removeRepo(repo)" title="Remove"
-                           class="btn btn-danger btn-sm">
+                                class="btn btn-danger btn-sm">
                             <span class="glyphicon glyphicon-trash"></span>
                         </button>
+                        &nbsp;
+                        <button click.trigger="toogleCollapse(collapsible)" class="btn btn-link btn-xs">
+                            <span class="glyphicon ${collapsible.isShown ? 'glyphicon-chevron-up' : 'glyphicon-chevron-down'}"></span>
+                        </button>
+                        <div ref="collapsible" class="collapse">
+                            <small>
+                                <strong>Updated:</strong>
+                                <code>
+                                    <em>${repo.dataUpdated | dateFormatRelative}</em>
+                                    <br />
+                                    (${repo.dataUpdated | dateFormat:'YYYY-MM-DD HH:mm:ss'})
+                                </code>
+                            </small>
+                        </div>
                     </td>
                 </tr>
                 </tbody>

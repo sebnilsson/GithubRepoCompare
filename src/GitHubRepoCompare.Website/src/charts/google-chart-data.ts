@@ -70,7 +70,7 @@ export class GoogleChartData {
     private $modalElement;
     private modalElement;
 
-    debugChartData(): void {
+    debugChartData() {
         this.$modalElement = this.$modalElement || $(this.modalElement);
 
         this.$modalElement.modal('toggle');
