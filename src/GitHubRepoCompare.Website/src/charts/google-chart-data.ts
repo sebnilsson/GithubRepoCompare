@@ -7,7 +7,7 @@ export class GoogleChartData {
     data: Array<any>;
 
     @computedFrom('data')
-    get dataDiscrepancy() : Array<any> {
+    get dataDiscrepancy(): Array<any> {
         let dataHeaders = this.data[0];
         let dataHeadersLength = dataHeaders ? dataHeaders.length : 0;
 
@@ -65,14 +65,5 @@ export class GoogleChartData {
         discrepancy.unshift(dataHeaders);
 
         return discrepancy;
-    }
-
-    private $modalElement;
-    private modalElement;
-
-    debugChartData() {
-        this.$modalElement = this.$modalElement || $(this.modalElement);
-
-        this.$modalElement.modal('toggle');
     }
 }

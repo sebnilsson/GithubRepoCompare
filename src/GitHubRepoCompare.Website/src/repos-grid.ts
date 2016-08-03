@@ -86,15 +86,6 @@ export class ReposGrid {
         return isOutdated;
     }
 
-    toogleCollapse(collapsible) {
-        collapsible.isShown = !collapsible.isShown;
-
-        let $collapsible = $(collapsible);
-
-        // TODO: Import Bootstrap
-        $collapsible['collapse']('toggle');
-    }
-
     removeRepo(repo) {
         let isConfirmed = confirm(`Are you sure you want to remove '${repo.full_name}'?`);
 
@@ -120,8 +111,9 @@ export class ReposGrid {
 
                         this.alerts.addDanger(message);
                     });
-                });
-
-        repo.isUpdating = false;
+                })
+            .then(() => {
+                repo.isUpdating = false;
+            });
     }
 }
