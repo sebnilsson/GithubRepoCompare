@@ -1,4 +1,4 @@
-﻿export default function throttle(fn: Function, threshhold: number = 250, scope) {
+﻿export default function throttle(fn: Function, threshhold: number = 250, scope = undefined) {
     let last: number,
         timer: number;
 
@@ -11,9 +11,10 @@
             clearTimeout(timer);
 
             timer = setTimeout(() => {
-                last = now;
-                fn.apply(context, args);
-            }, threshhold);
+                    last = now;
+                    fn.apply(context, args);
+                },
+                threshhold);
         } else {
             last = now;
             fn.apply(context, args);

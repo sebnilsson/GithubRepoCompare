@@ -8,7 +8,8 @@
         clearTimeout(timer);
 
         timer = setTimeout(() => {
-            fn.apply(context, args);
-        }, delay);
+                fn.apply(context, args);
+            },
+            delay);
     };
 }

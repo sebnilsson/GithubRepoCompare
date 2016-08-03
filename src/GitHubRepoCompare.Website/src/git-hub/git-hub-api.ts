@@ -6,6 +6,9 @@ import {ObservableEvent} from '../observable-event';
 
 @autoinject
 export class GitHubApi {
+    clientId: string;
+    clientSecret: string;
+
     rateLimitChangeCore = new ObservableEvent<GitHubApiRateLimit>();
     rateLimitChangeSearch = new ObservableEvent<GitHubApiRateLimit>();
 
@@ -18,7 +21,7 @@ export class GitHubApi {
     }
 
     getRateLimit(): Promise<any> {
-        return this.http.fetch('rate_limit')
+        return this.httpFetch('rate_limit')
             .then(response => response.json());
     }
 
@@ -64,7 +67,7 @@ export class GitHubApi {
     }
 
     private httpFetchRateLimited(uri: string, observable: ObservableEvent<GitHubApiRateLimit>): Promise<any> {
-        let fetchPromise = this.http.fetch(uri);
+        let fetchPromise = this.httpFetch(uri);
 
         fetchPromise.then(response => {
             let rateLimitLimit = response.headers.get('X-RateLimit-Limit') as string;
@@ -82,13 +85,32 @@ export class GitHubApi {
 
         return fetchPromise;
     }
+
+    private httpFetch(uri: string) {
+        let httpFetchUri = this.getHttpFetchUri(uri);
+
+        return this.http.fetch(httpFetchUri);
+    }
+
+    private getHttpFetchUri(uri: string) {
+        let hasOAuthCredentials = !!this.clientId && !!this.clientSecret;
+        if (!hasOAuthCredentials) {
+            return uri;
+        }
+
+        let separator = (uri.indexOf('?') >= 0) ? '&' : '?';
+        let oAuthCredentials = `client_id=${this.clientId}&client_secret=${this.clientSecret}`;
+
+        let oAuthUri = `${uri}${separator}${oAuthCredentials}`;
+        return oAuthUri;
+    }
 }
 
 export class GitHubApiRateLimit {
-    private _reset: Date = new Date(0);
+    private _reset: Date;
 
     constructor(private _limit: number, private _remaining: number, private __reset: number) {
-        this._reset.setUTCSeconds(__reset);
+        this._reset = new Date(__reset * 1000);
     }
 
     get limit(): number {

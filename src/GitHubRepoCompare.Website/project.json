@@ -41,8 +41,7 @@
     "preserveCompilationContext": true,
     "compile": {
       "exclude": [
-        "node_modules",
-        "jspm_packages"
+        "node_modules"
       ]
     }
   },
@@ -67,7 +66,7 @@
   },
 
   "scripts": {
-    "prepublish": [ "npm install", "gulp build" ],
+    "prepublish": [ "npm install", "gulp build", "gulp bundle" ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   },
 

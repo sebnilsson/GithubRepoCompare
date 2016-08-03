@@ -2,12 +2,18 @@
 import {BindingSignaler} from 'aurelia-templating-resources';
 
 import {GitHubApi, GitHubApiRateLimit} from './git-hub/git-hub-api';
+import {LocalStorage} from "./local-storage";
+
+let localStorageOAuthClientIdKey = 'GitHubApiStatus_oauthClientId';
+let localStorageOAuthClientSecretKey = 'GitHubApiStatus_oauthClientSecret';
 
 @autoinject
 export class GitHubApiStatus {
     private _coreLimit: number;
     private _coreRemaining: number;
     private _coreReset: Date;
+    private _oauthClientId: string;
+    private _oauthClientSecret: string;
     private _searchLimit: number;
     private _searchRemaining: number;
     private _searchReset: Date;
@@ -16,7 +22,10 @@ export class GitHubApiStatus {
     private resetRelativeIntervalId: number;
     private isUpdating: boolean = false;
 
-    constructor(private bindingSignaler: BindingSignaler, private gitHubApi: GitHubApi) {}
+    constructor(private bindingSignaler: BindingSignaler,
+        private gitHubApi: GitHubApi,
+        private localStorage: LocalStorage) {
+    }
 
     @computedFrom('_coreLimit')
     get coreLimit(): number {
@@ -37,6 +46,32 @@ export class GitHubApiStatus {
     @computedFrom('_coreReset')
     get coreReset(): Date {
         return this._coreReset;
+    }
+
+    @computedFrom('_oauthClientId')
+    get oauthClientId() {
+        return this._oauthClientId;
+    }
+
+    set oauthClientId(value) {
+        this._oauthClientId = value;
+
+        this.gitHubApi.clientId = this._oauthClientId;
+
+        this.localStorage.setJson(localStorageOAuthClientIdKey, this._oauthClientId);
+    }
+
+    @computedFrom('_oauthClientSecret')
+    get oauthClientSecret() {
+        return this._oauthClientSecret;
+    }
+
+    set oauthClientSecret(value) {
+        this._oauthClientSecret = value;
+
+        this.gitHubApi.clientSecret = this._oauthClientSecret;
+
+        this.localStorage.setJson(localStorageOAuthClientSecretKey, this._oauthClientSecret);
     }
 
     @computedFrom('_searchLimit')
@@ -66,6 +101,9 @@ export class GitHubApiStatus {
     }
 
     bind() {
+        this.oauthClientId = this.localStorage.getJson(localStorageOAuthClientIdKey);
+        this.oauthClientSecret = this.localStorage.getJson(localStorageOAuthClientSecretKey);
+
         this.update();
 
         this.cancelCoreRateLimitChangeSubscription =

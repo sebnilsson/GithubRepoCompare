@@ -4,7 +4,7 @@ import {Alerts} from './alerts';
 import {GitHubApi} from './git-hub/git-hub-api';
 import {LocalStorage} from "./local-storage";
 
-let localStorageItemsKey = 'gitHubRepos_items';
+let localStorageItemsKey = 'Repos_items';
 
 let repoDataUpdateOutdatedMinutes = 2 * 60;
 let repoDataUpdateOutdated = repoDataUpdateOutdatedMinutes * 60 * 1000; // ms
