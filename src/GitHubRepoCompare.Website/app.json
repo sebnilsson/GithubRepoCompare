@@ -1,0 +1,13 @@
+﻿{
+  "name": "GitHubRepoCompare.Website",
+  "description": "",
+  "repository": "https://github.com/sebnilsson/GithubRepoCompare",
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs"
+    },
+    {
+      "url": "https://github.com/jincod/dotnet-buildpack"
+    }
+  ]
+}
