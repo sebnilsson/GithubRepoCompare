@@ -1,27 +1,22 @@
-export class LocalStorage {
-    private localStorage;
-
-    constructor() {
-        this.localStorage = window.localStorage;
-
-        if (typeof (window.localStorage) === 'undefined') {
-            throw new Error('\'window.localStorage\' is undefined.');
-        }
-    }
-
-    getJson(key: string, type = undefined) {
-        let json = this.localStorage[key];
+export module LocalStorage {
+    export function getJson(key: string, fallbackValue: any = undefined, type: any = undefined) {
+        let json = window.localStorage[key];
         let object = (typeof json === 'string') ? JSON.parse(json) : undefined;
         let isValidType = (typeof type === 'undefined' || object instanceof type);
-        
-        return isValidType ? object : undefined;
+
+        return (isValidType ? object : fallbackValue) || fallbackValue;
     }
 
-    setJson(key: string, object) {
+    export function setJson(key: string, object) {
+        if (typeof object === 'undefined') {
+            window.localStorage[key] = undefined;
+            return;
+        }
+
         let json = JSON.stringify(object);
 
         if (typeof json !== 'undefined') {
-            this.localStorage[key] = json;
+            window.localStorage[key] = json;
         }
     }
 }

@@ -18,12 +18,7 @@ export class ReposGrid {
 
     @computedFrom('repoFullName', 'repos.items.length')
     get isRepoFullNameValid(): boolean {
-        if (!this.repoFullName) {
-            return false;
-        }
-
-        let isValid = /.+\/.+/.test(this.repoFullName) && !this.repos.contains(this.repoFullName);
-        return isValid;
+        return this.getIsRepoFullNameValid(this.repoFullName);
     }
 
     attached() {
@@ -32,26 +27,15 @@ export class ReposGrid {
     }
 
     bind() {
-        if (!this.repos.items.length) {
-            this.addRepo('facebook/react');
-            //this.addRepo('jquery/jquery');
-            this.addRepo('aurelia/framework');
-            this.addRepo('angular/angular');
-        }
-
-        let defaultRepoFullName = 'emberjs/ember.js';
-
-        if (!this.repos.contains(defaultRepoFullName)) {
-            this.repoFullName = defaultRepoFullName;
-        }
+        this.addDefaultRepos();
     }
 
     detached() {
         clearInterval(this.outdatedSignalIntervalId);
     }
 
-    addRepo(fullName) {
-        if (!this.isRepoFullNameValid) {
+    addRepo(fullName: string) {
+        if (!this.getIsRepoFullNameValid(fullName)) {
             return;
         }
 
@@ -115,5 +99,38 @@ export class ReposGrid {
             .then(() => {
                 repo.isUpdating = false;
             });
+    }
+
+    private addDefaultRepos() {
+        let defaultRepoFullName = 'emberjs/ember.js';
+
+        if (!this.repos.items.length) {
+            Promise.all([
+                    this.addRepo('facebook/react'),
+                    //this.addRepo('jquery/jquery'),
+                    this.addRepo('aurelia/framework'),
+                    this.addRepo('angular/angular')
+                ])
+                .then(() => {
+                    this.setDefaultRepoFullName(defaultRepoFullName);
+                });
+        } else {
+            this.setDefaultRepoFullName(defaultRepoFullName);
+        }
+    }
+
+    private setDefaultRepoFullName(defaultRepoFullName) {
+        if (!this.repos.contains(defaultRepoFullName)) {
+            this.repoFullName = defaultRepoFullName;
+        }
+    }
+
+    private getIsRepoFullNameValid(fullName: string): boolean {
+        if (!fullName) {
+            return false;
+        }
+
+        let isValid = /.+\/.+/.test(fullName) && !this.repos.contains(fullName);
+        return isValid;
     }
 }

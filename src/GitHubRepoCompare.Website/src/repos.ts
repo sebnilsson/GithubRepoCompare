@@ -1,18 +1,18 @@
-﻿import {autoinject, BindingEngine, Disposable} from 'aurelia-framework';
+﻿import {EventAggregator} from 'aurelia-event-aggregator';
+import {autoinject, BindingEngine} from 'aurelia-framework';
 
 import {Alerts} from './alerts';
+import debounce from './debounce';
 import {GitHubApi} from './git-hub/git-hub-api';
 import {LocalStorage} from "./local-storage";
 
-let localStorageItemsKey = 'Repos_items';
+let localStorageItemsKey = 'Repos.items';
 
-let repoDataUpdateOutdatedMinutes = 2 * 60;
-let repoDataUpdateOutdated = repoDataUpdateOutdatedMinutes * 60 * 1000; // ms
+export const reposItemsChangedEvent = 'ReposItemsChanged';
 
 @autoinject
 export class Repos {
     private _items: Array<any>;
-    private itemsObserver;
 
     get items(): Array<any> {
         return this._items;
@@ -20,17 +20,27 @@ export class Repos {
 
     constructor(private alerts: Alerts,
         private bindingEngine: BindingEngine,
-        private gitHubApi: GitHubApi,
-        private localStorage: LocalStorage) {
+        private ea: EventAggregator,
+        private gitHubApi: GitHubApi) {
         console.log('Repos.constructor');
 
-        this._items = localStorage.getJson(localStorageItemsKey, Array) || [];
+        this._items = LocalStorage.getJson(localStorageItemsKey, [], Array);
 
-        //this.updateOutdatedItems();
+        this.sortItems();
 
-        this.itemsObserver = this.bindingEngine.collectionObserver(this.items);
+        let collectionObserver = this.bindingEngine.collectionObserver(this.items);
 
-        this.sort();
+        let debouncedLocalStorageSet = debounce(this.onItemsChange, 500, this);
+
+        collectionObserver.subscribe(debouncedLocalStorageSet);
+    }
+
+    private onItemsChange() {
+        console.log('Repos.onItemsChange -- this.items:', this.items);
+
+        LocalStorage.setJson(localStorageItemsKey, this.items);
+
+        this.ea.publish(reposItemsChangedEvent, this.items);
     }
 
     add(fullName: string): Promise<any> {
@@ -41,9 +51,7 @@ export class Repos {
                 data => {
                     this.items.push(data);
 
-                    this.sort();
-
-                    this.setStoredItems();
+                    this.sortItems();
                 });
 
         return loadPromise;
@@ -59,15 +67,8 @@ export class Repos {
         if (repoIndex >= 0) {
             this.items.splice(repoIndex, 1);
 
-            this.sort();
-
-            this.setStoredItems();
+            this.sortItems();
         }
-    }
-
-    subscribe(callback: any): Disposable {
-        let subscription = this.itemsObserver.subscribe(callback);
-        return subscription;
     }
 
     update(repo): Promise<any> {
@@ -80,8 +81,6 @@ export class Repos {
 
             this.items.splice(index, 1);
             this.items.splice(index, 0, data);
-
-            this.setStoredItems();
         });
 
         return loadPromise;
@@ -142,36 +141,13 @@ export class Repos {
                 });
     }
 
-    private setStoredItems() {
-        this.localStorage.setJson(localStorageItemsKey, this.items);
-    }
-
-    private sort() {
+    private sortItems() {
         this.items.sort((a, b) => {
             if (a.name < b.name) {
                 return -1;
             }
 
             return (a.name > b.name) ? 1 : 0;
-        });
-    }
-
-    private updateOutdatedItems() {
-        let nowTime = new Date().getTime();
-
-        let outdatedItems = this._items
-            .map(x => {
-                let updated = x.dataUpdated ? new Date(x.dataUpdated) : new Date(0);
-                let updatedTime = updated.getTime();
-                let updatedDiff = nowTime - updatedTime;
-
-                return { item: x, updated: updated, updatedTime: updatedTime, updatedDiff: updatedDiff }
-            })
-            .filter(x => x.updatedTime <= 0 || (x.updatedDiff > repoDataUpdateOutdated))
-            .map(x => x.item);
-
-        outdatedItems.forEach(x => {
-            this.update(x);
         });
     }
 }

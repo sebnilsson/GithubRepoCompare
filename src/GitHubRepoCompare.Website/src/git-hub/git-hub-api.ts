@@ -1,18 +1,17 @@
-﻿import {autoinject, inject} from 'aurelia-framework';
+﻿import {EventAggregator} from 'aurelia-event-aggregator';
 import {HttpClient} from 'aurelia-fetch-client';
+import {autoinject, inject} from 'aurelia-framework';
 import 'fetch';
 
-import {ObservableEvent} from '../observable-event';
+export const gitHubApiCoreLimitChangeEvent = 'GitHubApiCoreLimitChange';
+export const gitHubApiSearchLimitChangeEvent = 'GitHubApiSearchLimitChange';
 
 @autoinject
 export class GitHubApi {
     clientId: string;
     clientSecret: string;
 
-    rateLimitChangeCore = new ObservableEvent<GitHubApiRateLimit>();
-    rateLimitChangeSearch = new ObservableEvent<GitHubApiRateLimit>();
-
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private ea: EventAggregator) {
         this.http.configure(config => {
             config
                 .useStandardConfiguration()
@@ -59,14 +58,14 @@ export class GitHubApi {
     }
 
     private httpFetchRateLimitedCore(uri: string): Promise<any> {
-        return this.httpFetchRateLimited(uri, this.rateLimitChangeCore);
+        return this.httpFetchRateLimited(uri, gitHubApiCoreLimitChangeEvent);
     }
 
     private httpFetchRateSearchLimited(uri: string): Promise<any> {
-        return this.httpFetchRateLimited(uri, this.rateLimitChangeSearch);
+        return this.httpFetchRateLimited(uri, gitHubApiSearchLimitChangeEvent);
     }
 
-    private httpFetchRateLimited(uri: string, observable: ObservableEvent<GitHubApiRateLimit>): Promise<any> {
+    private httpFetchRateLimited(uri: string, event: any): Promise<any> {
         let fetchPromise = this.httpFetch(uri);
 
         fetchPromise.then(response => {
@@ -80,7 +79,7 @@ export class GitHubApi {
 
             let limit = GitHubApiRateLimit.fromJson(rateLimitLimit, rateLimitRemaining, rateLimitReset);
 
-            observable.trigger(limit);
+            this.ea.publish(event, limit);
         });
 
         return fetchPromise;

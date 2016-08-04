@@ -1,11 +1,10 @@
-﻿import {autoinject, computedFrom, Disposable} from 'aurelia-framework';
+﻿import {EventAggregator} from 'aurelia-event-aggregator';
+import {autoinject, computedFrom} from 'aurelia-framework';
 import {BindingSignaler} from 'aurelia-templating-resources';
 
-import {GitHubApi, GitHubApiRateLimit} from './git-hub/git-hub-api';
-import {LocalStorage} from "./local-storage";
-
-let localStorageOAuthClientIdKey = 'GitHubApiStatus_oauthClientId';
-let localStorageOAuthClientSecretKey = 'GitHubApiStatus_oauthClientSecret';
+import {GitHubApi, GitHubApiRateLimit, gitHubApiCoreLimitChangeEvent, gitHubApiSearchLimitChangeEvent} from
+    './git-hub/git-hub-api';
+import {localStored} from './local-stored';
 
 @autoinject
 export class GitHubApiStatus {
@@ -23,8 +22,8 @@ export class GitHubApiStatus {
     private isUpdating: boolean = false;
 
     constructor(private bindingSignaler: BindingSignaler,
-        private gitHubApi: GitHubApi,
-        private localStorage: LocalStorage) {
+        private ea: EventAggregator,
+        private gitHubApi: GitHubApi) {
     }
 
     @computedFrom('_coreLimit')
@@ -48,30 +47,35 @@ export class GitHubApiStatus {
         return this._coreReset;
     }
 
+    @localStored
     @computedFrom('_oauthClientId')
-    get oauthClientId() {
+    get oauthClientId(): string {
+        console.log('get oauthClientId');
         return this._oauthClientId;
     }
 
     set oauthClientId(value) {
+        console.log('set oauthClientId');
+
         this._oauthClientId = value;
 
-        this.gitHubApi.clientId = this._oauthClientId;
-
-        this.localStorage.setJson(localStorageOAuthClientIdKey, this._oauthClientId);
+        this.gitHubApi.clientId = value;
     }
 
+    @localStored
     @computedFrom('_oauthClientSecret')
     get oauthClientSecret() {
+        console.log('get oauthClientSecret');
+
         return this._oauthClientSecret;
     }
 
     set oauthClientSecret(value) {
+        console.log('set oauthClientSecret');
+
         this._oauthClientSecret = value;
 
-        this.gitHubApi.clientSecret = this._oauthClientSecret;
-
-        this.localStorage.setJson(localStorageOAuthClientSecretKey, this._oauthClientSecret);
+        this.gitHubApi.clientSecret = value;
     }
 
     @computedFrom('_searchLimit')
@@ -96,29 +100,17 @@ export class GitHubApiStatus {
     }
 
     attached() {
+        this.update();
+
+        this.ea.subscribe(gitHubApiCoreLimitChangeEvent, limit => this.onRateLimitCoreChange(limit));
+        this.ea.subscribe(gitHubApiSearchLimitChangeEvent, limit => this.onRateLimitSearchChange(limit));
+
         this.resetRelativeIntervalId =
             setInterval(() => this.bindingSignaler.signal('reset-signal'), 5000);
     }
 
-    bind() {
-        this.oauthClientId = this.localStorage.getJson(localStorageOAuthClientIdKey);
-        this.oauthClientSecret = this.localStorage.getJson(localStorageOAuthClientSecretKey);
-
-        this.update();
-
-        this.cancelCoreRateLimitChangeSubscription =
-            this.gitHubApi.rateLimitChangeCore.subscribe(limit => this.onRateLimitCoreChange(limit));
-        this.cancelSearchRateLimitChangeSubscription =
-            this.gitHubApi.rateLimitChangeSearch.subscribe(limit => this.onRateLimitSearchChange(limit));
-    }
-
     detached() {
         clearInterval(this.resetRelativeIntervalId);
-    }
-
-    undbind() {
-        this.cancelCoreRateLimitChangeSubscription();
-        this.cancelSearchRateLimitChangeSubscription();
     }
 
     update() {

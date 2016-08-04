@@ -1,4 +1,4 @@
-﻿export default function throttle(fn: Function, threshhold: number = 250, scope = undefined) {
+﻿export default function throttle(fn: Function, threshhold: number = 250, scope: any = undefined): (...any) => void {
     let last: number,
         timer: number;
 

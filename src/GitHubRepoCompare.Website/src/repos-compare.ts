@@ -1,13 +1,13 @@
-﻿import {autoinject, computedFrom, Disposable} from 'aurelia-framework';
+﻿import {EventAggregator} from 'aurelia-event-aggregator';
+import {autoinject, computedFrom, Disposable} from 'aurelia-framework';
 
-import {Repos} from './repos';
+import {Repos, reposItemsChangedEvent} from './repos';
 import {ReposChartData} from './charts/repos-chart-data';
 
 @autoinject
 export class ReposCompare {
-    private reposSubscription: Disposable;
-
-    constructor(private repos: Repos, private reposChartData: ReposChartData) {}
+    constructor(private ea: EventAggregator, private repos: Repos, private reposChartData: ReposChartData) {
+    }
 
     get codeFrequencyData() {
         return this.reposChartData.codeFrequency;
@@ -82,13 +82,9 @@ export class ReposCompare {
     }
 
     bind() {
-        this.reposSubscription = this.repos.subscribe(() => this.updateData());
+        this.ea.subscribe(reposItemsChangedEvent, () => this.updateData());
 
         this.updateData();
-    }
-
-    unbind() {
-        this.reposSubscription.dispose();
     }
 
     private getPieChartOptions(title: string) {

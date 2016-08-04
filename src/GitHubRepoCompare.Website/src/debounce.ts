@@ -1,4 +1,4 @@
-﻿export default function debounce(fn: Function, delay: number = 250, scope = undefined) {
+﻿export default function debounce(fn: Function, delay: number = 250, scope: any = undefined): (...any) => void {
     let timer: number;
 
     return function() {

@@ -88,9 +88,9 @@ export class ChartData {
         let emptyColumnIndexes = [];
 
         for (let i = 0; i < dataHeadersLength; i++) {
-            let hasColumnData;
+            let hasColumnData = false;
 
-            for (var j = 0; j < dataRowsLength; j++) {
+            for (let j = 0; j < dataRowsLength; j++) {
                 let dataRow = dataRows[j];
                 let dataItem = dataRow ? dataRow[i] : undefined;
                 let dataType = (dataItem !== null) ? (typeof dataItem) : 'undefined';

@@ -85,7 +85,7 @@
                         </td>
                         <td>
                             <button click.trigger="updateRepo(repo)" title="Update (Last: ${repo.dataUpdated | dateFormatRelative})"
-                                    class="btn btn-sm ${isRepoOutdated(repo) ? 'btn-warning' : 'btn-success' & signal:'outdated-signal'} ${repo.isUpdating ? 'disabled' : ''}">
+                                    class="btn btn-sm ${isRepoOutdated(repo) ? 'btn-warning' : 'btn-success'} ${repo.isUpdating ? 'disabled' : ''}">
                                 <span class="glyphicon ${!repo.isUpdating ? 'glyphicon-refresh' : 'glyphicon-hourglass'} ${repo.isUpdating ? 'disabled' : ''}"></span>
                             </button>
                             &nbsp;
@@ -101,7 +101,7 @@
                                 <small>
                                     <strong>Updated:</strong>
                                     <code>
-                                        <em>${repo.dataUpdated | dateFormatRelative}</em>
+                                        <em>${repo.dataUpdated | dateFormatRelative & signal:'outdated-signal'}</em>
                                         <br/>
                                         (${repo.dataUpdated | dateFormat:'YYYY-MM-DD HH:mm:ss'})
                                     </code>
