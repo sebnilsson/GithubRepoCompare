@@ -19,8 +19,8 @@ export class ModalCustomAttribute {
 
         this.$element.on('click', () => this.onClick());
     }
-
-    unbind() {
+    unbind
+    detached() {
         this.$element.off('click', () => this.onClick());
     }
 

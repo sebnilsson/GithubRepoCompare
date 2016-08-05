@@ -3,6 +3,7 @@ import {BindingSignaler} from 'aurelia-templating-resources';
 import * as $ from 'jquery';
 
 import {Alerts} from './alerts';
+import {localStored, LocalStored} from './local-stored';
 import {Repos} from './repos';
 
 let repoDataUpdateOutdatedMinutes = 1 * 60;
@@ -10,13 +11,29 @@ let repoDataUpdateOutdated = repoDataUpdateOutdatedMinutes * 60 * 1000; // ms
 
 @autoinject
 export class ReposGrid {
+    private _repoFullName: string;
     private isRepoLoading: boolean;
-    private repoFullName: string;
     private outdatedSignalIntervalId: number;
 
-    constructor(private alerts: Alerts, private bindingSignaler: BindingSignaler, private repos: Repos) {}
+    constructor(private alerts: Alerts,
+        private bindingSignaler: BindingSignaler,
+        private localStored: LocalStored,
+        private repos: Repos) {
+        localStored.observe(this, 'collapseShow', true);
+    }
 
-    @computedFrom('repoFullName', 'repos.items.length')
+    collapseShow: boolean;
+
+    @computedFrom('_repoFullName')
+    get repoFullName() {
+        return this._repoFullName;
+    }
+
+    set repoFullName(value) {
+        this._repoFullName = (value || '').trim().toLowerCase();
+    }
+
+    @computedFrom('_repoFullName', 'repos.items.length')
     get isRepoFullNameValid(): boolean {
         return this.getIsRepoFullNameValid(this.repoFullName);
     }

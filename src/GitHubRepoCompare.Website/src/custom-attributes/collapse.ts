@@ -1,4 +1,4 @@
-﻿import {autoinject, bindable, customAttribute} from 'aurelia-framework';
+﻿import {autoinject, bindable, bindingMode, customAttribute} from 'aurelia-framework';
 import * as bootstrap from "bootstrap";
 import * as $ from 'jquery';
 
@@ -9,8 +9,8 @@ export class CollapseCustomAttribute {
     private $target;
     private $icon;
 
-    @bindable
-    show: boolean = false;
+    @bindable({ defaultBindingMode: bindingMode.twoWay, defaultValue: false })
+    show: boolean;
     @bindable
     target;
     @bindable
@@ -27,10 +27,16 @@ export class CollapseCustomAttribute {
         this.$target = $(this.target);
         this.$icon = $(this.icon || this.element);
 
+        if (this.show) {
+            this.$target.collapse('show');
+        } else {
+            this.$target.collapse('hide');
+        }
+
         let defaultIconClass = this.show ? this.iconShowClass : this.iconHideClass;
-        
+
         this.$icon.addClass(defaultIconClass);
-        
+
         this.$element.on('click', () => this.onClick());
     }
 
@@ -43,5 +49,11 @@ export class CollapseCustomAttribute {
 
         this.$icon.toggleClass(this.iconHideClass);
         this.$icon.toggleClass(this.iconShowClass);
+
+        this.show = !this.show;
+    }
+
+    private getDefaultValue() {
+        console.log('CollapseCustomAttribute.getDefaultValue -- arguments: ', arguments);
     }
 }

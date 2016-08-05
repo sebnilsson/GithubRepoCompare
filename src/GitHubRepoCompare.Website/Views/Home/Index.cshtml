@@ -1,9 +1,19 @@
-﻿@section scripts {
+﻿@{
+    const string SystemJsVersion = "0.19.36";
+}
+
+@section scripts {
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-    <script src="~/jspm_packages/system.js"></script>
+    <environment names="Development">
+        <script src="~/jspm_packages/system.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/systemjs/@(SystemJsVersion)/system.js"></script>
+    </environment>
+
     <script src="~/config.js"></script>
-    
+
     <script>
         SystemJS.import('aurelia-bootstrapper');
     </script>

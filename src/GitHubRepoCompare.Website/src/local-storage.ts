@@ -4,7 +4,7 @@ export module LocalStorage {
         let object = (typeof json === 'string') ? JSON.parse(json) : undefined;
         let isValidType = (typeof type === 'undefined' || object instanceof type);
 
-        return (isValidType ? object : fallbackValue) || fallbackValue;
+        return isValidType ? object : fallbackValue;
     }
 
     export function setJson(key: string, object) {

@@ -9,7 +9,7 @@
             <h2 class="panel-title">
                 <button collapse="target.bind: collapseTarget;
                         icon.bind: collapseIcon;
-                        show: true"
+                        show.bind: collapseShow;"
                         class="btn btn-link btn-xs">
                     <span element.ref="collapseIcon" class="glyphicon"></span>
                 </button>
@@ -22,7 +22,7 @@
                 </button>
             </h2>
         </div>
-        <div element.ref="collapseTarget" class="collapse in panel-body">
+        <div element.ref="collapseTarget" class="collapse ${collapseShow ? 'in' : '' & oneTime} panel-body">
             <div class="col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">

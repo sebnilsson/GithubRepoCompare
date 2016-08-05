@@ -1,5 +1,7 @@
 ﻿@{
+    const string BootstrapVersion = "3.3.7";
     const string SiteTitle = "GitHub Repo-compare";
+
     string viewDataTitle = (ViewData["Title"] as string) ?? string.Empty;
     var title = !string.IsNullOrWhiteSpace(viewDataTitle) ? $"{viewDataTitle} - {SiteTitle}" : SiteTitle;
 }<!DOCTYPE html>
@@ -8,9 +10,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@title</title>
-
-    <link rel="stylesheet" href="~/jspm_packages/github/twbs/bootstrap@3.3.7/css/bootstrap.css" />
-
+    
+    <environment names="Development">
+        <link rel="stylesheet" href="~/jspm_packages/github/twbs/bootstrap@("@")@(BootstrapVersion)/css/bootstrap.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/@(BootstrapVersion)/css/bootstrap.min.css" />
+    </environment>
+    
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>

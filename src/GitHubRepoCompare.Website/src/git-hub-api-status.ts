@@ -1,10 +1,10 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
-import {autoinject, computedFrom} from 'aurelia-framework';
+import {autoinject, bindable, computedFrom} from 'aurelia-framework';
 import {BindingSignaler} from 'aurelia-templating-resources';
 
 import {GitHubApi, GitHubApiRateLimit, gitHubApiCoreLimitChangeEvent, gitHubApiSearchLimitChangeEvent} from
     './git-hub/git-hub-api';
-import {localStored} from './local-stored';
+import {localStored, LocalStored} from './local-stored';
 
 @autoinject
 export class GitHubApiStatus {
@@ -23,8 +23,12 @@ export class GitHubApiStatus {
 
     constructor(private bindingSignaler: BindingSignaler,
         private ea: EventAggregator,
-        private gitHubApi: GitHubApi) {
+        private gitHubApi: GitHubApi,
+        private localStored: LocalStored) {
+        localStored.observe(this, 'collapseShow', true);
     }
+
+    collapseShow: boolean;
 
     @computedFrom('_coreLimit')
     get coreLimit(): number {
@@ -47,32 +51,28 @@ export class GitHubApiStatus {
         return this._coreReset;
     }
 
-    @localStored
     @computedFrom('_oauthClientId')
+    @localStored
     get oauthClientId(): string {
         console.log('get oauthClientId');
         return this._oauthClientId;
     }
 
     set oauthClientId(value) {
-        console.log('set oauthClientId');
-
         this._oauthClientId = value;
 
         this.gitHubApi.clientId = value;
     }
 
-    @localStored
     @computedFrom('_oauthClientSecret')
+    @localStored
     get oauthClientSecret() {
         console.log('get oauthClientSecret');
-
         return this._oauthClientSecret;
     }
 
     set oauthClientSecret(value) {
         console.log('set oauthClientSecret');
-
         this._oauthClientSecret = value;
 
         this.gitHubApi.clientSecret = value;
@@ -99,7 +99,7 @@ export class GitHubApiStatus {
         return this._searchReset;
     }
 
-    attached() {
+    private attached() {
         this.update();
 
         this.ea.subscribe(gitHubApiCoreLimitChangeEvent, limit => this.onRateLimitCoreChange(limit));

@@ -9,7 +9,7 @@
             <h2 class="panel-title">
                 <button collapse="target.bind: collapseTarget;
                         icon.bind: collapseIcon;
-                        show: true"
+                        show.bind: collapseShow"
                         class="btn btn-link btn-xs">
                     <span element.ref="collapseIcon" class="glyphicon"></span>
                 </button>
@@ -17,7 +17,7 @@
                 Repositories
             </h2>
         </div>
-        <div element.ref="collapseTarget" class="collapse in">
+        <div element.ref="collapseTarget" class="collapse ${collapseShow ? 'in' : '' & oneTime}">
             <div class="panel-body">
                 <form class="form-inline">
                     <div class="form-group">
