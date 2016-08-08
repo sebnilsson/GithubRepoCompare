@@ -13,7 +13,7 @@ System.config({
     "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0",
     "aurelia-framework": "npm:aurelia-framework@1.0.1",
     "aurelia-templating-resources": "npm:aurelia-templating-resources@1.0.0",
-    "babel": "npm:babel-core@6.11.4",
+    "babel": "npm:babel-core@6.13.2",
     "babel-runtime": "npm:babel-runtime@6.11.6",
     "bootstrap": "github:twbs/bootstrap@3.3.7",
     "core-js": "npm:core-js@2.4.1",
@@ -195,7 +195,7 @@ System.config({
       "esutils": "npm:esutils@2.0.2",
       "js-tokens": "npm:js-tokens@2.0.0"
     },
-    "npm:babel-core@6.11.4": {
+    "npm:babel-core@6.13.2": {
       "babel-code-frame": "npm:babel-code-frame@6.11.0",
       "babel-generator": "npm:babel-generator@6.11.4",
       "babel-helpers": "npm:babel-helpers@6.8.0",
@@ -203,8 +203,8 @@ System.config({
       "babel-register": "npm:babel-register@6.11.6",
       "babel-runtime": "npm:babel-runtime@6.11.6",
       "babel-template": "npm:babel-template@6.9.0",
-      "babel-traverse": "npm:babel-traverse@6.12.0",
-      "babel-types": "npm:babel-types@6.11.1",
+      "babel-traverse": "npm:babel-traverse@6.13.0",
+      "babel-types": "npm:babel-types@6.13.0",
       "babylon": "npm:babylon@6.8.4",
       "convert-source-map": "npm:convert-source-map@1.3.0",
       "debug": "npm:debug@2.2.0",
@@ -227,7 +227,7 @@ System.config({
     "npm:babel-generator@6.11.4": {
       "babel-messages": "npm:babel-messages@6.8.0",
       "babel-runtime": "npm:babel-runtime@6.11.6",
-      "babel-types": "npm:babel-types@6.11.1",
+      "babel-types": "npm:babel-types@6.13.0",
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "detect-indent": "npm:detect-indent@3.0.1",
       "lodash": "npm:lodash@4.14.1",
@@ -242,7 +242,7 @@ System.config({
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
     "npm:babel-register@6.11.6": {
-      "babel-core": "npm:babel-core@6.11.4",
+      "babel-core": "npm:babel-core@6.13.2",
       "babel-runtime": "npm:babel-runtime@6.11.6",
       "core-js": "npm:core-js@2.4.1",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
@@ -260,16 +260,16 @@ System.config({
     },
     "npm:babel-template@6.9.0": {
       "babel-runtime": "npm:babel-runtime@6.11.6",
-      "babel-traverse": "npm:babel-traverse@6.12.0",
-      "babel-types": "npm:babel-types@6.11.1",
+      "babel-traverse": "npm:babel-traverse@6.13.0",
+      "babel-types": "npm:babel-types@6.13.0",
       "babylon": "npm:babylon@6.8.4",
       "lodash": "npm:lodash@4.14.1"
     },
-    "npm:babel-traverse@6.12.0": {
+    "npm:babel-traverse@6.13.0": {
       "babel-code-frame": "npm:babel-code-frame@6.11.0",
       "babel-messages": "npm:babel-messages@6.8.0",
       "babel-runtime": "npm:babel-runtime@6.11.6",
-      "babel-types": "npm:babel-types@6.11.1",
+      "babel-types": "npm:babel-types@6.13.0",
       "babylon": "npm:babylon@6.8.4",
       "debug": "npm:debug@2.2.0",
       "globals": "npm:globals@8.18.0",
@@ -277,9 +277,9 @@ System.config({
       "lodash": "npm:lodash@4.14.1",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:babel-types@6.11.1": {
+    "npm:babel-types@6.13.0": {
       "babel-runtime": "npm:babel-runtime@6.11.6",
-      "babel-traverse": "npm:babel-traverse@6.12.0",
+      "babel-traverse": "npm:babel-traverse@6.13.0",
       "esutils": "npm:esutils@2.0.2",
       "lodash": "npm:lodash@4.14.1",
       "to-fast-properties": "npm:to-fast-properties@1.0.2"

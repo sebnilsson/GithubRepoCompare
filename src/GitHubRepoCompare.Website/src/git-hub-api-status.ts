@@ -4,7 +4,7 @@ import {BindingSignaler} from 'aurelia-templating-resources';
 
 import {GitHubApi, GitHubApiRateLimit, gitHubApiCoreLimitChangeEvent, gitHubApiSearchLimitChangeEvent} from
     './git-hub/git-hub-api';
-import {localStored, LocalStored} from './local-stored';
+import {localStorage, LocalStorageObserver} from './local-storage';
 
 @autoinject
 export class GitHubApiStatus {
@@ -20,14 +20,15 @@ export class GitHubApiStatus {
     private cancelSearchRateLimitChangeSubscription: () => void;
     private resetRelativeIntervalId: number;
     private isUpdating: boolean = false;
-
+    
     constructor(private bindingSignaler: BindingSignaler,
         private ea: EventAggregator,
         private gitHubApi: GitHubApi,
-        private localStored: LocalStored) {
-        localStored.observe(this, 'collapseShow', true);
+        private localStorageObserver: LocalStorageObserver) {
+        this.localStorageObserver.subscribe(this);
     }
 
+    @localStorage({defaultValue: true})
     collapseShow: boolean;
 
     @computedFrom('_coreLimit')
@@ -52,9 +53,8 @@ export class GitHubApiStatus {
     }
 
     @computedFrom('_oauthClientId')
-    @localStored
+    @localStorage()
     get oauthClientId(): string {
-        console.log('get oauthClientId');
         return this._oauthClientId;
     }
 
@@ -65,14 +65,12 @@ export class GitHubApiStatus {
     }
 
     @computedFrom('_oauthClientSecret')
-    @localStored
+    @localStorage
     get oauthClientSecret() {
-        console.log('get oauthClientSecret');
         return this._oauthClientSecret;
     }
 
     set oauthClientSecret(value) {
-        console.log('set oauthClientSecret');
         this._oauthClientSecret = value;
 
         this.gitHubApi.clientSecret = value;
@@ -111,6 +109,8 @@ export class GitHubApiStatus {
 
     detached() {
         clearInterval(this.resetRelativeIntervalId);
+
+        this.localStorageObserver.unsubscribe(this);
     }
 
     update() {

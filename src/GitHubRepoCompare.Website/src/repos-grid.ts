@@ -3,7 +3,7 @@ import {BindingSignaler} from 'aurelia-templating-resources';
 import * as $ from 'jquery';
 
 import {Alerts} from './alerts';
-import {localStored, LocalStored} from './local-stored';
+import {localStorage, LocalStorageObserver} from './local-storage';
 import {Repos} from './repos';
 
 let repoDataUpdateOutdatedMinutes = 1 * 60;
@@ -17,11 +17,12 @@ export class ReposGrid {
 
     constructor(private alerts: Alerts,
         private bindingSignaler: BindingSignaler,
-        private localStored: LocalStored,
+        private localStorageObserver: LocalStorageObserver,
         private repos: Repos) {
-        localStored.observe(this, 'collapseShow', true);
+        this.localStorageObserver.subscribe(this);
     }
 
+    @localStorage({ defaultValue: true })
     collapseShow: boolean;
 
     @computedFrom('_repoFullName')
@@ -49,6 +50,8 @@ export class ReposGrid {
 
     detached() {
         clearInterval(this.outdatedSignalIntervalId);
+
+        this.localStorageObserver.unsubscribe(this);
     }
 
     addRepo(fullName: string) {
