@@ -23,30 +23,6 @@
             </h2>
         </div>
         <div element.ref="collapseTarget" class="collapse ${collapseShow ? 'in' : '' & oneTime} panel-body">
-            <div class="col-xs-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            OAuth credentials <small>(Increase rate limit)</small>
-                        </h3>
-                    </div>
-                    <div class="panel-body">
-                        <form class="form-inline">
-                            <div class="form-group">
-                                <label for="oauth-client-id">Client ID</label>
-                                <input id="oauth-client-id" type="text" placeholder="xxxx"
-                                       value.bind="oauthClientId & debounce:1000" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="oauth-client-secret">Client Secret</label>
-                                <input id="oauth-client-secret" type="text" placeholder="yyyy"
-                                       value.bind="oauthClientSecret & debounce:1000" class="form-control">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
             <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -113,6 +89,37 @@
                             <em>${searchReset | dateFormatRelative & signal:'reset-signal'}</em>
                             (${searchReset | dateFormat:'YYYY-MM-DD HH:mm:ss'})
                         </code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <button collapse="target.bind: credentialsCollapseTarget;
+                                icon.bind: credentialsCollapseIcon;
+                                show.bind: credentialsCollapseShow;"
+                                    class="btn btn-link btn-xs">
+                                <span element.ref="credentialsCollapseIcon" class="glyphicon"></span>
+                            </button>
+
+                            OAuth credentials <small>(Increase rate limit)</small>
+                        </h3>
+                    </div>
+                    <div element.ref="credentialsCollapseTarget" class="panel-body">
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <label for="oauth-client-id">Client ID</label>
+                                <input id="oauth-client-id" type="text" placeholder="xxxx"
+                                       value.bind="oauthClientId & debounce:1000" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="oauth-client-secret">Client Secret</label>
+                                <input id="oauth-client-secret" type="text" placeholder="yyyy"
+                                       value.bind="oauthClientSecret & debounce:1000" class="form-control">
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

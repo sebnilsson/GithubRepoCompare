@@ -61,8 +61,8 @@ export class LocalStorageObserver {
             if (isArray) {
                 let observer = this.bindingEngine.collectionObserver(target[propertyKey]);
 
-                let subscription = observer.subscribe((newValue) =>
-                    this.onObserverItemChange(storageKey, newValue));
+                let subscription = observer.subscribe(() =>
+                    this.onObserverItemChange(storageKey, target[propertyKey]));
 
                 subscriptions.push(subscription);
             } else {

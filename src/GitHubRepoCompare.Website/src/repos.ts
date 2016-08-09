@@ -4,15 +4,16 @@ import {autoinject, BindingEngine} from 'aurelia-framework';
 import {Alerts} from './alerts';
 import debounce from './debounce';
 import {GitHubApi} from './git-hub/git-hub-api';
-import {LocalStorage} from "./local-storage";
+import {localStorage, LocalStorageObserver} from './local-storage';
 
-let localStorageItemsKey = 'Repos.items';
+//let localStorageItemsKey = 'Repos.items';
 
 export const reposItemsChangedEvent = 'ReposItemsChanged';
 
 @autoinject
 export class Repos {
-    private _items: Array<any>;
+    @localStorage
+    private _items: Array<any> = [];
 
     get items(): Array<any> {
         return this._items;
@@ -21,10 +22,10 @@ export class Repos {
     constructor(private alerts: Alerts,
         private bindingEngine: BindingEngine,
         private ea: EventAggregator,
-        private gitHubApi: GitHubApi) {
-        console.log('Repos.constructor');
-
-        this._items = LocalStorage.getJson(localStorageItemsKey, [], Array);
+        private gitHubApi: GitHubApi,
+        private localStorageObserver: LocalStorageObserver) {
+        this.localStorageObserver.subscribe(this);
+        //this._items = LocalStorage.getJson(localStorageItemsKey, [], Array);
 
         this.sortItems();
 
@@ -36,7 +37,7 @@ export class Repos {
     }
 
     private onItemsChange() {
-        LocalStorage.setJson(localStorageItemsKey, this.items);
+        //LocalStorage.setJson(localStorageItemsKey, this.items);
 
         this.ea.publish(reposItemsChangedEvent, this.items);
     }

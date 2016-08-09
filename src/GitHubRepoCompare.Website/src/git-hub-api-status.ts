@@ -20,13 +20,16 @@ export class GitHubApiStatus {
     private cancelSearchRateLimitChangeSubscription: () => void;
     private resetRelativeIntervalId: number;
     private isUpdating: boolean = false;
-    
+
     constructor(private bindingSignaler: BindingSignaler,
         private ea: EventAggregator,
         private gitHubApi: GitHubApi,
         private localStorageObserver: LocalStorageObserver) {
         this.localStorageObserver.subscribe(this);
     }
+
+    @localStorage
+    credentialsCollapseShow: boolean = false;
 
     @localStorage
     collapseShow: boolean = true;

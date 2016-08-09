@@ -1,5 +1,4 @@
 ﻿import {autoinject, bindable, computedFrom} from 'aurelia-framework';
-import * as $ from 'jquery';
 
 @autoinject
 export class GoogleChartData {

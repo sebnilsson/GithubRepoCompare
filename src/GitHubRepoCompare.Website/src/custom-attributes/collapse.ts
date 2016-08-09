@@ -27,6 +27,8 @@ export class CollapseCustomAttribute {
         this.$target = $(this.target);
         this.$icon = $(this.icon || this.element);
 
+        this.$target.addClass('collapse');
+
         if (this.show) {
             this.$target.addClass('in');
         } else {

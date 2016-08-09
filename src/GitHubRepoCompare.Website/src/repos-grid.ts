@@ -1,6 +1,5 @@
 ﻿import {autoinject, computedFrom} from 'aurelia-framework';
 import {BindingSignaler} from 'aurelia-templating-resources';
-import * as $ from 'jquery';
 
 import {Alerts} from './alerts';
 import {localStorage, LocalStorageObserver} from './local-storage';
@@ -56,12 +55,12 @@ export class ReposGrid {
 
     addRepo(fullName: string) {
         if (!this.getIsRepoFullNameValid(fullName)) {
-            return;
+            return Promise.reject(new Error('Invalid repo full-name.'));
         }
 
         this.isRepoLoading = true;
 
-        this.repos.add(fullName)
+        return this.repos.add(fullName)
             .then(() => {
                     this.repoFullName = '';
                 },
