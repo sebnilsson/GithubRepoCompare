@@ -36,8 +36,6 @@ export class Repos {
     }
 
     private onItemsChange() {
-        console.log('Repos.onItemsChange -- this.items:', this.items);
-
         LocalStorage.setJson(localStorageItemsKey, this.items);
 
         this.ea.publish(reposItemsChangedEvent, this.items);

@@ -10,6 +10,8 @@ export class GoogleChartsBootstrapper {
             throw new Error('Google Charts not loaded. \'google.charts\' is not defined.');
         }
 
+        charts.load('current', { packages: ['corechart'] });
+
         this.loadPromise = new Promise(resolve => {
             charts.setOnLoadCallback(() => {
                 let charts = google ? google.charts : undefined;
@@ -27,8 +29,6 @@ export class GoogleChartsBootstrapper {
                 resolve({ charts, visualization });
             });
         });
-
-        charts.load('current', { packages: ['corechart'] });
     }
 
     load(): Promise<any> {

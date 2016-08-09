@@ -28,8 +28,8 @@ export class GitHubApiStatus {
         this.localStorageObserver.subscribe(this);
     }
 
-    @localStorage({defaultValue: true})
-    collapseShow: boolean;
+    @localStorage
+    collapseShow: boolean = true;
 
     @computedFrom('_coreLimit')
     get coreLimit(): number {

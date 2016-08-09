@@ -13,7 +13,7 @@ export interface ILocalStorageProperty {
 export class LocalStorageObserver {
     constructor(private bindingEngine: BindingEngine) {}
 
-    subscribe(target: Object, ...properties: Array<any>) {
+    subscribe(target: Object, prefix?: string, ...properties: Array<any>) {
         if (typeof target === 'undefined') {
             throw new Error('Target cannot be undefined.');
         }
@@ -30,7 +30,7 @@ export class LocalStorageObserver {
             }
         }
 
-        this.ensureProperties(target, targetProperties);
+        this.ensureProperties(target, prefix, targetProperties);
 
         this.setTargetProperties(target, targetProperties);
 
@@ -86,9 +86,13 @@ export class LocalStorageObserver {
         }
     }
 
-    private ensureProperties(target: Object, properties: Array<ILocalStorageProperty>) {
-        for (let targetProperty of properties) {
-            targetProperty.storageKey = targetProperty.storageKey || getStorageKey(target, targetProperty.key);
+    private ensureProperties(target: Object, prefix: string, properties: Array<ILocalStorageProperty>) {
+        for (let property of properties) {
+            property.storageKey = property.storageKey || getStorageKey(target, property.key);
+
+            if (prefix) {
+                property.storageKey = `${prefix}_${property.storageKey}`;
+            }
         }
     }
 
@@ -108,7 +112,7 @@ export class LocalStorageObserver {
 
             if (typeof localStorageValue !== 'undefined') {
                 target[property.key] = localStorageValue;
-            } else if (property.defaultValue !== 'undefined') {
+            } else if (typeof property.defaultValue !== 'undefined') {
                 target[property.key] = property.defaultValue;
             }
         }

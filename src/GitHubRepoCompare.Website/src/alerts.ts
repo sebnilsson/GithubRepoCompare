@@ -7,10 +7,6 @@ export class Alerts {
         return this._items;
     }
 
-    constructor() {
-        console.log('Alerts.constructor');
-    }
-
     addDanger(text: string, timeout?: number) {
         this.add(text, 'danger', timeout);
     }

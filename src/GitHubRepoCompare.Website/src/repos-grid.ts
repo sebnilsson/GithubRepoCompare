@@ -22,8 +22,8 @@ export class ReposGrid {
         this.localStorageObserver.subscribe(this);
     }
 
-    @localStorage({ defaultValue: true })
-    collapseShow: boolean;
+    @localStorage
+    collapseShow: boolean = true;
 
     @computedFrom('_repoFullName')
     get repoFullName() {

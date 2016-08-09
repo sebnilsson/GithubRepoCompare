@@ -28,9 +28,9 @@ export class CollapseCustomAttribute {
         this.$icon = $(this.icon || this.element);
 
         if (this.show) {
-            this.$target.collapse('show');
+            this.$target.addClass('in');
         } else {
-            this.$target.collapse('hide');
+            this.$target.removeClass('in');
         }
 
         let defaultIconClass = this.show ? this.iconShowClass : this.iconHideClass;
@@ -51,9 +51,5 @@ export class CollapseCustomAttribute {
         this.$icon.toggleClass(this.iconShowClass);
 
         this.show = !this.show;
-    }
-
-    private getDefaultValue() {
-        console.log('CollapseCustomAttribute.getDefaultValue -- arguments: ', arguments);
     }
 }
