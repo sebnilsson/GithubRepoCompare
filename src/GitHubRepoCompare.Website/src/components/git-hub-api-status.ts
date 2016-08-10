@@ -1,8 +1,9 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
-import {autoinject, bindable, computedFrom} from 'aurelia-framework';
+import {autoinject, bindable, BindingEngine, computedFrom} from 'aurelia-framework';
 
-import {GitHubApi, GitHubApiEvents, GitHubApiRateLimit} from '../services/git-hub-api';
+import {GitHubApi, GitHubApiCredentials, GitHubApiEvents, GitHubApiRateLimit} from '../services/git-hub-api';
 import {localStorage, LocalStorageObserver} from '../lib/local-storage';
+import debounce from '../lib/debounce';
 
 @autoinject
 export class GitHubApiStatus {
@@ -11,10 +12,20 @@ export class GitHubApiStatus {
 
     private isUpdating: boolean = false;
 
-    constructor(private ea: EventAggregator,
+    constructor(private bindingEngine: BindingEngine,
+        private ea: EventAggregator,
         private gitHubApi: GitHubApi,
+        private gitHubApiCredentials: GitHubApiCredentials,
         private localStorageObserver: LocalStorageObserver) {
         this.localStorageObserver.subscribe(this);
+
+        let clientIdObserver = this.bindingEngine.propertyObserver(this.gitHubApiCredentials, 'clientId');
+        let clientSecretObserver = this.bindingEngine.propertyObserver(this.gitHubApiCredentials, 'clientSecret');
+
+        let debounceUpdate = debounce(() => this.update(), 1000);
+
+        clientIdObserver.subscribe(debounceUpdate);
+        clientSecretObserver.subscribe(debounceUpdate);
     }
 
     @localStorage

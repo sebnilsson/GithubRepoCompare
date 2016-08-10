@@ -3,17 +3,30 @@ import {HttpClient} from 'aurelia-fetch-client';
 import {autoinject, inject} from 'aurelia-framework';
 import 'fetch';
 
+import {localStorage, LocalStorageObserver} from '../lib/local-storage';
+
 export class GitHubApiEvents {
     static coreLimitUpdated = 'GitHubApiEvents.coreLimitUpdated';
     static searchLimitUpdated = 'GitHubApiEvents.coreLimitUpdated';
 }
 
 @autoinject
-export class GitHubApi {
-    clientId: string;
-    clientSecret: string;
+export class GitHubApiCredentials {
+    constructor(private localStorageObserver: LocalStorageObserver) {
+        this.localStorageObserver.subscribe(this);
+    }
 
-    constructor(private http: HttpClient, private ea: EventAggregator) {
+    @localStorage
+    clientId: string;
+    @localStorage
+    clientSecret: string;
+}
+
+@autoinject
+export class GitHubApi {
+    constructor(private credentials: GitHubApiCredentials,
+        private ea: EventAggregator,
+        private http: HttpClient) {
         this.http.configure(config => {
             config
                 .useStandardConfiguration()
@@ -56,48 +69,14 @@ export class GitHubApi {
             .then(response => response.json());
     }
 
-    private httpFetchRateLimitedCore(uri: string): Promise<any> {
-        return this.httpFetchRateLimited(uri, GitHubApiEvents.coreLimitUpdated);
-    }
-
-    private httpFetchRateSearchLimited(uri: string): Promise<any> {
-        return this.httpFetchRateLimited(uri, GitHubApiEvents.searchLimitUpdated);
-    }
-
-    private httpFetchRateLimited(uri: string, event: any): Promise<any> {
-        let fetchPromise = this.httpFetch(uri);
-
-        fetchPromise.then(response => {
-            let rateLimitLimit = response.headers.get('X-RateLimit-Limit') as string;
-            let rateLimitRemaining = response.headers.get('X-RateLimit-Remaining') as string;
-            let rateLimitReset = response.headers.get('X-RateLimit-Reset') as string;
-
-            if (!rateLimitLimit || !rateLimitReset) {
-                return;
-            }
-
-            let limit = GitHubApiRateLimit.fromJson(rateLimitLimit, rateLimitRemaining, rateLimitReset);
-
-            this.ea.publish(event, limit);
-        });
-
-        return fetchPromise;
-    }
-
-    private httpFetch(uri: string) {
-        let httpFetchUri = this.getHttpFetchUri(uri);
-
-        return this.http.fetch(httpFetchUri);
-    }
-
     private getHttpFetchUri(uri: string): string {
-        let hasOAuthCredentials = !!this.clientId && !!this.clientSecret;
+        let hasOAuthCredentials = !!this.credentials.clientId && !!this.credentials.clientSecret;
         if (!hasOAuthCredentials) {
             return uri;
         }
 
         let separator = (uri.indexOf('?') >= 0) ? '&' : '?';
-        let oAuthCredentials = `client_id=${this.clientId}&client_secret=${this.clientSecret}`;
+        let oAuthCredentials = `client_id=${this.credentials.clientId}&client_secret=${this.credentials.clientSecret}`;
 
         let oAuthUri = `${uri}${separator}${oAuthCredentials}`;
         return oAuthUri;
@@ -119,6 +98,43 @@ export class GitHubApi {
 
         let qs = qsParams.join('&');
         return qs;
+    }
+
+    private handleFetchResponse(response) {
+        let rateLimitLimit = response.headers.get('X-RateLimit-Limit') as string;
+        let rateLimitRemaining = response.headers.get('X-RateLimit-Remaining') as string;
+        let rateLimitReset = response.headers.get('X-RateLimit-Reset') as string;
+
+        if (!rateLimitLimit || !rateLimitReset) {
+            return;
+        }
+
+        let limit = GitHubApiRateLimit.fromJson(rateLimitLimit, rateLimitRemaining, rateLimitReset);
+
+        this.ea.publish(event, limit);
+    }
+
+    private httpFetchRateLimitedCore(uri: string): Promise<any> {
+        return this.httpFetchRateLimited(uri, GitHubApiEvents.coreLimitUpdated);
+    }
+
+    private httpFetchRateSearchLimited(uri: string): Promise<any> {
+        return this.httpFetchRateLimited(uri, GitHubApiEvents.searchLimitUpdated);
+    }
+
+    private httpFetchRateLimited(uri: string, event: any): Promise<any> {
+        let fetchPromise = this.httpFetch(uri);
+
+        fetchPromise.then(response => this.handleFetchResponse(response),
+            response => this.handleFetchResponse(response));
+
+        return fetchPromise;
+    }
+
+    private httpFetch(uri: string) {
+        let httpFetchUri = this.getHttpFetchUri(uri);
+
+        return this.http.fetch(httpFetchUri);
     }
 }
 
