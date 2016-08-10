@@ -1,9 +1,8 @@
 ﻿import {autoinject, computedFrom} from 'aurelia-framework';
-import {BindingSignaler} from 'aurelia-templating-resources';
 
-import {Alerts} from './alerts';
-import {localStorage, LocalStorageObserver} from './local-storage';
-import {Repos} from './repos';
+import {Alerts} from '../services/alerts';
+import {localStorage, LocalStorageObserver} from '../lib/local-storage';
+import {Repos} from '../services/repos';
 
 let repoDataUpdateOutdatedMinutes = 1 * 60;
 let repoDataUpdateOutdated = repoDataUpdateOutdatedMinutes * 60 * 1000; // ms
@@ -12,10 +11,8 @@ let repoDataUpdateOutdated = repoDataUpdateOutdatedMinutes * 60 * 1000; // ms
 export class ReposGrid {
     private _repoFullName: string;
     private isRepoLoading: boolean;
-    private outdatedSignalIntervalId: number;
 
     constructor(private alerts: Alerts,
-        private bindingSignaler: BindingSignaler,
         private localStorageObserver: LocalStorageObserver,
         private repos: Repos) {
         this.localStorageObserver.subscribe(this);
@@ -37,19 +34,12 @@ export class ReposGrid {
     get isRepoFullNameValid(): boolean {
         return this.getIsRepoFullNameValid(this.repoFullName);
     }
-
-    attached() {
-        this.outdatedSignalIntervalId =
-            setInterval(() => this.bindingSignaler.signal('outdated-signal'), 10000);
-    }
-
+    
     bind() {
         this.addDefaultRepos();
     }
 
     detached() {
-        clearInterval(this.outdatedSignalIntervalId);
-
         this.localStorageObserver.unsubscribe(this);
     }
 

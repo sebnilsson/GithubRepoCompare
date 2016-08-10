@@ -1,7 +1,7 @@
 import {autoinject} from 'aurelia-framework';
 
-import {ChartData} from './chart-data';
-import {Repos} from '../repos';
+import {ChartDataUtility} from './chart-data-utility';
+import {Repos} from './repos';
 
 @autoinject
 export class ReposChartData {
@@ -102,7 +102,7 @@ export class ReposChartData {
     //}
 
     private getCodeFrequency() {
-        let data = ChartData.getLineChartData(this.repos.items,
+        let data = ChartDataUtility.getLineChartData(this.repos.items,
             'Week',
             repo => repo.stats.codeFrequency,
             (i, item) => {
@@ -128,7 +128,7 @@ export class ReposChartData {
     }
 
     private getCommitActivity() {
-        let data = ChartData.getLineChartData(this.repos.items,
+        let data = ChartDataUtility.getLineChartData(this.repos.items,
             'Week',
             repo => repo.stats.commitActivity,
             (i, item) => {
@@ -155,7 +155,7 @@ export class ReposChartData {
         let headers = ['Name', 'Forks'];
         let rowFactory = (repo => [repo.full_name, repo.forks_count || 0]);
 
-        let data = ChartData.getPieChartData(this.repos.items, headers, rowFactory);
+        let data = ChartDataUtility.getPieChartData(this.repos.items, headers, rowFactory);
         return data;
     }
 
@@ -163,12 +163,12 @@ export class ReposChartData {
         let headers = ['Name', 'Open Issues'];
         let rowFactory = (repo => [repo.full_name, repo.open_issues_count || 0]);
 
-        let data = ChartData.getPieChartData(this.repos.items, headers, rowFactory);
+        let data = ChartDataUtility.getPieChartData(this.repos.items, headers, rowFactory);
         return data;
     }
 
     private getParticipation() {
-        let data = ChartData.getLineChartData(this.repos.items,
+        let data = ChartDataUtility.getLineChartData(this.repos.items,
             'Week',
             repo => ((repo.stats.participation || {}).all) || [],
             (i, item) => {
@@ -184,7 +184,7 @@ export class ReposChartData {
         let headers = ['Name', 'Pull Requests'];
         let rowFactory = (repo => [repo.full_name, repo.stats.pullRequestsCount || 0]);
 
-        let data = ChartData.getPieChartData(this.repos.items, headers, rowFactory);
+        let data = ChartDataUtility.getPieChartData(this.repos.items, headers, rowFactory);
         return data;
     }
 
@@ -192,7 +192,7 @@ export class ReposChartData {
         let headers = ['Name', 'Size'];
         let rowFactory = (repo => [repo.full_name, repo.size || 0]);
 
-        let data = ChartData.getPieChartData(this.repos.items, headers, rowFactory);
+        let data = ChartDataUtility.getPieChartData(this.repos.items, headers, rowFactory);
         return data;
     }
 
@@ -200,7 +200,7 @@ export class ReposChartData {
         let headers = ['Name', 'Subscribers'];
         let rowFactory = (repo => [repo.full_name, repo.subscribers_count || 0]);
 
-        let data = ChartData.getPieChartData(this.repos.items, headers, rowFactory);
+        let data = ChartDataUtility.getPieChartData(this.repos.items, headers, rowFactory);
         return data;
     }
 
@@ -208,7 +208,7 @@ export class ReposChartData {
         let headers = ['Name', 'Watchers'];
         let rowFactory = (repo => [repo.full_name, repo.watchers_count || 0]);
 
-        let data = ChartData.getPieChartData(this.repos.items, headers, rowFactory);
+        let data = ChartDataUtility.getPieChartData(this.repos.items, headers, rowFactory);
         return data;
     }
 }

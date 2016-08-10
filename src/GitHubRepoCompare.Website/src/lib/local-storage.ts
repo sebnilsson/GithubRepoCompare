@@ -13,7 +13,7 @@ export interface ILocalStorageProperty {
 export class LocalStorageObserver {
     constructor(private bindingEngine: BindingEngine) {}
 
-    subscribe(target: Object, prefix?: string, ...properties: Array<any>) {
+    subscribe(target: Object, prefix?: string, properties?: Array<ILocalStorageProperty> | Array<string>) {
         if (typeof target === 'undefined') {
             throw new Error('Target cannot be undefined.');
         }

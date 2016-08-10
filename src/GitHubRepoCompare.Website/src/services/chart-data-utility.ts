@@ -1,4 +1,4 @@
-export class ChartData {
+export class ChartDataUtility {
     static getLineChartData(
         repos: Array<any>,
         yHeaderTitle: string,

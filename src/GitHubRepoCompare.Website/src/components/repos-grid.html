@@ -1,8 +1,8 @@
 ﻿<template>
-    <require from="./value-converters/date-format"></require>
+    <!--<require from="./value-converters/date-format"></require>
     <require from="./value-converters/date-format-relative"></require>
     <require from="./value-converters/number-format"></require>
-    <require from="./custom-attributes/collapse"></require>
+    <require from="./custom-attributes/collapse"></require>-->
 
     <div class="panel panel-info">
         <div class="panel-heading">
@@ -50,7 +50,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- title="Updated ${repo.dataUpdated | dateFormatRelative} (${repo.dataUpdated | dateFormat:'YYYY-MM-DD HH:mm:ss'})" -->
                     <tr repeat.for="repo of repos.items">
                         <td>
                             <a href.one-time="repo.html_url">
@@ -84,8 +83,9 @@
                             ${repo.open_issues_count | numberFormat:'0,0'}
                         </td>
                         <td>
-                            <button click.trigger="updateRepo(repo)" title="Update (Last: ${repo.dataUpdated | dateFormatRelative})"
-                                    class="btn btn-sm ${isRepoOutdated(repo) ? 'btn-warning' : 'btn-success'} ${repo.isUpdating ? 'disabled' : ''}">
+                            <button click.trigger="updateRepo(repo)"
+                                    title="Update (Last: ${repo.dataUpdated | dateFormatRelative & signal:'date-format-relative'})"
+                                    class="btn btn-sm ${isRepoOutdated(repo) ? 'btn-warning' : 'btn-success' & signal:'date-format-relative'} ${repo.isUpdating ? 'disabled' : ''}">
                                 <span class="glyphicon ${!repo.isUpdating ? 'glyphicon-refresh' : 'glyphicon-hourglass'} ${repo.isUpdating ? 'disabled' : ''}"></span>
                             </button>
                             &nbsp;
@@ -94,7 +94,7 @@
                                 <span class="glyphicon glyphicon-trash"></span>
                             </button>
                             &nbsp;
-                            <button collapse="target.bind: collapseTarget; icon.bind: collapseIcon; show.bind: repo.collapseShow" 
+                            <button collapse="target.bind: collapseTarget; icon.bind: collapseIcon; show.bind: repo.collapseShow"
                                     class="btn btn-link btn-xs">
                                 <span element.ref="collapseIcon" class="glyphicon"></span>
                             </button>
@@ -102,7 +102,7 @@
                                 <small>
                                     <strong>Updated:</strong>
                                     <code>
-                                        <em>${repo.dataUpdated | dateFormatRelative & signal:'outdated-signal'}</em>
+                                        <em>${repo.dataUpdated | dateFormatRelative & signal:'date-format-relative'}</em>
                                         <br/>
                                         (${repo.dataUpdated | dateFormat:'YYYY-MM-DD HH:mm:ss'})
                                     </code>

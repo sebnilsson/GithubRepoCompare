@@ -3,8 +3,10 @@ import {HttpClient} from 'aurelia-fetch-client';
 import {autoinject, inject} from 'aurelia-framework';
 import 'fetch';
 
-export const gitHubApiCoreLimitChangeEvent = 'GitHubApiCoreLimitChange';
-export const gitHubApiSearchLimitChangeEvent = 'GitHubApiSearchLimitChange';
+export class GitHubApiEvents {
+    static coreLimitUpdated = 'GitHubApiEvents.coreLimitUpdated';
+    static searchLimitUpdated = 'GitHubApiEvents.coreLimitUpdated';
+}
 
 @autoinject
 export class GitHubApi {
@@ -29,11 +31,8 @@ export class GitHubApi {
             .then(response => response.json());
     }
 
-    getRepoPullRequests(fullName: string, state: string = undefined): Promise<any> {
-        let stateQs = state ? `is:${state}` : '';
-        let qs = [stateQs].join('&');
-
-        return this.httpFetchRateSearchLimited(`search/issues?q=repo:${fullName}+is:pr+${qs}`)
+    getRepoPullRequests(fullName: string): Promise<any> {
+        return this.httpFetchRateSearchLimited(`search/issues?q=repo:${fullName}+type:pr`)
             .then(response => response.json());
     }
 
@@ -58,11 +57,11 @@ export class GitHubApi {
     }
 
     private httpFetchRateLimitedCore(uri: string): Promise<any> {
-        return this.httpFetchRateLimited(uri, gitHubApiCoreLimitChangeEvent);
+        return this.httpFetchRateLimited(uri, GitHubApiEvents.coreLimitUpdated);
     }
 
     private httpFetchRateSearchLimited(uri: string): Promise<any> {
-        return this.httpFetchRateLimited(uri, gitHubApiSearchLimitChangeEvent);
+        return this.httpFetchRateLimited(uri, GitHubApiEvents.searchLimitUpdated);
     }
 
     private httpFetchRateLimited(uri: string, event: any): Promise<any> {
@@ -91,7 +90,7 @@ export class GitHubApi {
         return this.http.fetch(httpFetchUri);
     }
 
-    private getHttpFetchUri(uri: string) {
+    private getHttpFetchUri(uri: string): string {
         let hasOAuthCredentials = !!this.clientId && !!this.clientSecret;
         if (!hasOAuthCredentials) {
             return uri;
@@ -102,6 +101,24 @@ export class GitHubApi {
 
         let oAuthUri = `${uri}${separator}${oAuthCredentials}`;
         return oAuthUri;
+    }
+
+    private getQueryString(query: Object): string {
+        let qsParams = [];
+
+        if (query) {
+            for (let key in query) {
+                if (query.hasOwnProperty(key)) {
+                    let value = query[key];
+
+                    let qsParam = `${key}=${value}`;
+                    qsParams.push(qsParam);
+                }
+            }
+        }
+
+        let qs = qsParams.join('&');
+        return qs;
     }
 }
 

@@ -2,11 +2,9 @@
 import {autoinject, BindingEngine} from 'aurelia-framework';
 
 import {Alerts} from './alerts';
-import debounce from './debounce';
-import {GitHubApi} from './git-hub/git-hub-api';
-import {localStorage, LocalStorageObserver} from './local-storage';
-
-//let localStorageItemsKey = 'Repos.items';
+import debounce from '../lib/debounce';
+import {GitHubApi} from './git-hub-api';
+import {localStorage, LocalStorageObserver} from '../lib/local-storage';
 
 export const reposItemsChangedEvent = 'ReposItemsChanged';
 
@@ -25,7 +23,6 @@ export class Repos {
         private gitHubApi: GitHubApi,
         private localStorageObserver: LocalStorageObserver) {
         this.localStorageObserver.subscribe(this);
-        //this._items = LocalStorage.getJson(localStorageItemsKey, [], Array);
 
         this.sortItems();
 
@@ -34,12 +31,6 @@ export class Repos {
         let debouncedLocalStorageSet = debounce(this.onItemsChange, 500, this);
 
         collectionObserver.subscribe(debouncedLocalStorageSet);
-    }
-
-    private onItemsChange() {
-        //LocalStorage.setJson(localStorageItemsKey, this.items);
-
-        this.ea.publish(reposItemsChangedEvent, this.items);
     }
 
     add(fullName: string): Promise<any> {
@@ -138,6 +129,10 @@ export class Repos {
                         ])
                         .then(() => repo);
                 });
+    }
+
+    private onItemsChange() {
+        this.ea.publish(reposItemsChangedEvent, this.items);
     }
 
     private sortItems() {

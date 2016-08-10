@@ -1,8 +1,8 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
 import {autoinject, computedFrom, Disposable} from 'aurelia-framework';
 
-import {Repos, reposItemsChangedEvent} from './repos';
-import {ReposChartData} from './charts/repos-chart-data';
+import {Repos, reposItemsChangedEvent} from '../services/repos';
+import {ReposChartData} from '../services/repos-chart-data';
 
 @autoinject
 export class ReposCompare {

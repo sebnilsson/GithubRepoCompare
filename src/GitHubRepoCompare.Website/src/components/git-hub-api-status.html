@@ -1,0 +1,38 @@
+﻿<template>
+    <require from="./git-hub-api-status/git-hub-api-limit"></require>
+    <require from="./git-hub-api-status/git-hub-api-credentials"></require>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                <button collapse="target.bind: collapseTarget;
+                        icon.bind: collapseIcon;
+                        show.bind: collapseShow;"
+                        class="btn btn-link btn-xs">
+                    <span element.ref="collapseIcon" class="glyphicon"></span>
+                </button>
+
+                GitHub API Status
+
+                <button click.trigger="update()" title="Update"
+                        class="btn btn-default btn-xs ${isUpdating ? 'disabled' : ''}">
+                    <span class="glyphicon ${!isUpdating ? 'glyphicon-refresh' : 'glyphicon-hourglass'} ${isUpdating ? 'disabled' : ''}"></span>
+                </button>
+            </h2>
+        </div>
+
+        <div element.ref="collapseTarget" class="collapse ${collapseShow ? 'in' : '' & oneTime} panel-body">
+            <div class="col-md-6">
+                <git-hub-api-limit if.bind="coreLimit" title.one-time="'Core'" api-limit.bind="coreLimit"></git-hub-api-limit>
+            </div>
+
+            <div class="col-md-6">
+                <git-hub-api-limit if.bind="searchLimit" title.one-time="'Search'" api-limit.bind="searchLimit"></git-hub-api-limit>
+            </div>
+
+            <div class="col-md-12">
+                <git-hub-api-credentials></git-hub-api-credentials>
+            </div>
+        </div>
+    </div>
+</template>

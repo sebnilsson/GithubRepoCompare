@@ -1,0 +1,36 @@
+﻿<template>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">${title}</h3>
+        </div>
+
+        <div class="panel-body">
+            <div class="progress">
+                <div class="progress-bar ${remainingPercent <= 25 ? 'progress-bar-danger' : (remainingPercent <= 50 ? 'progress-bar-warning' : 'progress-bar-success')}"
+                     style.bind="{width: remainingPercent + '%'}"
+                     title="${remainingPercent + '%'} remaining">
+                    <span class="sr-only">${remaining | numberFormat:'0,0'} / ${limit | numberFormat:'0,0'} remaining</span>
+                </div>
+            </div>
+
+            <div>
+                <span class="glyphicon glyphicon glyphicon-piggy-bank"></span>
+                <strong>Limit:</strong>
+                <code>${limit | numberFormat:'0,0'}</code>
+
+                <span class="glyphicon glyphicon-glyphicon-stats"></span>
+                <strong>Remaining:</strong>
+                <code>${remaining | numberFormat:'0,0'}</code>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <span class="glyphicon glyphicon-hourglass"></span>
+            <strong>Reset:</strong>
+            <code>
+                <em>${reset | dateFormatRelative & signal:'date-format-relative'}</em>
+                (${reset | dateFormat:'YYYY-MM-DD HH:mm:ss'})
+            </code>
+        </div>
+    </div>
+</template>

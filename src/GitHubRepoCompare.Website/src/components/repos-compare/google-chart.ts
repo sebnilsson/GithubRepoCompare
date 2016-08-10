@@ -1,8 +1,8 @@
 ﻿import {autoinject, bindable} from 'aurelia-framework';
 
-import {GoogleChartsBootstrapper} from './google-charts-bootstrapper';
-import {WindowEvents} from '../window-events';
-import debounce from '../debounce';
+import {GoogleChartsBootstrapper} from '../../lib/google-charts-bootstrapper';
+import {WindowEvents} from '../../lib/window-events';
+import debounce from '../../lib/debounce';
 
 @autoinject
 export class GoogleChart {

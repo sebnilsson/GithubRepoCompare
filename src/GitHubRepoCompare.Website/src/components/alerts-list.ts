@@ -1,6 +1,6 @@
 ﻿import {autoinject, computedFrom} from 'aurelia-framework';
 
-import {Alerts} from './alerts';
+import {Alerts} from '../services/alerts';
 
 @autoinject
 export class AlertsList {
