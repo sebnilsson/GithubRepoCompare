@@ -1,31 +1,52 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
 import {HttpClient} from 'aurelia-fetch-client';
-import {autoinject, inject} from 'aurelia-framework';
+import {autoinject, computedFrom} from 'aurelia-framework';
 import 'fetch';
 
 import {localStorage, LocalStorageObserver} from '../lib/local-storage';
-
-export class GitHubApiEvents {
-    static coreLimitUpdated = 'GitHubApiEvents.coreLimitUpdated';
-    static searchLimitUpdated = 'GitHubApiEvents.coreLimitUpdated';
-}
+import {GitHubApiRateLimit, GitHubApiRateLimits} from './git-hub-api-rate-limits';
 
 @autoinject
 export class GitHubApiCredentials {
-    constructor(private localStorageObserver: LocalStorageObserver) {
+    static changeEvent = 'GitHubApiCredentials';
+
+    private _clientId: string;
+    private _clientSecret: string;
+
+    constructor(private ea: EventAggregator,
+        private localStorageObserver: LocalStorageObserver) {
         this.localStorageObserver.subscribe(this);
     }
 
+    @computedFrom('_clientId')
     @localStorage
-    clientId: string;
+    get clientId(): string {
+        return this._clientId;
+    }
+
+    set clientId(value: string) {
+        this._clientId = value;
+
+        this.ea.publish(GitHubApiCredentials.changeEvent);
+    }
+
+    @computedFrom('_clientSecret')
     @localStorage
-    clientSecret: string;
+    get clientSecret(): string {
+        return this._clientSecret;
+    }
+
+    set clientSecret(value: string) {
+        this._clientSecret = value;
+
+        this.ea.publish(GitHubApiCredentials.changeEvent);
+    }
 }
 
 @autoinject
 export class GitHubApi {
     constructor(private credentials: GitHubApiCredentials,
-        private ea: EventAggregator,
+        private rateLimits: GitHubApiRateLimits,
         private http: HttpClient) {
         this.http.configure(config => {
             config
@@ -34,18 +55,13 @@ export class GitHubApi {
         });
     }
 
-    getRateLimit(): Promise<any> {
-        return this.httpFetch('rate_limit')
-            .then(response => response.json());
-    }
-
     getRepo(fullName: string): Promise<any> {
         return this.httpFetchRateLimitedCore(`repos/${fullName}`)
             .then(response => response.json());
     }
 
     getRepoPullRequests(fullName: string): Promise<any> {
-        return this.httpFetchRateSearchLimited(`search/issues?q=repo:${fullName}+type:pr`)
+        return this.httpFetchRateLimitedSearch(`search/issues?q=repo:${fullName}+type:pr`)
             .then(response => response.json());
     }
 
@@ -69,6 +85,21 @@ export class GitHubApi {
             .then(response => response.json());
     }
 
+    updateRateLimit(): Promise<any> {
+        let fetchPromise = this.httpFetch('rate_limit')
+            .then(response => response.json());
+
+        fetchPromise.then(data => {
+            let core: GitHubApiRateLimit = data.resources.core;
+            let search: GitHubApiRateLimit = data.resources.search;
+
+            this.rateLimits.core.updateFromApi(core);
+            this.rateLimits.search.updateFromApi(search);
+        });
+
+        return fetchPromise;
+    }
+
     private getHttpFetchUri(uri: string): string {
         let hasOAuthCredentials = !!this.credentials.clientId && !!this.credentials.clientSecret;
         if (!hasOAuthCredentials) {
@@ -82,86 +113,65 @@ export class GitHubApi {
         return oAuthUri;
     }
 
-    private getQueryString(query: Object): string {
-        let qsParams = [];
+    //private getQueryString(query: Object): string {
+    //    let qsParams = [];
 
-        if (query) {
-            for (let key in query) {
-                if (query.hasOwnProperty(key)) {
-                    let value = query[key];
+    //    if (query) {
+    //        for (let key in query) {
+    //            if (query.hasOwnProperty(key)) {
+    //                let value = query[key];
 
-                    let qsParam = `${key}=${value}`;
-                    qsParams.push(qsParam);
-                }
-            }
-        }
+    //                let qsParam = `${key}=${value}`;
+    //                qsParams.push(qsParam);
+    //            }
+    //        }
+    //    }
 
-        let qs = qsParams.join('&');
-        return qs;
+    //    let qs = qsParams.join('&');
+    //    return qs;
+    //}
+
+    private getResponseHeaderNumber(response, key: string): number {
+        let value = response.headers.get(key);
+        let num = value ? parseInt(value, 10) : undefined;
+
+        return num || 0;
     }
 
-    private handleFetchResponse(response) {
-        let rateLimitLimit = response.headers.get('X-RateLimit-Limit') as string;
-        let rateLimitRemaining = response.headers.get('X-RateLimit-Remaining') as string;
-        let rateLimitReset = response.headers.get('X-RateLimit-Reset') as string;
+    private handleFetchResponse(response, rateLimit: GitHubApiRateLimit) {
+        let rateLimitLimit = this.getResponseHeaderNumber(response, 'X-RateLimit-Limit');
+        let rateLimitRemaining = this.getResponseHeaderNumber(response, 'X-RateLimit-Remaining');
+        let rateLimitReset = this.getResponseHeaderNumber(response, 'X-RateLimit-Reset');
 
-        if (!rateLimitLimit || !rateLimitReset) {
-            return;
-        }
+        let apiData = {
+            limit: rateLimitLimit,
+            remaining: rateLimitRemaining,
+            reset: rateLimitReset
+        };
 
-        let limit = GitHubApiRateLimit.fromJson(rateLimitLimit, rateLimitRemaining, rateLimitReset);
+        rateLimit.updateFromApi(apiData);
+    }
 
-        this.ea.publish(event, limit);
+    private httpFetchRateLimited(uri: string, rateLimit: GitHubApiRateLimit): Promise<any> {
+        let fetchPromise = this.httpFetch(uri);
+
+        fetchPromise.then(response => this.handleFetchResponse(response, rateLimit),
+            response => this.handleFetchResponse(response, rateLimit));
+
+        return fetchPromise;
     }
 
     private httpFetchRateLimitedCore(uri: string): Promise<any> {
-        return this.httpFetchRateLimited(uri, GitHubApiEvents.coreLimitUpdated);
+        return this.httpFetchRateLimited(uri, this.rateLimits.core);
     }
 
-    private httpFetchRateSearchLimited(uri: string): Promise<any> {
-        return this.httpFetchRateLimited(uri, GitHubApiEvents.searchLimitUpdated);
-    }
-
-    private httpFetchRateLimited(uri: string, event: any): Promise<any> {
-        let fetchPromise = this.httpFetch(uri);
-
-        fetchPromise.then(response => this.handleFetchResponse(response),
-            response => this.handleFetchResponse(response));
-
-        return fetchPromise;
+    private httpFetchRateLimitedSearch(uri: string): Promise<any> {
+        return this.httpFetchRateLimited(uri, this.rateLimits.search);
     }
 
     private httpFetch(uri: string) {
         let httpFetchUri = this.getHttpFetchUri(uri);
 
         return this.http.fetch(httpFetchUri);
-    }
-}
-
-export class GitHubApiRateLimit {
-    private _reset: Date;
-
-    constructor(private _limit: number, private _remaining: number, private __reset: number) {
-        this._reset = new Date(__reset * 1000);
-    }
-
-    get limit(): number {
-        return this._limit;
-    }
-
-    get remaining(): number {
-        return this._remaining;
-    }
-
-    get reset(): Date {
-        return this._reset;
-    }
-
-    static fromJson(limit: any, remaining: any, reset: any): GitHubApiRateLimit {
-        let rateLimitLimit = parseInt(limit, 10) || 0;
-        let rateLimitRemaining = parseInt(remaining, 10) || 0;
-        let rateLimitReset = parseInt(reset, 10) || 0;
-
-        return new GitHubApiRateLimit(rateLimitLimit, rateLimitRemaining, rateLimitReset);
     }
 }

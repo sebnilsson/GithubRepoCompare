@@ -2,19 +2,19 @@
 
 import {Alerts} from '../services/alerts';
 import {localStorage, LocalStorageObserver} from '../lib/local-storage';
-import {Repos} from '../services/repos';
+import {GitHubRepos} from '../services/git-hub-repos';
 
 let repoDataUpdateOutdatedMinutes = 1 * 60;
 let repoDataUpdateOutdated = repoDataUpdateOutdatedMinutes * 60 * 1000; // ms
 
 @autoinject
-export class ReposGrid {
+export class RepoList {
     private _repoFullName: string;
     private isRepoLoading: boolean;
 
     constructor(private alerts: Alerts,
         private localStorageObserver: LocalStorageObserver,
-        private repos: Repos) {
+        private repos: GitHubRepos) {
         this.localStorageObserver.subscribe(this);
     }
 
@@ -34,7 +34,7 @@ export class ReposGrid {
     get isRepoFullNameValid(): boolean {
         return this.getIsRepoFullNameValid(this.repoFullName);
     }
-    
+
     bind() {
         this.addDefaultRepos();
     }

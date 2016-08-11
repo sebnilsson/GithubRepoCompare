@@ -1,10 +1,10 @@
 import {autoinject} from 'aurelia-framework';
 
 import {ChartDataUtility} from './chart-data-utility';
-import {Repos} from './repos';
+import {GitHubRepos} from './git-hub-repos';
 
 @autoinject
-export class ReposChartData {
+export class GitHubReposChartData {
     private _codeFrequency;
     private _commitActivity;
     private _forks;
@@ -15,7 +15,7 @@ export class ReposChartData {
     private _subscribers;
     private _watchers;
 
-    constructor(private repos: Repos) {}
+    constructor(private repos: GitHubRepos) {}
 
     get codeFrequency() {
         return this._codeFrequency;

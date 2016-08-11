@@ -9,7 +9,7 @@ import {localStorage, LocalStorageObserver} from '../lib/local-storage';
 export const reposItemsChangedEvent = 'ReposItemsChanged';
 
 @autoinject
-export class Repos {
+export class GitHubRepos {
     @localStorage
     private _items: Array<any> = [];
 
@@ -28,9 +28,9 @@ export class Repos {
 
         let collectionObserver = this.bindingEngine.collectionObserver(this.items);
 
-        let debouncedLocalStorageSet = debounce(this.onItemsChange, 500, this);
+        let debouncedOnItemsChange = debounce(this.onItemsChange, 500, this);
 
-        collectionObserver.subscribe(debouncedLocalStorageSet);
+        collectionObserver.subscribe(debouncedOnItemsChange);
     }
 
     add(fullName: string): Promise<any> {

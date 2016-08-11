@@ -1,16 +1,19 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
-import {autoinject, computedFrom, Disposable} from 'aurelia-framework';
+import {autoinject, BindingEngine, computedFrom, Disposable} from 'aurelia-framework';
 
-import {Repos, reposItemsChangedEvent} from '../services/repos';
-import {ReposChartData} from '../services/repos-chart-data';
+import {GitHubRepos, reposItemsChangedEvent} from '../services/git-hub-repos';
+import {GitHubReposChartData} from '../services/git-hub-repos-chart-data';
 
 @autoinject
-export class ReposCompare {
-    constructor(private ea: EventAggregator, private repos: Repos, private reposChartData: ReposChartData) {
+export class RepoCompare {
+    constructor(private bindingEngine: BindingEngine,
+        private ea: EventAggregator,
+        private repos: GitHubRepos,
+        private chartData: GitHubReposChartData) {
     }
 
     get codeFrequencyData() {
-        return this.reposChartData.codeFrequency;
+        return this.chartData.codeFrequency;
     }
 
     get codeFrequencyOptions() {
@@ -18,7 +21,7 @@ export class ReposCompare {
     }
 
     get commitActivityData() {
-        return this.reposChartData.commitActivity;
+        return this.chartData.commitActivity;
     }
 
     get commitActivityOptions() {
@@ -26,7 +29,7 @@ export class ReposCompare {
     }
 
     get forksData() {
-        return this.reposChartData.forks;
+        return this.chartData.forks;
     }
 
     get forksOptions() {
@@ -34,7 +37,7 @@ export class ReposCompare {
     }
 
     get openIssuesData() {
-        return this.reposChartData.openIssues;
+        return this.chartData.openIssues;
     }
 
     get openIssuesOptions() {
@@ -42,7 +45,7 @@ export class ReposCompare {
     }
 
     get participationData() {
-        return this.reposChartData.participation;
+        return this.chartData.participation;
     }
 
     get participationOptions() {
@@ -50,7 +53,7 @@ export class ReposCompare {
     }
 
     get pullRequestsData() {
-        return this.reposChartData.pullRequests;
+        return this.chartData.pullRequests;
     }
 
     get pullRequestsOptions() {
@@ -58,7 +61,7 @@ export class ReposCompare {
     }
 
     get sizesData() {
-        return this.reposChartData.sizes;
+        return this.chartData.sizes;
     }
 
     get sizesOptions() {
@@ -66,7 +69,7 @@ export class ReposCompare {
     }
 
     get subscribersData() {
-        return this.reposChartData.subscribers;
+        return this.chartData.subscribers;
     }
 
     get subscribersOptions() {
@@ -74,7 +77,7 @@ export class ReposCompare {
     }
 
     get watchersData() {
-        return this.reposChartData.watchers;
+        return this.chartData.watchers;
     }
 
     get watchersOptions() {
@@ -125,6 +128,6 @@ export class ReposCompare {
     }
 
     private updateData() {
-        this.reposChartData.updateData();
+        this.chartData.updateData();
     }
 }

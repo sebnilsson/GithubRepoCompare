@@ -1,26 +1,26 @@
 ﻿import {autoinject, bindable, computedFrom} from 'aurelia-framework';
 
-import {GitHubApiRateLimit} from '../../services/git-hub-api';
+import {GitHubApiRateLimit} from '../../services/git-hub-api-rate-limits';
 
 @autoinject
-export class GitHubApiLimit {
+export class ApiRateLimit {
     @bindable
     apiLimit: GitHubApiRateLimit;
 
     @bindable
     title: string;
 
-    @computedFrom('apiLimit')
-    get remaining(): number {
-        return this.apiLimit.remaining;
-    }
-
-    @computedFrom('apiLimit')
+    @computedFrom('apiLimit.limit')
     get limit(): number {
         return this.apiLimit.limit;
     }
 
-    @computedFrom('apiLimit')
+    @computedFrom('apiLimit.remaining')
+    get remaining(): number {
+        return this.apiLimit.remaining;
+    }
+
+    @computedFrom('apiLimit.reset')
     get reset(): Date {
         return this.apiLimit.reset;
     }

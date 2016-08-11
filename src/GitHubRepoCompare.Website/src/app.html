@@ -1,18 +1,18 @@
 ﻿<template>
     <require from="./components/alerts-list"></require>
-    <require from="./components/git-hub-api-status"></require>
-    <require from="./components/repos-compare"></require>
-    <require from="./components/repos-grid"></require>
+    <require from="./components/api-status"></require>
+    <require from="./components/repo-compare"></require>
+    <require from="./components/repo-list"></require>
 
     <alerts-list></alerts-list>
 
     <div class="container">
         <h1>GitHub Repo-compare</h1>
 
-        <repos-grid></repos-grid>
+        <repo-list></repo-list>
 
-        <git-hub-api-status></git-hub-api-status>
+        <api-status></api-status>
 
-        <repos-compare></repos-compare>
+        <repo-compare></repo-compare>
     </div>
 </template>
