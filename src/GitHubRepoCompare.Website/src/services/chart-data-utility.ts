@@ -1,5 +1,5 @@
 export class ChartDataUtility {
-    static getLineChartData(
+    static getForLineChart(
         repos: Array<any>,
         yHeaderTitle: string,
         columnFactory: ((repo: any) => Array<any>),
@@ -62,7 +62,7 @@ export class ChartDataUtility {
         return data;
     }
 
-    static getPieChartData(repos: Array<any>, headers: Array<string>, rowFactory: Function): Array<Array<any>> {
+    static getForPieChart(repos: Array<any>, headers: Array<string>, rowFactory: Function): Array<Array<any>> {
         let data = [headers];
 
         for (let repo of repos) {

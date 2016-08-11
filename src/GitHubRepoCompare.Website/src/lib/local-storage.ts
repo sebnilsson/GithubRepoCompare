@@ -1,4 +1,4 @@
-import {autoinject, BindingEngine, Disposable, transient} from 'aurelia-framework';
+import {autoinject, BindingEngine, Disposable} from 'aurelia-framework';
 
 let propertiesKey = '__LocalStorageObserverProperties';
 let subscriptionsKey = '__LocalStorageObserverSubscriptions';
@@ -143,23 +143,6 @@ export function localStorage(nameOrConfigOrTarget?: string | Object, key?, descr
     return deco;
 }
 
-function tryGetConfigValue(config: any, key: string) {
-    let configValue = config ? config[key] : undefined;
-
-    return (typeof configValue !== 'undefined') ? configValue : undefined;
-}
-
-function getStorageKey(target: any, propertyKey: string): string {
-    let storageKey = `${target.constructor.name}.${propertyKey}`;
-    return storageKey;
-}
-
-function getTargetProperties(target: Object): Array<ILocalStorageProperty> {
-    target[propertiesKey] = target[propertiesKey] || [];
-
-    return target[propertiesKey];
-}
-
 export module LocalStorage {
     export function getJson(key: string, fallbackValue: any = undefined, type: any = undefined) {
         if (typeof key === 'undefined') {
@@ -189,4 +172,21 @@ export module LocalStorage {
             window.localStorage[key] = json;
         }
     }
+}
+
+function tryGetConfigValue(config: any, key: string) {
+    let configValue = config ? config[key] : undefined;
+
+    return (typeof configValue !== 'undefined') ? configValue : undefined;
+}
+
+function getStorageKey(target: any, propertyKey: string): string {
+    let storageKey = `${target.constructor.name}.${propertyKey}`;
+    return storageKey;
+}
+
+function getTargetProperties(target: Object): Array<ILocalStorageProperty> {
+    target[propertiesKey] = target[propertiesKey] || [];
+
+    return target[propertiesKey];
 }

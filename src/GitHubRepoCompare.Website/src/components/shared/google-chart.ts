@@ -7,7 +7,7 @@ import debounce from '../../lib/debounce';
 @autoinject
 export class GoogleChart {
     @bindable
-    chart;
+    type;
     @bindable
     data;
     @bindable
@@ -15,8 +15,8 @@ export class GoogleChart {
     @bindable
     debugData: boolean;
 
-    private googleChart = undefined;
-    private googleChartsElement;
+    private chart = undefined;
+    private chartElement : HTMLElement;
 
     private onWindowResize = debounce(() => {
             this.updateChart();
@@ -31,8 +31,8 @@ export class GoogleChart {
         if (typeof (this.data) === 'undefined' || !(this.data instanceof Array)) {
             throw new Error("Data is not valid array.");
         }
-        if (typeof (this.chart) === 'undefined' || !this.chart) {
-            throw new Error("Chart is not defined.");
+        if (typeof (this.type) === 'undefined' || !this.type) {
+            throw new Error("Type is not defined.");
         }
         
         this.options = this.options || {};
@@ -51,28 +51,28 @@ export class GoogleChart {
     }
 
     private updateChart() {
-        this.googleChart = this.googleChart || {};
+        this.chart = this.chart || {};
 
-        if (typeof (this.googleChart) !== 'undefined' && typeof (this.googleChart.clearChart) === 'function') {
-            this.googleChart.clearChart();
+        if (typeof (this.chart) !== 'undefined' && typeof (this.chart.clearChart) === 'function') {
+            this.chart.clearChart();
         }
-
+        
         this.googleChartsBootstrapper.load()
             .then((resolve: any) => {
                 let charts = resolve.charts;
                 let visualization = resolve.visualization;
 
-                let chartFunc = charts[this.chart] || visualization[this.chart];
+                let chartFunc = charts[this.type] || visualization[this.type];
 
                 if (typeof (chartFunc) !== 'function') {
-                    throw new Error(`Could not find function in google.visualization named '${this.chart}'.`);
+                    throw new Error(`Could not find function in google.visualization named '${this.type}'.`);
                 }
 
-                this.googleChart = new chartFunc(this.googleChartsElement);
+                this.chart = new chartFunc(this.chartElement);
 
                 let dataTable = visualization.arrayToDataTable(this.data);
 
-                this.googleChart.draw(dataTable, this.options);
+                this.chart.draw(dataTable, this.options);
             });
     }
 }

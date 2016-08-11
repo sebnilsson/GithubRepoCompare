@@ -1,6 +1,6 @@
 ﻿<template>
-    <require from="./shared/google-chart"></require>
-    <require from="./shared/google-chart-data"></require>
+    <require from="./repo-compare/compare-history"></require>
+    <require from="./repo-compare/compare-stats"></require>
 
     <div if.bind="!hasReposToCompare" class="panel panel-default">
         <div class="panel-body bg-warning">
@@ -9,73 +9,8 @@
     </div>
 
     <div if.bind="hasReposToCompare">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">Stats</h2>
-            </div>
+        <compare-stats></compare-stats>
 
-            <div class="panel-body">
-                <div class="col-md-4 col-sm-6">
-                    <google-chart chart.one-time="'PieChart'" data.bind="sizesData" options.one-time="sizesOptions"></google-chart>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <google-chart chart.one-time="'PieChart'" data.bind="watchersData" options.one-time="watchersOptions"></google-chart>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <google-chart chart.one-time="'PieChart'" data.bind="subscribersData" options.one-time="subscribersOptions"></google-chart>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <google-chart chart.one-time="'PieChart'" data.bind="pullRequestsData" options.one-time="pullRequestsOptions"></google-chart>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <google-chart chart.one-time="'PieChart'" data.bind="forksData" options.one-time="forksOptions"></google-chart>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <google-chart chart.one-time="'PieChart'" data.bind="openIssuesData" options.bind="openIssuesOptions"></google-chart>
-                </div>
-            </div>
-        </div>
-
-        <div if.bind="commitActivityData && commitActivityData.length" class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    Commits
-                    &nbsp;
-                    <google-chart-data data.bind="commitActivityData"></google-chart-data>
-                </h3>
-            </div>
-            <div class="panel-body">
-                <google-chart chart.one-time="'LineChart'" data.bind="commitActivityData"
-                              options.one-time="commitActivityOptions" debug-data.one-time="true"></google-chart>
-            </div>
-        </div>
-
-        <div if.bind="participationData && participationData.length" class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    Participation
-                    &nbsp;
-                    <google-chart-data data.bind="participationData"></google-chart-data>
-                </h3>
-            </div>
-            <div class="panel-body">
-                <google-chart chart.one-time="'LineChart'" data.bind="participationData"
-                              options.one-time="participationOptions" debug-data.one-time="true"></google-chart>
-            </div>
-        </div>
-
-        <div if.bind="codeFrequencyData && codeFrequencyData.length" class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    Code-frequency
-                    &nbsp;
-                    <google-chart-data data.bind="codeFrequencyData"></google-chart-data>
-                </h3>
-            </div>
-            <div class="panel-body">
-                <google-chart chart.one-time="'LineChart'" data.bind="codeFrequencyData"
-                              options.one-time="codeFrequencyOptions" debug-data.one-time="true"></google-chart>
-            </div>
-        </div>
+        <compare-history></compare-history>
     </div>
 </template>

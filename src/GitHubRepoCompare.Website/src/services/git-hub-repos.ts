@@ -1,17 +1,18 @@
-﻿import {EventAggregator} from 'aurelia-event-aggregator';
-import {autoinject, BindingEngine} from 'aurelia-framework';
+﻿import {autoinject, BindingEngine, CollectionObserver, Disposable} from 'aurelia-framework';
 
 import {Alerts} from './alerts';
 import debounce from '../lib/debounce';
 import {GitHubApi} from './git-hub-api';
 import {localStorage, LocalStorageObserver} from '../lib/local-storage';
 
-export const reposItemsChangedEvent = 'ReposItemsChanged';
+export const gitHubReposItemsChangedEvent = 'GitHubReposItemsChanged';
 
 @autoinject
 export class GitHubRepos {
     @localStorage
     private _items: Array<any> = [];
+
+    private observer: CollectionObserver;
 
     get items(): Array<any> {
         return this._items;
@@ -19,18 +20,13 @@ export class GitHubRepos {
 
     constructor(private alerts: Alerts,
         private bindingEngine: BindingEngine,
-        private ea: EventAggregator,
         private gitHubApi: GitHubApi,
         private localStorageObserver: LocalStorageObserver) {
         this.localStorageObserver.subscribe(this);
 
         this.sortItems();
 
-        let collectionObserver = this.bindingEngine.collectionObserver(this.items);
-
-        let debouncedOnItemsChange = debounce(this.onItemsChange, 500, this);
-
-        collectionObserver.subscribe(debouncedOnItemsChange);
+        this.observer = this.bindingEngine.collectionObserver(this.items);
     }
 
     add(fullName: string): Promise<any> {
@@ -59,6 +55,11 @@ export class GitHubRepos {
 
             this.sortItems();
         }
+    }
+
+    subscribe(callback: (changeRecords: any) => void): Disposable {
+        let subscription = this.observer.subscribe(callback);
+        return subscription;
     }
 
     update(repo): Promise<any> {
@@ -129,10 +130,6 @@ export class GitHubRepos {
                         ])
                         .then(() => repo);
                 });
-    }
-
-    private onItemsChange() {
-        this.ea.publish(reposItemsChangedEvent, this.items);
     }
 
     private sortItems() {

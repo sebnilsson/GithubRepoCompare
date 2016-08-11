@@ -1,0 +1,30 @@
+﻿<template>
+    <require from="../shared/google-chart"></require>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">Stats</h2>
+        </div>
+
+        <div class="panel-body">
+            <div class="col-md-4 col-sm-6">
+                <google-chart type.one-time="'PieChart'" data.bind="sizesData" options.one-time="sizesOptions"></google-chart>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <google-chart type.one-time="'PieChart'" data.bind="watchersData" options.one-time="watchersOptions"></google-chart>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <google-chart type.one-time="'PieChart'" data.bind="subscribersData" options.one-time="subscribersOptions"></google-chart>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <google-chart type.one-time="'PieChart'" data.bind="pullRequestsData" options.one-time="pullRequestsOptions"></google-chart>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <google-chart type.one-time="'PieChart'" data.bind="forksData" options.one-time="forksOptions"></google-chart>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <google-chart type.one-time="'PieChart'" data.bind="openIssuesData" options.bind="openIssuesOptions"></google-chart>
+            </div>
+        </div>
+    </div>
+</template>

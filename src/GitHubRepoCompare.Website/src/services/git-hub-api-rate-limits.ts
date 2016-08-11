@@ -1,6 +1,5 @@
-﻿import {autoinject, computedFrom} from 'aurelia-framework';
+﻿import {computedFrom} from 'aurelia-framework';
 
-@autoinject
 export class GitHubApiRateLimits {
     private _core = new GitHubApiRateLimit();
     private _search = new GitHubApiRateLimit();

@@ -1,19 +1,18 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
-import {autoinject, bindable, BindingEngine, computedFrom, Disposable} from 'aurelia-framework';
+import {autoinject, bindable, computedFrom, Disposable} from 'aurelia-framework';
 
-import {GitHubApi, GitHubApiCredentials} from '../services/git-hub-api';
+import {GitHubApi} from '../services/git-hub-api';
+import {GitHubApiCredentials} from '../services/git-hub-api-credentials';
 import {GitHubApiRateLimits} from '../services/git-hub-api-rate-limits';
 import {localStorage, LocalStorageObserver} from '../lib/local-storage';
 import debounce from '../lib/debounce';
 
 @autoinject
 export class ApiStatus {
+    private gitHubCredentialsChangeSubscription: Disposable;
     private isUpdating: boolean = false;
 
-    private gitHubCredentialsChangeSubscription: Disposable;
-
-    constructor(public rateLimits: GitHubApiRateLimits,
-        private bindingEngine: BindingEngine,
+    constructor(private _rateLimits: GitHubApiRateLimits,
         private ea: EventAggregator,
         private gitHubApi: GitHubApi,
         private localStorageObserver: LocalStorageObserver) {
@@ -23,7 +22,12 @@ export class ApiStatus {
     @localStorage
     collapseShow: boolean = true;
 
-    attached() {
+    @computedFrom('_rateLimits')
+    get rateLimits() {
+        return this._rateLimits;
+    }
+
+    bind() {
         this.update();
 
         let debounceUpdate = debounce(() => this.update(), 1000);
@@ -31,7 +35,7 @@ export class ApiStatus {
         this.gitHubCredentialsChangeSubscription = this.ea.subscribe(GitHubApiCredentials.changeEvent, debounceUpdate);
     }
 
-    detached() {
+    unbind() {
         this.localStorageObserver.unsubscribe(this);
         this.gitHubCredentialsChangeSubscription.dispose();
     }

@@ -1,0 +1,45 @@
+﻿<template>
+    <require from="../shared/google-chart"></require>
+
+    <div if.bind="commitActivityData && commitActivityData.length" class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Commits
+                &nbsp;
+                <google-chart-data data.bind="commitActivityData"></google-chart-data>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <google-chart type.one-time="'LineChart'" data.bind="commitActivityData"
+                          options.one-time="commitActivityOptions" debug-data.one-time="true"></google-chart>
+        </div>
+    </div>
+
+    <div if.bind="participationData && participationData.length" class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Participation
+                &nbsp;
+                <google-chart-data data.bind="participationData"></google-chart-data>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <google-chart type.one-time="'LineChart'" data.bind="participationData"
+                          options.one-time="participationOptions" debug-data.one-time="true"></google-chart>
+        </div>
+    </div>
+
+    <div if.bind="codeFrequencyData && codeFrequencyData.length" class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                Code-frequency
+                &nbsp;
+                <google-chart-data data.bind="codeFrequencyData"></google-chart-data>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <google-chart type.one-time="'LineChart'" data.bind="codeFrequencyData"
+                          options.one-time="codeFrequencyOptions" debug-data.one-time="true"></google-chart>
+        </div>
+    </div>
+</template>

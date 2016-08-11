@@ -1,9 +1,9 @@
 let defaultTimeout = 5000;
 
 export class Alerts {
-    private _items: Array<Alert> = [];
+    private _items: Array<IAlert> = [];
 
-    get items(): Array<Alert> {
+    get items(): Array<IAlert> {
         return this._items;
     }
 
@@ -41,7 +41,7 @@ export class Alerts {
     }
 }
 
-export class Alert {
+export interface IAlert {
     text: string;
     level: string;
 }
