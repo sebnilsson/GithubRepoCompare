@@ -1,4 +1,5 @@
-﻿import {autoinject, BindingEngine, CollectionObserver, Disposable} from 'aurelia-framework';
+﻿import {EventAggregator} from 'aurelia-event-aggregator';
+import {autoinject, BindingEngine, CollectionObserver, computedFrom, Disposable} from 'aurelia-framework';
 
 import {Alerts} from './alerts';
 import debounce from '../lib/debounce';
@@ -12,21 +13,26 @@ export class GitHubRepos {
     @localStorage
     private _items: Array<any> = [];
 
-    private observer: CollectionObserver;
-
+    @computedFrom('_items')
     get items(): Array<any> {
         return this._items;
     }
 
     constructor(private alerts: Alerts,
         private bindingEngine: BindingEngine,
+        private ea: EventAggregator,
         private gitHubApi: GitHubApi,
         private localStorageObserver: LocalStorageObserver) {
         this.localStorageObserver.subscribe(this);
 
         this.sortItems();
 
-        this.observer = this.bindingEngine.collectionObserver(this.items);
+        let collectionObserver = this.bindingEngine.collectionObserver(this._items);
+
+        let collectionObserverCallback =
+            debounce(() => this.ea.publish(gitHubReposItemsChangedEvent, this.items), 250);
+
+        collectionObserver.subscribe(collectionObserverCallback);
     }
 
     add(fullName: string): Promise<any> {
@@ -57,9 +63,18 @@ export class GitHubRepos {
         }
     }
 
-    subscribe(callback: (changeRecords: any) => void): Disposable {
-        let subscription = this.observer.subscribe(callback);
-        return subscription;
+    setRepos(repoFullNames: Array<string>) {
+        this._items.splice(0, this._items.length);
+
+        let addPromises = [];
+
+        for (let fullName of repoFullNames) {
+            let addPromise = this.add(fullName);
+
+            addPromises.push(addPromise);
+        }
+
+        Promise.all(addPromises).then(() => this.sortItems());
     }
 
     update(repo): Promise<any> {
@@ -82,14 +97,12 @@ export class GitHubRepos {
             .then(
                 data => {
                     let repo = {
-                        id: data.id,
-                        name: data.name,
                         full_name: data.full_name,
                         owner: {
                             avatar_url: data.owner.avatar_url
                         },
                         html_url: data.html_url,
-                        homepage: data.homepage,
+                        description: data.description,
                         created_at: data.created_at,
                         updated_at: data.updated_at,
                         size: data.size,
@@ -134,11 +147,14 @@ export class GitHubRepos {
 
     private sortItems() {
         this.items.sort((a, b) => {
-            if (a.name < b.name) {
+            let itemA = a.full_name.toLowerCase();
+            let itemB = b.full_name.toLowerCase();
+
+            if (itemA < itemB) {
                 return -1;
             }
 
-            return (a.name > b.name) ? 1 : 0;
+            return (itemA > itemB) ? 1 : 0;
         });
     }
 }

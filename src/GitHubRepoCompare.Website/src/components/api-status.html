@@ -21,18 +21,20 @@
             </h2>
         </div>
 
-        <div element.ref="collapseTarget" class="collapse ${collapseShow ? 'in' : '' & oneTime} panel-body">
-            <div class="col-md-6">
-                <api-rate-limit if.bind="rateLimits.core"
-                                title.one-time="'Core'" api-limit.bind="rateLimits.core"></api-rate-limit>
+        <div element.ref="collapseTarget" class="collapse">
+            <div class="panel-body">
+                <div class="col-md-6">
+                    <api-rate-limit if.bind="rateLimits.core"
+                                    title.one-time="'Core'" api-limit.bind="rateLimits.core"></api-rate-limit>
+                </div>
+
+                <div class="col-md-6">
+                    <api-rate-limit if.bind="rateLimits.search"
+                                    title.one-time="'Search'" api-limit.bind="rateLimits.search"></api-rate-limit>
+                </div>
             </div>
 
-            <div class="col-md-6">
-                <api-rate-limit if.bind="rateLimits.search"
-                                title.one-time="'Search'" api-limit.bind="rateLimits.search"></api-rate-limit>
-            </div>
-
-            <div class="col-md-12">
+            <div class="panel-footer">
                 <api-credentials></api-credentials>
             </div>
         </div>

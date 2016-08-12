@@ -49,3 +49,11 @@ html, body {
     height: 32px;
     width: 32px;
 }
+
+.panel-footer .panel, .panel-body .panel {
+    margin-bottom: 0;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}

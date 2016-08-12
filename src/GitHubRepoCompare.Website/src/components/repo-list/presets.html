@@ -1,0 +1,25 @@
+﻿<template>
+    <div class="panel panel-warning">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <button collapse="target.bind: collapseTarget;
+                        icon.bind: collapseIcon;
+                        show.bind: collapseShow"
+                        class="btn btn-link btn-xs">
+                    <span element.ref="collapseIcon" class="glyphicon"></span>
+                </button>
+
+                Presets
+
+                <small>Example-sets of repos to compare</small>
+            </h3>
+        </div>
+        <div class="panel-body collapse" element.ref="collapseTarget">
+            <ul class="list-inline">
+                <li repeat.for="preset of presets">
+                    <a click.trigger="selectPreset(preset)" class="btn btn-default">${preset.name}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</template>
