@@ -1,6 +1,5 @@
 ﻿import {HttpClient} from 'aurelia-fetch-client';
-import {autoinject, computedFrom} from 'aurelia-framework';
-import 'fetch';
+import {autoinject} from 'aurelia-framework';
 
 import {GitHubApiCredentials} from './git-hub-api-credentials';
 import {GitHubApiRateLimit, GitHubApiRateLimits} from './git-hub-api-rate-limits';
@@ -18,40 +17,35 @@ export class GitHubApi {
     }
 
     getRepo(fullName: string): Promise<any> {
-        return this.httpFetchRateLimitedCore(`repos/${fullName}`)
-            .then(response => response.json());
+        return this.httpFetchRateLimitedCore(`repos/${fullName}`);
     }
 
     getRepoPullRequests(fullName: string): Promise<any> {
-        return this.httpFetchRateLimitedSearch(`search/issues?q=repo:${fullName}+type:pr`)
-            .then(response => response.json());
+        return this.httpFetchRateLimitedSearch(`search/issues?q=repo:${fullName}+type:pr`);
     }
 
     getRepoStatsContributors(fullName: string): Promise<any> {
-        return this.httpFetchRateLimitedCore(`repos/${fullName}/stats/contributors`)
-            .then(response => response.json());
+        return this.httpFetchRateLimitedCore(`repos/${fullName}/stats/contributors`);
     }
 
     getRepoStatsCommitActivity(fullName: string): Promise<any> {
-        return this.httpFetchRateLimitedCore(`repos/${fullName}/stats/commit_activity`)
-            .then(response => response.json());
+        return this.httpFetchRateLimitedCore(`repos/${fullName}/stats/commit_activity`);
     }
 
     getRepoStatsCodeFrequency(fullName: string): Promise<any> {
-        return this.httpFetchRateLimitedCore(`repos/${fullName}/stats/code_frequency`)
-            .then(response => response.json());
+        return this.httpFetchRateLimitedCore(`repos/${fullName}/stats/code_frequency`);
     }
 
     getRepoStatsParticipation(fullName: string): Promise<any> {
-        return this.httpFetchRateLimitedCore(`repos/${fullName}/stats/participation`)
-            .then(response => response.json());
+        return this.httpFetchRateLimitedCore(`repos/${fullName}/stats/participation`);
     }
 
     updateRateLimit(): Promise<any> {
-        let fetchPromise = this.httpFetch('rate_limit')
-            .then(response => response.json());
+        let fetchPromise = this.httpFetch('rate_limit');
 
-        fetchPromise.then(data => {
+        let fetchJsonPromise = this.getJsonResponse(fetchPromise);
+
+        fetchJsonPromise.then(data => {
             let core: GitHubApiRateLimit = data.resources.core;
             let search: GitHubApiRateLimit = data.resources.search;
 
@@ -59,7 +53,7 @@ export class GitHubApi {
             this.rateLimits.search.updateFromApi(search);
         });
 
-        return fetchPromise;
+        return fetchJsonPromise;
     }
 
     private getHttpFetchUri(uri: string): string {
@@ -120,7 +114,7 @@ export class GitHubApi {
         fetchPromise.then(response => this.handleFetchResponse(response, rateLimit),
             response => this.handleFetchResponse(response, rateLimit));
 
-        return fetchPromise;
+        return this.getJsonResponse(fetchPromise);
     }
 
     private httpFetchRateLimitedCore(uri: string): Promise<any> {
@@ -135,5 +129,11 @@ export class GitHubApi {
         let httpFetchUri = this.getHttpFetchUri(uri);
 
         return this.http.fetch(httpFetchUri);
+    }
+
+    private getJsonResponse(fetchPromise) {
+        return fetchPromise
+            .then(response => response.json(),
+                response => response.json().then(data => Promise.reject(data)));
     }
 }

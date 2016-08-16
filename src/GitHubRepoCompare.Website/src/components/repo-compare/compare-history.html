@@ -2,7 +2,7 @@
     <require from="../shared/google-chart"></require>
     <require from="../shared/google-chart-data"></require>
 
-    <div if.bind="commitActivityData && commitActivityData.length" class="panel panel-default">
+    <div if.bind="commitActivityData && commitActivityData.length" class="panel panel-info">
         <div class="panel-heading">
             <h3 class="panel-title">
                 Commits
@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div if.bind="participationData && participationData.length" class="panel panel-default">
+    <div if.bind="participationData && participationData.length" class="panel panel-info">
         <div class="panel-heading">
             <h3 class="panel-title">
                 Participation
@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    <div if.bind="codeFrequencyData && codeFrequencyData.length" class="panel panel-default">
+    <div if.bind="codeFrequencyData && codeFrequencyData.length" class="panel panel-info">
         <div class="panel-heading">
             <h3 class="panel-title">
                 Code-frequency

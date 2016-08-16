@@ -1,6 +1,7 @@
 ﻿import {autoinject, computedFrom} from 'aurelia-framework';
 
 import {localStorage, LocalStorageObserver} from '../../lib/local-storage';
+import {GitHubApiRateLimits} from '../../services/git-hub-api-rate-limits';
 import {GitHubRepos} from '../../services/git-hub-repos';
 
 @autoinject
@@ -8,6 +9,7 @@ export class Presets {
     private _presets: Array<IPreset> = getPresets();
 
     constructor(private localStorageObserver: LocalStorageObserver,
+        private rateLimits: GitHubApiRateLimits,
         private repos: GitHubRepos) {
         this.localStorageObserver.subscribe(this);
     }
@@ -21,7 +23,7 @@ export class Presets {
     }
 
     bind() {
-        if (!this.repos.items.length) {
+        if (!this.repos.items.length && this.rateLimits.core.remaining >= 6) {
             this.selectPreset(this.presets[0]);
         }
     }
@@ -37,6 +39,7 @@ interface IPreset {
 }
 
 function getPresets(): Array<IPreset> {
+    // https://github.com/showcases
     let presets = [
         {
             name: 'Front-end JS frameworks',

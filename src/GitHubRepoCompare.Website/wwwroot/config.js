@@ -6,6 +6,7 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
+
   map: {
     "aurelia-bootstrapper": "npm:aurelia-bootstrapper@1.0.0",
     "aurelia-event-aggregator": "npm:aurelia-event-aggregator@1.0.0",
@@ -209,7 +210,7 @@ System.config({
       "debug": "npm:debug@2.2.0",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "json5": "npm:json5@0.4.0",
-      "lodash": "npm:lodash@4.14.2",
+      "lodash": "npm:lodash@4.15.0",
       "minimatch": "npm:minimatch@3.0.3",
       "module": "github:jspm/nodelibs-module@0.1.0",
       "path": "github:jspm/nodelibs-path@0.1.0",
@@ -229,7 +230,7 @@ System.config({
       "babel-types": "npm:babel-types@6.13.0",
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "detect-indent": "npm:detect-indent@3.0.1",
-      "lodash": "npm:lodash@4.14.2",
+      "lodash": "npm:lodash@4.15.0",
       "source-map": "npm:source-map@0.5.6"
     },
     "npm:babel-helpers@6.8.0": {
@@ -246,7 +247,7 @@ System.config({
       "core-js": "npm:core-js@2.4.1",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "home-or-tmp": "npm:home-or-tmp@1.0.0",
-      "lodash": "npm:lodash@4.14.2",
+      "lodash": "npm:lodash@4.15.0",
       "mkdirp": "npm:mkdirp@0.5.1",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "path-exists": "npm:path-exists@1.0.0",
@@ -262,7 +263,7 @@ System.config({
       "babel-traverse": "npm:babel-traverse@6.13.0",
       "babel-types": "npm:babel-types@6.13.0",
       "babylon": "npm:babylon@6.8.4",
-      "lodash": "npm:lodash@4.14.2"
+      "lodash": "npm:lodash@4.15.0"
     },
     "npm:babel-traverse@6.13.0": {
       "babel-code-frame": "npm:babel-code-frame@6.11.0",
@@ -273,14 +274,14 @@ System.config({
       "debug": "npm:debug@2.2.0",
       "globals": "npm:globals@8.18.0",
       "invariant": "npm:invariant@2.2.1",
-      "lodash": "npm:lodash@4.14.2",
+      "lodash": "npm:lodash@4.15.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:babel-types@6.13.0": {
       "babel-runtime": "npm:babel-runtime@6.11.6",
       "babel-traverse": "npm:babel-traverse@6.13.0",
       "esutils": "npm:esutils@2.0.2",
-      "lodash": "npm:lodash@4.14.2",
+      "lodash": "npm:lodash@4.15.0",
       "to-fast-properties": "npm:to-fast-properties@1.0.2"
     },
     "npm:babylon@6.8.4": {

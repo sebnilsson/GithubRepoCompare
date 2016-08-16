@@ -1,9 +1,8 @@
-﻿import {EventAggregator, Subscription} from 'aurelia-event-aggregator';
-import {autoinject, computedFrom, Disposable} from 'aurelia-framework';
+﻿import {autoinject, computedFrom, Disposable} from 'aurelia-framework';
 
 import {ChartDataUtility} from '../../services/chart-data-utility';
 import {ChartOptionUtility} from '../../services/chart-option-utility';
-import {GitHubRepos, gitHubReposItemsChangedEvent} from '../../services/git-hub-repos';
+import {GitHubRepos} from '../../services/git-hub-repos';
 
 @autoinject
 export class CompareStats {
@@ -14,10 +13,9 @@ export class CompareStats {
     private _subscribers;
     private _watchers;
 
-    private gitHubReposItemsChangedSubscription: Subscription;
+    private gitHubReposItemsChangedSubscription: Disposable;
 
-    constructor(private ea: EventAggregator,
-        private repos: GitHubRepos) {
+    constructor(private repos: GitHubRepos) {
     }
 
     @computedFrom('_forks')
@@ -76,9 +74,8 @@ export class CompareStats {
 
     bind() {
         this.updateData();
-
-        this.gitHubReposItemsChangedSubscription =
-            this.ea.subscribe(gitHubReposItemsChangedEvent, () => this.updateData());
+        
+        this.gitHubReposItemsChangedSubscription = this.repos.subscribe(() => this.updateData());
     }
 
     unbind() {

@@ -1,121 +1,36 @@
-﻿<template bindable="repos">
+﻿<template>
+    <require from="./repo-table-item"></require>
+
     <div class="table-responsive">
         <table class="table table-bordered table-hover">
             <thead>
-                <tr class="active">
-                    <th>Repo</th>
-                    <th>Created</th>
-                    <th>Size</th>
-                    <th>Watchers</th>
-                    <th>Subscribers</th>
-                    <th>Pull requests</th>
-                    <th>Forks</th>
-                    <th>Open Issues</th>
-                    <th>&nbsp;</th>
-                </tr>
+            <tr class="active">
+                <th>Repo</th>
+                <th>Created</th>
+                <th>Size</th>
+                <th>Watchers</th>
+                <th>Subscribers</th>
+                <th>Pull requests</th>
+                <th>Forks</th>
+                <th>Open Issues</th>
+                <th>
+                    &nbsp;
+                </th>
+            </tr>
             </thead>
             <tbody>
-                <template repeat.for="repo of repos.items">
-                    <tr>
-                        <td title="${repo.description}">
-                            <a href.one-time="repo.html_url">
-                                <img src.one-time="repo.owner.avatar_url ? repo.owner.avatar_url : 'https://avatars.githubusercontent.com/u/9919?v=3'"
-                                     class="repo-owner-avatar" />
-                            </a>
-                            &nbsp;
-                            <code>
-                                <a href.one-time="repo.html_url">${repo.full_name}</a>
-                            </code>
-                            &nbsp;
-                            <div class="label label-default">${repo.language}</div>
-                        </td>
-                        <td title="Updated: ${repo.updated_at | dateFormat:'YYYY-MM-DD HH:mm:ss'}">
-                            ${repo.created_at | dateFormat:'YYYY-MM-DD'}
-                        </td>
-                        <td class="text-right">
-                            ${repo.size | numberFormat:'0.00b'}
-                        </td>
-                        <td class="text-right">
-                            ${repo.watchers_count | numberFormat:'0,0'}
-                        </td>
-                        <td class="text-right">
-                            ${repo.subscribers_count | numberFormat:'0,0'}
-                        </td>
-                        <td class="text-right">
-                            ${repo.stats.pullRequestsCount | numberFormat:'0,0'}
-                        </td>
-                        <td class="text-right">
-                            ${repo.forks_count | numberFormat:'0,0'}
-                        </td>
-                        <td class="text-right">
-                            ${repo.open_issues_count | numberFormat:'0,0'}
-                        </td>
-                        <td>
-                            <div class="no-wrap">
-                                <button click.trigger="updateRepo(repo)"
-                                        title="Update (Last: ${repo.dataUpdated | dateFormatRelative & signal:'date-format-relative'})"
-                                        class="btn btn-sm ${isRepoOutdated(repo) ? 'btn-warning' : 'btn-success' & signal:'date-format-relative'} ${repo.isUpdating ? 'disabled' : ''}">
-                                    <span class="glyphicon ${!repo.isUpdating ? 'glyphicon-refresh' : 'glyphicon-hourglass'} ${repo.isUpdating ? 'disabled' : ''}"></span>
-                                </button>
-                                &nbsp;
-                                <button click.trigger="removeRepo(repo)" title="Remove"
-                                        class="btn btn-danger btn-sm">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </button>
-                                &nbsp;
-                                <button collapse="target.bind: collapseTarget; icon.bind: collapseIcon;"
-                                        class="btn btn-link btn-xs">
-                                    <span element.ref="collapseIcon" class="glyphicon"></span>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr element.ref="collapseTarget" class="collapse active">
-                        <td colspan="3">
-                            <small>${repo.description}</small>
-                        </td>
-                        <td colspan="2">
-                            <small>
-                                <strong>Created:</strong><br/>
-                                <code>
-                                    <em class="no-wrap">
-                                        ${repo.created_at | dateFormatRelative & signal:'date-format-relative'}
-                                    </em>
-                                    <span class="no-wrap">
-                                        ${repo.created_at | dateFormat:'YYYY-MM-DD HH:mm:ss'}
-                                    </span>
-                                </code>
-                            </small>
-                        </td>
-                        <td colspan="2">
-                            <small>
-                                <strong>Updated:</strong><br />
-                                <code>
-                                    <em class="no-wrap">
-                                        ${repo.updated_at | dateFormatRelative & signal:'date-format-relative'}
-                                    </em>
-                                    <span class="no-wrap">
-                                        ${repo.updated_at | dateFormat:'YYYY-MM-DD HH:mm:ss'}
-                                    </span>
-                                </code>
-                            </small>
-                        </td>
-                        <td colspan="2">
-                            <small>
-                                <strong>Data updated:</strong><br/>
-                                <code>
-                                    <em class="no-wrap">
-                                        ${repo.dataUpdated | dateFormatRelative & signal:'date-format-relative'}
-                                    </em>
-                                    <span class="no-wrap">
-                                        (${repo.dataUpdated | dateFormat:'YYYY-MM-DD HH:mm:ss'})
-                                    </span>
-                                </code>
-                            </small>
-                        </td>
-                    </tr>
-                </template>
+            <template repeat.for="repo of repos.items">
+                <repo-table-item repo.bind="repo"></repo-table-item>
+            </template>
             </tbody>
+            <tfoot if.bind="isRepoAdding">
+            <tr>
+                <td colspan="9" class="info text-center">
+                    <span class="glyphicon glyphicon-hourglass"></span>
+                    <code>Adding repo(s)...</code>
+                </td>
+            </tr>
+            </tfoot>
         </table>
     </div>
 </template>

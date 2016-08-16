@@ -1,17 +1,24 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
-import {autoinject, BindingEngine, CollectionObserver, computedFrom, Disposable} from 'aurelia-framework';
+import {autoinject, BindingEngine, computedFrom, Disposable} from 'aurelia-framework';
 
 import {Alerts} from './alerts';
 import debounce from '../lib/debounce';
 import {GitHubApi} from './git-hub-api';
 import {localStorage, LocalStorageObserver} from '../lib/local-storage';
 
-export const gitHubReposItemsChangedEvent = 'GitHubReposItemsChanged';
-
 @autoinject
 export class GitHubRepos {
+    static gitHubReposItemsChangedEvent = 'GitHubReposItemsChanged';
+
+    private _addingCount = 0;
+
     @localStorage
     private _items: Array<any> = [];
+
+    @computedFrom('_addingCount')
+    get addingCount(): number {
+        return this._addingCount;
+    }
 
     @computedFrom('_items')
     get items(): Array<any> {
@@ -27,10 +34,13 @@ export class GitHubRepos {
 
         this.sortItems();
 
-        let collectionObserver = this.bindingEngine.collectionObserver(this._items);
+        let collectionObserver = this.bindingEngine.collectionObserver(this.items);
 
         let collectionObserverCallback =
-            debounce(() => this.ea.publish(gitHubReposItemsChangedEvent, this.items), 250);
+            debounce(() => {
+                    this.ea.publish(GitHubRepos.gitHubReposItemsChangedEvent, this.items);
+                },
+                250);
 
         collectionObserver.subscribe(collectionObserverCallback);
     }
@@ -38,20 +48,21 @@ export class GitHubRepos {
     add(fullName: string): Promise<any> {
         let loadPromise = this.loadRepo(fullName);
 
+        this._addingCount++;
+
         loadPromise
             .then(
                 data => {
                     this.items.push(data);
 
                     this.sortItems();
-                });
+                },
+                error => error)
+            .then(() => {
+                this._addingCount--;
+            });
 
         return loadPromise;
-    }
-
-    contains(fullName: string): boolean {
-        let itemsContains = this.items.some(x => (x.full_name || '').toLowerCase() === fullName.toLowerCase());
-        return itemsContains;
     }
 
     remove(repo) {
@@ -63,64 +74,69 @@ export class GitHubRepos {
         }
     }
 
-    setRepos(repoFullNames: Array<string>) {
+    setRepos(repoFullNames: Array<string>): Promise<any> {
         this._items.splice(0, this._items.length);
 
-        let addPromises = [];
+        let addPromises = repoFullNames.map(x => this.add(x));
 
-        for (let fullName of repoFullNames) {
-            let addPromise = this.add(fullName);
+        let allPromises = Promise.all(addPromises);
 
-            addPromises.push(addPromise);
-        }
+        allPromises.then(() => this.sortItems());
 
-        Promise.all(addPromises).then(() => this.sortItems());
+        return allPromises;
+    }
+
+    subscribe(callback: Function): Disposable {
+        let subscription = this.ea.subscribe(GitHubRepos.gitHubReposItemsChangedEvent, callback);
+        return subscription;
     }
 
     update(repo): Promise<any> {
         let fullName = repo.full_name;
 
-        let loadPromise = this.loadRepo(fullName);
+        let loadPromise = this.loadRepo(fullName, repo);
 
         loadPromise.then(data => {
             let index = this.items.indexOf(repo);
 
             this.items.splice(index, 1);
             this.items.splice(index, 0, data);
-        });
+        },
+        () => {});
 
         return loadPromise;
     }
 
-    private loadRepo(fullName: string): Promise<any> {
+    private loadRepo(fullName: string, repo?: any): Promise<any> {
+        repo = repo || {};
+
         return this.gitHubApi.getRepo(fullName)
             .then(
                 data => {
-                    let repo = {
-                        full_name: data.full_name,
-                        owner: {
-                            avatar_url: data.owner.avatar_url
+                    repo.full_name = data.full_name;
+                    repo.owner = {
+                        avatar_url: data.owner.avatar_url
+                    };
+                    repo.html_url = data.html_url;
+                    repo.description = data.description;
+                    repo.created_at = data.created_at;
+                    repo.updated_at = data.updated_at;
+                    repo.size = data.size;
+                    repo.watchers_count = data.watchers_count;
+                    repo.language = data.language;
+                    repo.forks_count = data.forks_count;
+                    repo.open_issues_count = data.open_issues_count;
+                    repo.subscribers_count = data.subscribers_count;
+
+                    repo.stats = repo.stats ||
+                    {
+                        codeFrequency: [],
+                        commitActivity: [],
+                        participation: {
+                            all: []
                         },
-                        html_url: data.html_url,
-                        description: data.description,
-                        created_at: data.created_at,
-                        updated_at: data.updated_at,
-                        size: data.size,
-                        watchers_count: data.watchers_count,
-                        language: data.language,
-                        forks_count: data.forks_count,
-                        open_issues_count: data.open_issues_count,
-                        subscribers_count: data.subscribers_count,
-                        stats: {
-                            codeFrequency: [],
-                            commitActivity: [],
-                            participation: {
-                                all: []
-                            },
-                            pullRequests: [],
-                            pullRequestsCount: 0
-                        },
-                        dataUpdated: new Date()
+                        pullRequests: [],
+                        pullRequestsCount: 0
                     };
 
                     let commitActivityPromise = this.gitHubApi.getRepoStatsCommitActivity(fullName)
@@ -135,14 +151,18 @@ export class GitHubRepos {
                     let pullRequestsPromise = this.gitHubApi.getRepoPullRequests(fullName)
                         .then(data => repo.stats.pullRequestsCount = data.total_count);
 
-                    return Promise.all([
-                            pullRequestsPromise,
-                            commitActivityPromise,
-                            codeFrequencyPromise,
-                            participationPromise
-                        ])
-                        .then(() => repo);
-                });
+                    let allPromise = Promise.all([
+                        pullRequestsPromise,
+                        commitActivityPromise,
+                        codeFrequencyPromise,
+                        participationPromise
+                    ]);
+
+                    allPromise.then(() => repo.dataUpdated = new Date());
+
+                    return allPromise.then(() => repo);
+                },
+                error => Promise.reject(error));
     }
 
     private sortItems() {

@@ -40,7 +40,11 @@ export class GitHubApiRateLimit {
         let remaining = apiData ? apiData.remaining : undefined;
         let reset = apiData ? apiData.reset : undefined;
 
-        if (!limit || !remaining || !reset) {
+        let isDataValid = (typeof limit !== 'undefined' &&
+            typeof remaining !== 'undefined' &&
+            typeof reset !== 'undefined');
+
+        if (!isDataValid) {
             return;
         }
 
