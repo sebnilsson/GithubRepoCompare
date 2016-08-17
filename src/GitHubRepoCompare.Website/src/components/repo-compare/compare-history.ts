@@ -1,7 +1,7 @@
 ﻿import {autoinject, computedFrom, Disposable} from 'aurelia-framework';
 
-import {ChartDataUtility} from '../../services/chart-data-utility';
-import {ChartOptionUtility} from '../../services/chart-option-utility';
+import {ChartDataUtility} from '../../lib/chart-data-utility';
+import {ChartOptionUtility} from '../../lib/chart-option-utility';
 import {GitHubRepos} from '../../services/git-hub-repos';
 
 @autoinject

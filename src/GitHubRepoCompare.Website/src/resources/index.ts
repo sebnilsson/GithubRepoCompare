@@ -9,7 +9,9 @@ export function configure(aurelia) {
         customAttributesFolder,
         [
             'collapse',
-            'modal'
+            'collapse-group',
+            'modal',
+            'toggle-class'
         ]);
 
     configureGlobalResources(aurelia,

@@ -1,7 +1,7 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
 import {autoinject, BindingEngine, computedFrom, Disposable} from 'aurelia-framework';
 
-import {Alerts} from './alerts';
+import {Alerts} from '../lib/alerts';
 import debounce from '../lib/debounce';
 import {GitHubApi} from './git-hub-api';
 import {localStorage, LocalStorageObserver} from '../lib/local-storage';
@@ -99,8 +99,7 @@ export class GitHubRepos {
         loadPromise.then(data => {
             let index = this.items.indexOf(repo);
 
-            this.items.splice(index, 1);
-            this.items.splice(index, 0, data);
+            this.items.splice(index, 1, data);
         },
         () => {});
 
@@ -135,7 +134,6 @@ export class GitHubRepos {
                         participation: {
                             all: []
                         },
-                        pullRequests: [],
                         pullRequestsCount: 0
                     };
 
@@ -152,10 +150,10 @@ export class GitHubRepos {
                         .then(data => repo.stats.pullRequestsCount = data.total_count);
 
                     let allPromise = Promise.all([
-                        pullRequestsPromise,
                         commitActivityPromise,
                         codeFrequencyPromise,
-                        participationPromise
+                        participationPromise,
+                        pullRequestsPromise
                     ]);
 
                     allPromise.then(() => repo.dataUpdated = new Date());

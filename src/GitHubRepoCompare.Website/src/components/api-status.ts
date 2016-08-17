@@ -1,11 +1,11 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
 import {autoinject, bindable, computedFrom, Disposable} from 'aurelia-framework';
 
+import debounce from '../lib/debounce';
 import {GitHubApi} from '../services/git-hub-api';
 import {GitHubApiCredentials} from '../services/git-hub-api-credentials';
 import {GitHubApiRateLimits} from '../services/git-hub-api-rate-limits';
 import {localStorage, LocalStorageObserver} from '../lib/local-storage';
-import debounce from '../lib/debounce';
 
 @autoinject
 export class ApiStatus {

@@ -1,9 +1,9 @@
 ﻿import {autoinject, computedFrom} from 'aurelia-framework';
 
-import {Alerts} from '../services/alerts';
-import {localStorage, LocalStorageObserver} from '../lib/local-storage';
+import {Alerts} from '../lib/alerts';
 import {GitHubApi} from '../services/git-hub-api';
 import {GitHubRepos} from '../services/git-hub-repos';
+import {localStorage, LocalStorageObserver} from '../lib/local-storage';
 
 @autoinject
 export class RepoList {

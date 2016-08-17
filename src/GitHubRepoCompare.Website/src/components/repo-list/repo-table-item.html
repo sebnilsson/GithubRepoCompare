@@ -1,10 +1,8 @@
 ﻿<template>
     <tr class="${isLoading ? 'info' : ''}">
         <td title="${repo.description}">
-            <a href.one-time="repo.html_url">
-                <img src.one-time="repo.owner.avatar_url ? repo.owner.avatar_url : 'https://avatars.githubusercontent.com/u/9919?v=3'"
-                     class="repo-owner-avatar" />
-            </a>
+            <a href.one-time="repo.html_url"><img src.one-time="repo.owner.avatar_url ? repo.owner.avatar_url : defaultGitHubImageUrl"
+                     class="repo-owner-avatar" /></a>
             &nbsp;
             <code>
                 <a href.one-time="repo.html_url">${repo.full_name}</a>
@@ -37,8 +35,14 @@
             <div class="no-wrap">
                 <button click.trigger="update()"
                         title="Update (Last: ${repo.dataUpdated | dateFormatRelative & signal:'date-format-relative'})"
-                        class="btn btn-sm ${isOutdated() ? 'btn-warning' : 'btn-success' & signal:'date-format-relative'} ${isLoading ? 'disabled' : ''}">
-                    <span class="glyphicon ${!isLoading ? 'glyphicon-refresh' : 'glyphicon-hourglass'} ${isLoading ? 'disabled' : ''}"></span>
+                        toggle-class="toggle.bind: isOutdated() & signal:'date-format-relative';
+                          show: btn-warning;
+                          hide: btn-success;"
+                        class="btn btn-sm ${isLoading ? 'disabled' : ''}">
+                    <span toggle-class="toggle.bind: isLoading;
+                          show: glyphicon-hourglass;
+                          hide: glyphicon-refresh;"
+                           class="glyphicon  ${isLoading ? 'disabled' : ''}"></span>
                 </button>
                 &nbsp;
                 <button click.trigger="remove()" title="Remove"
@@ -46,9 +50,13 @@
                     <span class="glyphicon glyphicon-trash"></span>
                 </button>
                 &nbsp;
-                <button collapse="target.bind: collapseTarget; icon.bind: collapseIcon;"
+                <button collapse="target.bind: collapseTarget;
+                        show.bind: collapseShow;
+                        group: repo-table-items"
                         class="btn btn-link btn-xs">
-                    <span element.ref="collapseIcon" class="glyphicon"></span>
+                    <span toggle-class="toggle.bind: collapseShow;
+                          show: glyphicon-chevron-up;
+                          hide: glyphicon-chevron-down;" class="glyphicon"></span>
                 </button>
             </div>
         </td>

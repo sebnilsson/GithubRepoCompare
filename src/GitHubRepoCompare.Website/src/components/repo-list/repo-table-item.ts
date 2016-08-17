@@ -1,7 +1,11 @@
-import {autoinject, bindable, computedFrom, containerless} from 'aurelia-framework';
+import {EventAggregator} from 'aurelia-event-aggregator';
+import {autoinject, bindable, computedFrom, containerless, Disposable} from 'aurelia-framework';
+import {BindingSignaler} from 'aurelia-templating-resources';
 
-import {Alerts} from '../../services/alerts';
+import {Alerts} from '../../lib/alerts';
 import {GitHubRepos} from '../../services/git-hub-repos';
+import {defaultGitHubImageUrl, repoTableEvents} from './repo-table';
+import {dateFormatRelativeSignalName} from '../../app';
 
 let repoDataUpdateOutdatedMinutes = 1 * 60;
 let repoDataUpdateOutdated = repoDataUpdateOutdatedMinutes * 60 * 1000; // ms
@@ -12,14 +16,35 @@ export class RepoTableItem {
     repo: any;
 
     private _isLoading = false;
+    private removeSubscription: Disposable;
+    private updateSubscription: Disposable;
+
+    constructor(private alerts: Alerts,
+        private bindingSignaler: BindingSignaler,
+        private ea: EventAggregator,
+        private repos: GitHubRepos) {
+    }
+
+    collapseShow = false;
+
+    @computedFrom('defaultGitHubImageUrl')
+    get defaultGitHubImageUrl() {
+        return defaultGitHubImageUrl;
+    }
 
     @computedFrom('_isLoading')
     get isLoading() {
         return this._isLoading;
     }
 
-    constructor(private alerts: Alerts,
-        private repos: GitHubRepos) {
+    bind() {
+        this.removeSubscription = this.ea.subscribe(repoTableEvents.removeAll, () => this.removeRepo());
+        this.updateSubscription = this.ea.subscribe(repoTableEvents.updateAll, () => this.update());
+    }
+
+    unbind() {
+        this.removeSubscription.dispose();
+        this.updateSubscription.dispose();
     }
 
     isOutdated(): boolean {
@@ -37,7 +62,7 @@ export class RepoTableItem {
         let isConfirmed = confirm(`Are you sure you want to remove '${this.repo.full_name}'?`);
 
         if (isConfirmed) {
-            this.repos.remove(this.repo);
+            this.removeRepo();
         }
     }
 
@@ -54,6 +79,14 @@ export class RepoTableItem {
 
                 this.alerts.addDanger(message);
             })
-            .then(() => this._isLoading = false);
+            .then(() => {
+                this._isLoading = false;
+
+                this.bindingSignaler.signal(dateFormatRelativeSignalName);
+            });
+    }
+
+    private removeRepo() {
+        this.repos.remove(this.repo);
     }
 }

@@ -54,6 +54,15 @@ function getPresets(): Array<IPreset> {
             ]
         },
         {
+            name: 'CSS preprocessors',
+            repos: [
+                'less/less.js',
+                'sass/sass',
+                'stylus/stylus',
+                'sass/libsass'
+            ]
+        },
+        {
             name: 'Programming languages',
             repos: [
                 'dotnet/roslyn',
@@ -62,14 +71,6 @@ function getPresets(): Array<IPreset> {
                 'golang/go',
                 'ruby/ruby',
                 'scala/scala'
-            ]
-        },
-        {
-            name: 'CSS preprocessors',
-            repos: [
-                'less/less.js',
-                'sass/sass',
-                'stylus/stylus'
             ]
         },
         {
@@ -95,10 +96,10 @@ function getPresets(): Array<IPreset> {
         {
             name: 'Package managers',
             repos: [
-                'bower/bower',
-                'jspm/jspm-cli',
+                'apple/swift-package-manager',
                 'npm/npm',
-                'NuGet/Home'
+                'NuGet/Home',
+                'rubygems/rubygems'
             ]
         }
     ];

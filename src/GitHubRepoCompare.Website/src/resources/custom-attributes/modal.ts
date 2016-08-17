@@ -1,4 +1,4 @@
-﻿import {autoinject, bindable, customAttribute} from 'aurelia-framework';
+﻿import {autoinject, bindable, bindingMode, customAttribute} from 'aurelia-framework';
 import * as bootstrap from "bootstrap";
 import * as $ from 'jquery';
 
@@ -8,7 +8,7 @@ export class ModalCustomAttribute {
     private $element;
     private $target;
 
-    @bindable
+    @bindable({ defaultBindingMode: bindingMode.oneTime })
     target;
 
     constructor(private element: Element) {}
@@ -19,8 +19,8 @@ export class ModalCustomAttribute {
 
         this.$element.on('click', () => this.onClick());
     }
-    unbind
-    detached() {
+    
+    unbind() {
         this.$element.off('click', () => this.onClick());
     }
 

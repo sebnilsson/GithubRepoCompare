@@ -6,17 +6,21 @@
         <div class="panel-heading">
             <h2 class="panel-title">
                 <button collapse="target.bind: collapseTarget;
-                        icon.bind: collapseIcon;
-                        show.bind: collapseShow;"
+                         show.bind: collapseShow;"
                         class="btn btn-default btn-xs">
-                    <span element.ref="collapseIcon" class="glyphicon"></span>
+                    <span toggle-class="toggle.bind: collapseShow;
+                          hide: glyphicon-chevron-down;
+                          show: glyphicon-chevron-up;" class="glyphicon"></span>
                 </button>
 
                 GitHub API Status
 
                 <button click.trigger="update()"
                         class="btn btn-default btn-xs ${isUpdating ? 'disabled' : ''} pull-right">
-                    <span class="glyphicon ${!isUpdating ? 'glyphicon-refresh' : 'glyphicon-hourglass'} ${isUpdating ? 'disabled' : ''}"></span>
+                    <span toggle-class="toggle.bind: isUpdating & signal:'date-format-relative';
+                          show: glyphicon-hourglass;
+                          hide: glyphicon-refresh;"
+                           class="glyphicon ${isUpdating ? 'disabled' : ''}"></span>
                     Update
                 </button>
             </h2>

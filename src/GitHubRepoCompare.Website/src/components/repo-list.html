@@ -11,10 +11,11 @@
         <div class="panel-heading">
             <h2 class="panel-title">
                 <button collapse="target.bind: collapseTarget;
-                        icon.bind: collapseIcon;
                         show.bind: collapseShow"
                         class="btn btn-default btn-xs">
-                    <span element.ref="collapseIcon" class="glyphicon"></span>
+                    <span toggle-class="toggle.bind: collapseShow;
+                          hide: glyphicon-chevron-down;
+                          show: glyphicon-chevron-up;" class="glyphicon"></span>
                 </button>
 
                 Repositories

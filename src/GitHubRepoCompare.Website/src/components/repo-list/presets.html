@@ -2,11 +2,11 @@
     <div class="panel panel-warning">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <button collapse="target.bind: collapseTarget;
-                        icon.bind: collapseIcon;
-                        show.bind: collapseShow"
+                <button collapse="target.bind: collapseTarget; show.bind: collapseShow"
                         class="btn btn-default btn-xs">
-                    <span element.ref="collapseIcon" class="glyphicon"></span>
+                    <span toggle-class="toggle.bind: collapseShow;
+                          show: glyphicon-chevron-up;
+                          hide: glyphicon-chevron-down;" class="glyphicon"></span>
                 </button>
 
                 Presets

@@ -1,57 +1,73 @@
-﻿import {autoinject, bindable, bindingMode, customAttribute} from 'aurelia-framework';
+﻿import {EventAggregator} from 'aurelia-event-aggregator';
+import {autoinject, bindable, bindingMode, customAttribute} from 'aurelia-framework';
 import * as bootstrap from "bootstrap";
 import * as $ from 'jquery';
+
+import {CollapseGroupCustomAttribute} from './collapse-group';
+
+const collapseHideEvents = 'hide.bs.collapse';
+const collapseShowEvents = 'show.bs.collapse';
 
 @autoinject
 @customAttribute('collapse')
 export class CollapseCustomAttribute {
-    private $element;
-    private $target;
-    private $icon;
-
     @bindable({ defaultBindingMode: bindingMode.twoWay, defaultValue: false })
     show: boolean;
-    @bindable
+    @bindable({ defaultBindingMode: bindingMode.oneTime })
     target;
-    @bindable
-    icon;
-    @bindable
-    iconHideClass: string = 'glyphicon-chevron-down';
-    @bindable
-    iconShowClass: string = 'glyphicon-chevron-up';
+    @bindable({ defaultBindingMode: bindingMode.oneTime })
+    group: string;
+    @bindable({ defaultBindingMode: bindingMode.oneTime })
+    command: string = 'toggle';
 
-    constructor(private element: Element) {}
+    private $element;
+    private $target;
+    private groupSubscription;
+
+    constructor(private ea: EventAggregator,
+        private element: Element) {
+    }
 
     bind() {
         this.$element = $(this.element);
         this.$target = $(this.target);
-        this.$icon = $(this.icon || this.element);
-
-        this.$target.addClass('collapse');
-
-        if (this.show) {
-            this.$target.addClass('in');
-        } else {
-            this.$target.removeClass('in');
-        }
-
-        let defaultIconClass = this.show ? this.iconShowClass : this.iconHideClass;
-
-        this.$icon.addClass(defaultIconClass);
 
         this.$element.on('click', () => this.onClick());
+
+        this.$target
+            .addClass('collapse')
+            .toggleClass('in', this.show)
+            .on(collapseShowEvents, () => this.onCollapseShow())
+            .on(collapseHideEvents, () => this.onCollapseHide());
+
+        if (this.group) {
+            let groupEventName = CollapseGroupCustomAttribute.getGroupEventName(this.group);
+
+            this.groupSubscription = this.ea.subscribe(groupEventName, command => this.$target.collapse(command));
+        }
     }
 
     unbind() {
         this.$element.off('click', () => this.onClick());
+
+        this.$target
+            .off(collapseShowEvents, () => this.onCollapseShow())
+            .off(collapseHideEvents, () => this.onCollapseHide());
+
+        if (this.groupSubscription) {
+            this.groupSubscription.dispose();
+        }
     }
 
     private onClick() {
-        this.$target.collapse('toggle');
+        this.$target.collapse(this.command);
+    }
 
-        this.$icon.toggleClass(this.iconHideClass);
-        this.$icon.toggleClass(this.iconShowClass);
+    private onCollapseHide() {
+        this.show = false;
+    }
 
-        this.show = !this.show;
+    private onCollapseShow() {
+        this.show = true;
     }
 }
