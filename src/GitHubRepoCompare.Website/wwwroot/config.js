@@ -6,6 +6,7 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
+
   map: {
     "aurelia-bootstrapper": "npm:aurelia-bootstrapper@1.0.0",
     "aurelia-event-aggregator": "npm:aurelia-event-aggregator@1.0.0",
@@ -204,7 +205,7 @@ System.config({
       "babel-template": "npm:babel-template@6.9.0",
       "babel-traverse": "npm:babel-traverse@6.13.0",
       "babel-types": "npm:babel-types@6.13.0",
-      "babylon": "npm:babylon@6.8.4",
+      "babylon": "npm:babylon@6.9.0",
       "convert-source-map": "npm:convert-source-map@1.3.0",
       "debug": "npm:debug@2.2.0",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
@@ -261,7 +262,7 @@ System.config({
       "babel-runtime": "npm:babel-runtime@6.11.6",
       "babel-traverse": "npm:babel-traverse@6.13.0",
       "babel-types": "npm:babel-types@6.13.0",
-      "babylon": "npm:babylon@6.8.4",
+      "babylon": "npm:babylon@6.9.0",
       "lodash": "npm:lodash@4.15.0"
     },
     "npm:babel-traverse@6.13.0": {
@@ -269,7 +270,7 @@ System.config({
       "babel-messages": "npm:babel-messages@6.8.0",
       "babel-runtime": "npm:babel-runtime@6.11.6",
       "babel-types": "npm:babel-types@6.13.0",
-      "babylon": "npm:babylon@6.8.4",
+      "babylon": "npm:babylon@6.9.0",
       "debug": "npm:debug@2.2.0",
       "globals": "npm:globals@8.18.0",
       "invariant": "npm:invariant@2.2.1",
@@ -283,7 +284,7 @@ System.config({
       "lodash": "npm:lodash@4.15.0",
       "to-fast-properties": "npm:to-fast-properties@1.0.2"
     },
-    "npm:babylon@6.8.4": {
+    "npm:babylon@6.9.0": {
       "babel-runtime": "npm:babel-runtime@6.11.6",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "process": "github:jspm/nodelibs-process@0.1.2"
