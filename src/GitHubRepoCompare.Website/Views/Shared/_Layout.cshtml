@@ -5,11 +5,13 @@
     string viewDataTitle = (ViewData["Title"] as string) ?? string.Empty;
     var title = !string.IsNullOrWhiteSpace(viewDataTitle) ? $"{viewDataTitle} - {SiteTitle}" : SiteTitle;
 }<!DOCTYPE html>
-<html>
+<html class="no-js" lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>@title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <environment names="Development">
         <link rel="stylesheet" href="~/jspm_packages/github/twbs/bootstrap@("@")@(BootstrapVersion)/css/bootstrap.css" />
@@ -34,5 +36,7 @@
     </div>
     
     @RenderSection("scripts", required: false)
+
+    @Html.Partial("_Analytics")
 </body>
 </html>
