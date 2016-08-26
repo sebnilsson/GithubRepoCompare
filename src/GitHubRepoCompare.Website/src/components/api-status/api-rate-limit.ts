@@ -37,7 +37,7 @@ export class ApiRateLimit {
             return 'default';
         }
 
-        var contextName = (this.remainingPercent <= 25)
+        let contextName = (this.remainingPercent <= 25)
             ? 'danger'
             : (this.remainingPercent <= 50 ? 'warning' : 'success');
         return contextName;

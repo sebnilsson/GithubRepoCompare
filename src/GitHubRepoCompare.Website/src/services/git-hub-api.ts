@@ -69,6 +69,12 @@ export class GitHubApi {
         return oAuthUri;
     }
 
+    private getJsonResponse(fetchPromise) {
+        return fetchPromise
+            .then(response => response.json(),
+                response => response.json().then(data => Promise.reject(data)));
+    }
+
     //private getQueryString(query: Object): string {
     //    let qsParams = [];
 
@@ -125,15 +131,32 @@ export class GitHubApi {
         return this.httpFetchRateLimited(uri, this.rateLimits.search);
     }
 
-    private httpFetch(uri: string) {
+    private httpFetch(uri: string, retryDelay: number = 2000) {
         let httpFetchUri = this.getHttpFetchUri(uri);
 
-        return this.http.fetch(httpFetchUri);
+        return this.http.fetch(httpFetchUri)
+            .then(response => {
+                    if (response.status === 202) {
+                        let uri = response.url as string;
+                        return this.httpFetchRetry(uri, retryDelay);
+                    }
+
+                    return response;
+                },
+                error => Promise.reject(error));
     }
 
-    private getJsonResponse(fetchPromise) {
-        return fetchPromise
-            .then(response => response.json(),
-                response => response.json().then(data => Promise.reject(data)));
+    private httpFetchRetry(uri: string, delay: number) {
+        var promise = new Promise((resolve, reject) => {
+            let increasedRetryDelay = (delay * 2);
+
+            setTimeout(() =>
+                this.httpFetch(uri, increasedRetryDelay)
+                .then(
+                    response => resolve(response),
+                    error => reject(error)),
+                delay);
+        });
+        return promise;
     }
 }

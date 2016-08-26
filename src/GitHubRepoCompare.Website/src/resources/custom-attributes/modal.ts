@@ -17,8 +17,8 @@ export class ModalCustomAttribute {
     constructor(private element: Element) {
         this.$element = $(this.element);
 
-        var that = this;
-        var onClick = this.onClick;
+        let that = this;
+        let onClick = this.onClick;
 
         this.onClickFunc = function() {
             onClick.call(that, arguments);
