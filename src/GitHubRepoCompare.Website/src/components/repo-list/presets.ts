@@ -104,5 +104,14 @@ function getPresets(): Array<IPreset> {
             ]
         }
     ];
+
+    for (let key in presets) {
+        if (presets.hasOwnProperty(key)) {
+            let preset = presets[key];
+
+            preset.repos.sort();
+        }
+    }
+
     return presets;
 }

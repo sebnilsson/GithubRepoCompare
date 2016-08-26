@@ -23,10 +23,17 @@ export class CollapseCustomAttribute {
     private $element;
     private $target;
     private groupSubscription;
+    private onClickFunc;
+    private onCollapseHideFunc;
+    private onCollapseShowFunc;
 
     constructor(private ea: EventAggregator,
         private element: Element) {
         this.$element = $(this.element);
+
+        this.onClickFunc = () => this.onClick;
+        this.onCollapseHideFunc = () => this.onCollapseHide;
+        this.onCollapseShowFunc = () => this.onCollapseShow;
     }
 
     bind() {
@@ -34,13 +41,13 @@ export class CollapseCustomAttribute {
 
         this.$target = $(this.target);
 
-        this.$element.on('click', () => this.onClick());
+        this.$element.on('click', this.onClickFunc);
 
         this.$target
             .addClass('collapse')
             .toggleClass('in', this.show)
-            .on(collapseShowEvents, () => this.onCollapseShow())
-            .on(collapseHideEvents, () => this.onCollapseHide());
+            .on(collapseShowEvents, this.onCollapseShowFunc)
+            .on(collapseHideEvents, this.onCollapseHideFunc);
 
         if (this.group) {
             let groupEventName = CollapseGroupCustomAttribute.getGroupEventName(this.group);
@@ -50,11 +57,11 @@ export class CollapseCustomAttribute {
     }
 
     unbind() {
-        this.$element.off('click', () => this.onClick());
+        this.$element.off('click', this.onClickFunc);
 
         this.$target
-            .off(collapseShowEvents, () => this.onCollapseShow())
-            .off(collapseHideEvents, () => this.onCollapseHide());
+            .off(collapseShowEvents, this.onCollapseShowFunc)
+            .off(collapseHideEvents, this.onCollapseHideFunc);
 
         if (this.groupSubscription) {
             this.groupSubscription.dispose();

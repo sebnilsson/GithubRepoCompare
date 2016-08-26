@@ -24,11 +24,22 @@ export class PopoverCustomAttribute {
 
     private $element;
     private $content;
+    private onClickFunc;
+    private onHideFunc;
+    private onHideContentElementFunc;
+    private onShowFunc;
+    private onShowContentElementFunc;
     private windowClickEventCancel;
 
     constructor(private element: Element,
         private windowEvents: WindowEvents) {
         this.$element = $(this.element);
+
+        this.onClickFunc = () => this.onClick();
+        this.onHideFunc = () => this.onHide();
+        this.onHideContentElementFunc = () => this.onHideContentElement();
+        this.onShowFunc = () => this.onShow();
+        this.onShowContentElementFunc = () => this.onShowContentElement();
     }
 
     attached() {
@@ -44,27 +55,32 @@ export class PopoverCustomAttribute {
             trigger: 'manual'
         });
 
-        this.$element.on('show.bs.popover', () => this.onShow());
-        this.$element.on('hide.bs.popover', () => this.onHide());
+        this.$element.on('show.bs.popover', this.onShowFunc);
+        this.$element.on('hide.bs.popover', this.onHideFunc);
 
         if (!isContentString) {
             this.$content = $(this.content);
 
-            this.$element.on('shown.bs.popover', () => this.onShowContentElement());
-            this.$element.on('hide.bs.popover', () => this.onHideContentElement());
+            this.$element.on('shown.bs.popover', this.onShowContentElementFunc);
+            this.$element.on('hide.bs.popover', this.onHideContentElementFunc);
         }
     }
 
     bind() {
-        this.$element.on('click', () => this.onClick());
+        this.$element.on('click', this.onClickFunc);
     }
 
     detached() {
         this.$element.popover('dispose');
+
+        this.$element.off('show.bs.popover', this.onShowFunc);
+        this.$element.off('hide.bs.popover', this.onHideFunc);
+        this.$element.off('shown.bs.popover', this.onShowContentElementFunc);
+        this.$element.off('hide.bs.popover', this.onHideContentElementFunc);
     }
 
     unbind() {
-        this.$element.off('click', () => this.onClick());
+        this.$element.off('click', this.onClickFunc);
     }
 
     private onClick() {

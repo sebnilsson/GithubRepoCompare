@@ -12,17 +12,12 @@ export class ModalCustomAttribute {
 
     private $element;
     private $target;
-    private onClickFunc; // TODO: Replicate in other .on/.off-functionality
+    private onClickFunc;
 
     constructor(private element: Element) {
         this.$element = $(this.element);
 
-        let that = this;
-        let onClick = this.onClick;
-
-        this.onClickFunc = function() {
-            onClick.call(that, arguments);
-        };
+        this.onClickFunc = () => this.onClick();
     }
 
     bind() {
@@ -36,8 +31,6 @@ export class ModalCustomAttribute {
     }
 
     private onClick() {
-        console.log('ModalCustomAttribute.onClick -- this: ', this);
-
         this.$target
             .modal(this.command)
             .removeAttr('hidden');

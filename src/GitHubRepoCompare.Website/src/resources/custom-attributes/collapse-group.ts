@@ -11,8 +11,8 @@ export class CollapseGroupCustomAttribute {
     command: string = 'toggle';
 
     private $element;
-
     private groupEventName: string;
+    private onClickFunc;
 
     static getGroupEventName(group): string {
         let groupEventName = `CollapseGroupCustomAttribute_GroupEventName_${group}`;
@@ -21,6 +21,9 @@ export class CollapseGroupCustomAttribute {
 
     constructor(private ea: EventAggregator,
         private element: Element) {
+        this.$element = $(this.element);
+
+        this.onClickFunc = () => this.onClick();
     }
 
     bind() {
@@ -28,15 +31,13 @@ export class CollapseGroupCustomAttribute {
             return;
         }
 
-        this.$element = $(this.element);
-
         this.groupEventName = CollapseGroupCustomAttribute.getGroupEventName(this.group);
 
-        this.$element.on('click', () => this.onClick());
+        this.$element.on('click', this.onClickFunc);
     }
 
     unbind() {
-        this.$element.off('click', () => this.onClick());
+        this.$element.off('click', this.onClickFunc);
     }
 
     private onClick() {
