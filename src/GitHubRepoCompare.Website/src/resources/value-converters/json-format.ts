@@ -1,5 +1,5 @@
 ﻿export class JsonFormatValueConverter {
-    toView(value, space: number = 4) {
-        return JSON.stringify(value, null, space);
+    toView(value, spaces: number = 4) {
+        return JSON.stringify(value, null, spaces);
     }
 }

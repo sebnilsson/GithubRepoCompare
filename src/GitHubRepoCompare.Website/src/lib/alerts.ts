@@ -7,15 +7,15 @@ export class Alerts {
         return this._items;
     }
 
-    addDanger(text: string, timeout?: number) {
+    addDanger(text: string, timeout?: number | boolean) {
         this.add(text, 'danger', timeout);
     }
 
-    addInfo(text: string, timeout?: number) {
+    addInfo(text: string, timeout?: number | boolean) {
         this.add(text, 'info', timeout);
     }
 
-    addWarning(text: string, timeout?: number) {
+    addWarning(text: string, timeout?: number | boolean) {
         this.add(text, 'warning', timeout);
     }
 
@@ -25,7 +25,7 @@ export class Alerts {
         this.items.splice(index, 1);
     }
 
-    private add(text: string, level: string, timeout?: number) {
+    private add(text: string, level: string, timeout?: any) {
         let error = {
             text: text,
             level: level
@@ -33,7 +33,7 @@ export class Alerts {
 
         this.items.push(error);
 
-        if (timeout <= 0) {
+        if (timeout <= 0 || timeout === false) {
             return;
         }
 

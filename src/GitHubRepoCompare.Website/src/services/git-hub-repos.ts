@@ -174,5 +174,8 @@ export class GitHubRepos {
 
             return (itemA > itemB) ? 1 : 0;
         });
+
+        this.items.push({});
+        this.items.pop();
     }
 }

@@ -2,9 +2,9 @@
     <require from="./repo-table-item"></require>
 
     <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-            <thead>
-            <tr class="active">
+        <table class="table table-sm table-bordered table-hover">
+            <thead class="thead-inverse">
+            <tr>
                 <th>Repo</th>
                 <th>Created</th>
                 <th>Size</th>
@@ -13,32 +13,16 @@
                 <th>Pull requests</th>
                 <th>Forks</th>
                 <th>Open Issues</th>
-                <th class="_info">
-                    <div class="no-wrap">
-                        <button click.trigger="updateAll()" disabled.bind="!hasRepos"
-                                title="Update all" class="btn btn-success btn-xs">
-                            <span class="glyphicon glyphicon-refresh" au-target-id="49"></span>
-                        </button>
-                        &nbsp;
-                        <button click.trigger="removeAll()" disabled.bind="!hasRepos"
-                                title="Remove all" class="btn btn-danger btn-xs">
-                            <span class="glyphicon glyphicon-trash"></span>
-                        </button>
-                        &nbsp;
-                        <button collapse-group="group: repo-table-items; command: show;"
-                                disabled.bind="!hasRepos"
-                                title="Expand all"
-                                class="btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-chevron-down"></span>
-                        </button>
-                        &nbsp;
-                        <button collapse-group="group: repo-table-items; command: hide;"
-                                disabled.bind="!hasRepos"
-                                title="Collapse all"
-                                class="btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-chevron-up"></span>
-                        </button>
-                    </div>
+                <th class="no-wrap text-xs-right">
+                    <button click.trigger="updateAll()" disabled.bind="!hasRepos"
+                            title="Update all" class="btn btn-success btn-xs">
+                        <icon icon="refresh"></icon>
+                    </button>
+                    &nbsp;
+                    <button click.trigger="removeAll()" disabled.bind="!hasRepos"
+                            title="Remove all" class="btn btn-danger btn-xs">
+                        <icon icon="trash"></icon>
+                    </button>
                 </th>
             </tr>
             </thead>
@@ -49,11 +33,11 @@
             </tbody>
             <tfoot>
             <tr if.bind="isRepoAdding">
-                <td colspan="9" class="info _text-center">
-                    <img src.bind="defaultGitHubImageUrl & oneTime" class="repo-owner-avatar" />
+                <td colspan="9" class="table-info">
+                    <img src.bind="defaultGitHubImageUrl & oneTime" class="repo-owner-avatar"/>
                     &nbsp;
                     <code>Adding repo(s)...</code>
-                    <span class="glyphicon glyphicon-hourglass"></span>
+                    <icon icon="spinner" size="lg" pulse></icon>
                 </td>
             </tr>
             </tfoot>

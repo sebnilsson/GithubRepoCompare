@@ -7,22 +7,20 @@
     <require from="./value-converters/number-format"></require>
     <require from="./custom-attributes/collapse"></require>-->
 
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h2 class="panel-title">
+    <div class="card">
+        <div class="card-header card-inverse card-primary">
+            <div class="card-title">
                 <button collapse="target.bind: collapseTarget;
-                        show.bind: collapseShow"
+                    show.bind: collapseShow"
                         class="btn btn-default btn-xs">
-                    <span toggle-class="toggle.bind: collapseShow;
-                          hide: glyphicon-chevron-down;
-                          show: glyphicon-chevron-up;" class="glyphicon"></span>
+                    <icon icon="${collapseShow ? 'chevron-up' : 'chevron-down'}"></icon>
                 </button>
 
                 Repositories
-            </h2>
+            </div>
         </div>
         <div element.ref="collapseTarget" class="collapse">
-            <div class="panel-body">
+            <div class="card-block">
                 <form class="form-inline">
                     <div class="form-group">
                         <label for="repo-full-name">Full Name</label>
@@ -33,13 +31,15 @@
                     <button type="submit" click.trigger="addRepo(repoFullName)"
                             disabled.bind="isRepoLoading || !isRepoFullNameValid"
                             class="btn btn-primary">
-                        <span class="glyphicon glyphicon-plus"></span>
+                        <icon icon="plus"></icon>
                         Add
                     </button>
                 </form>
             </div>
+
             <repo-table repos.bind="repos"></repo-table>
-            <div class="panel-footer">
+
+            <div class="card-footer">
                 <presets></presets>
             </div>
         </div>

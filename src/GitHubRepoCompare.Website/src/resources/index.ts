@@ -11,7 +11,14 @@ export function configure(aurelia) {
             'collapse',
             'collapse-group',
             'modal',
+            'popover',
             'toggle-class'
+        ]);
+
+    configureGlobalResources(aurelia,
+        customElementsFolder,
+        [
+            'icon'
         ]);
 
     configureGlobalResources(aurelia,

@@ -1,108 +1,99 @@
 ﻿<template>
     <tr class="${isLoading ? 'info' : ''}">
-        <td title="${repo.description}">
-            <a href.one-time="repo.html_url"><img src.one-time="repo.owner.avatar_url ? repo.owner.avatar_url : defaultGitHubImageUrl"
-                     class="repo-owner-avatar" /></a>
-            &nbsp;
-            <code>
+        <td title="${repo.description}" class="no-wrap ">
+            <a href.one-time="repo.html_url">
+                <img src.one-time="repo.owner.avatar_url ? repo.owner.avatar_url : defaultGitHubImageUrl"
+                     class="repo-owner-avatar"/>
+            </a>&nbsp;<code>
                 <a href.one-time="repo.html_url">${repo.full_name}</a>
             </code>
             &nbsp;
-            <div class="label label-default">${repo.language}</div>
+            <div class="tag tag-default">${repo.language}</div>
         </td>
-        <td title="Updated: ${repo.updated_at | dateFormat:'YYYY-MM-DD HH:mm:ss'}">
+        <td title="Updated: ${repo.updated_at | dateFormat:'YYYY-MM-DD HH:mm:ss'}" class="no-wrap">
             <code>${repo.created_at | dateFormat:'YYYY-MM-DD'}</code>
         </td>
-        <td class="text-right">
+        <td class="no-wrap text-xs-right">
             <code>${repo.size | numberFormat:'0.00b'}</code>
         </td>
-        <td class="text-right">
+        <td class="no-wrap text-xs-right">
             ${repo.watchers_count | numberFormat:'0,0'}
         </td>
-        <td class="text-right">
+        <td class="no-wrap text-xs-right">
             ${repo.subscribers_count | numberFormat:'0,0'}
         </td>
-        <td class="text-right">
+        <td class="no-wrap text-xs-right">
             ${repo.stats.pullRequestsCount | numberFormat:'0,0'}
         </td>
-        <td class="text-right">
+        <td class="no-wrap text-xs-right">
             ${repo.forks_count | numberFormat:'0,0'}
         </td>
-        <td class="text-right">
+        <td class="no-wrap text-xs-right">
             ${repo.open_issues_count | numberFormat:'0,0'}
         </td>
-        <td>
-            <div class="no-wrap">
-                <button click.trigger="update()"
-                        title="Update (Last: ${repo.dataUpdated | dateFormatRelative & signal:'date-format-relative'})"
-                        toggle-class="toggle.bind: isOutdated() & signal:'date-format-relative';
+        <td class="no-wrap text-xs-right">
+            <button click.trigger="update()"
+                    title="Update (Last: ${repo.dataUpdated | dateFormatRelative & signal:'date-format-relative'})"
+                    toggle-class="toggle.bind: isOutdated() & signal:'date-format-relative';
                           show: btn-warning;
                           hide: btn-success;"
-                        class="btn btn-sm ${isLoading ? 'disabled' : ''}">
-                    <span toggle-class="toggle.bind: isLoading;
-                          show: glyphicon-hourglass;
-                          hide: glyphicon-refresh;"
-                           class="glyphicon  ${isLoading ? 'disabled' : ''}"></span>
-                </button>
-                &nbsp;
-                <button click.trigger="remove()" title="Remove"
-                        class="btn btn-danger btn-sm">
-                    <span class="glyphicon glyphicon-trash"></span>
-                </button>
-                &nbsp;
-                <button collapse="target.bind: collapseTarget;
-                        show.bind: collapseShow;
-                        group: repo-table-items"
-                        class="btn btn-link btn-xs">
-                    <span toggle-class="toggle.bind: collapseShow;
-                          show: glyphicon-chevron-up;
-                          hide: glyphicon-chevron-down;" class="glyphicon"></span>
-                </button>
+                    class="btn btn-sm ${isLoading ? 'disabled' : ''}">
+                <icon icon="${isLoading ? 'spinner' : 'refresh'}" pulse.bind="isLoading"></icon>
+            </button>
+            &nbsp;
+            <button click.trigger="remove()" title="Remove"
+                    class="btn btn-danger btn-sm">
+                <icon icon="trash-o"></icon>
+            </button>
+            &nbsp;
+            <button modal="target.bind: modalDetails;" title="Details"
+                    class="btn btn-default btn-sm">
+                <icon icon="info"></icon>
+            </button>
+        </td>
+    </tr>
+    <div element.ref="modalDetails" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="modal-title h4">${repo.full_name}</span>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <small class="lead">${repo.description}</small>
+                    </p>
+                    <p class="small">
+                        <strong>Created:</strong><br/>
+                        <code>
+                            <em>
+                                ${repo.created_at | dateFormatRelative & signal:'date-format-relative'}
+                            </em>
+                            (${repo.created_at | dateFormat:'YYYY-MM-DD HH:mm:ss'})
+                        </code>
+                    </p>
+                    <p class="small">
+                        <strong>Updated:</strong><br/>
+                        <code>
+                            <em>
+                                ${repo.updated_at | dateFormatRelative & signal:'date-format-relative'}
+                            </em>
+                            <span class="no-wrap">
+                                (${repo.updated_at | dateFormat:'YYYY-MM-DD HH:mm:ss'})
+                            </span>
+                        </code>
+                    </p>
+                    <p class="small">
+                        <strong>Data updated:</strong><br/>
+                        <code>
+                            <em>
+                                ${repo.dataUpdated | dateFormatRelative & signal:'date-format-relative'}
+                            </em>
+                            <span class="no-wrap">
+                                (${repo.dataUpdated | dateFormat:'YYYY-MM-DD HH:mm:ss'})</span>
+                        </code>
+                    </p>
+                </div>
             </div>
-        </td>
-    </tr>
-    <tr element.ref="collapseTarget" class="collapse active">
-        <td colspan="3">
-            <small>${repo.description}</small>
-        </td>
-        <td colspan="2">
-            <small>
-                <strong>Created:</strong><br />
-                <code>
-                    <em class="no-wrap">
-                        ${repo.created_at | dateFormatRelative & signal:'date-format-relative'}
-                    </em>
-                    <span class="no-wrap">
-                        ${repo.created_at | dateFormat:'YYYY-MM-DD HH:mm:ss'}
-                    </span>
-                </code>
-            </small>
-        </td>
-        <td colspan="2">
-            <small>
-                <strong>Updated:</strong><br />
-                <code>
-                    <em class="no-wrap">
-                        ${repo.updated_at | dateFormatRelative & signal:'date-format-relative'}
-                    </em>
-                    <span class="no-wrap">
-                        ${repo.updated_at | dateFormat:'YYYY-MM-DD HH:mm:ss'}
-                    </span>
-                </code>
-            </small>
-        </td>
-        <td colspan="2">
-            <small>
-                <strong>Data updated:</strong><br />
-                <code>
-                    <em class="no-wrap">
-                        ${repo.dataUpdated | dateFormatRelative & signal:'date-format-relative'}
-                    </em>
-                    <span class="no-wrap">
-                        (${repo.dataUpdated | dateFormat:'YYYY-MM-DD HH:mm:ss'})
-                    </span>
-                </code>
-            </small>
-        </td>
-    </tr>
+        </div>
+    </div>
 </template>

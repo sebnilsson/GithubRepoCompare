@@ -2,43 +2,43 @@
     <require from="../shared/google-chart"></require>
     <require from="../shared/google-chart-data"></require>
 
-    <div if.bind="commitActivityData && commitActivityData.length" class="panel panel-info">
-        <div class="panel-heading">
-            <h3 class="panel-title">
+    <div if.bind="commitActivityData && commitActivityData.length" class="card">
+        <div class="card-header card-inverse card-info">
+            <div class="card-title">
                 Commits
                 &nbsp;
                 <google-chart-data data.bind="commitActivityData"></google-chart-data>
-            </h3>
+            </div>
         </div>
-        <div class="panel-body">
+        <div class="card-block">
             <google-chart type.one-time="'LineChart'" data.bind="commitActivityData"
                           options.one-time="commitActivityOptions" debug-data.one-time="true"></google-chart>
         </div>
     </div>
 
-    <div if.bind="participationData && participationData.length" class="panel panel-info">
-        <div class="panel-heading">
-            <h3 class="panel-title">
+    <div if.bind="participationData && participationData.length" class="card">
+        <div class="card-header card-inverse card-info">
+            <div class="card-title">
                 Participation
                 &nbsp;
                 <google-chart-data data.bind="participationData"></google-chart-data>
-            </h3>
+            </div>
         </div>
-        <div class="panel-body">
+        <div class="card-block">
             <google-chart type.one-time="'LineChart'" data.bind="participationData"
                           options.one-time="participationOptions" debug-data.one-time="true"></google-chart>
         </div>
     </div>
 
-    <div if.bind="codeFrequencyData && codeFrequencyData.length" class="panel panel-info">
-        <div class="panel-heading">
-            <h3 class="panel-title">
+    <div if.bind="codeFrequencyData && codeFrequencyData.length" class="card">
+        <div class="card-header card-inverse card-info">
+            <div class="card-title">
                 Code-frequency
                 &nbsp;
                 <google-chart-data data.bind="codeFrequencyData"></google-chart-data>
-            </h3>
+            </div>
         </div>
-        <div class="panel-body">
+        <div class="card-block">
             <google-chart type.one-time="'LineChart'" data.bind="codeFrequencyData"
                           options.one-time="codeFrequencyOptions" debug-data.one-time="true"></google-chart>
         </div>

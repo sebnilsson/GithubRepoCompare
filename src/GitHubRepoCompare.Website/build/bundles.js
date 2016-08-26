@@ -27,7 +27,7 @@
                 "aurelia-history-browser",
                 "aurelia-logging-console",
                 "bootstrap",
-                "bootstrap/css/bootstrap.css!text",
+                //"bootstrap/css/bootstrap.css!text",
                 "fetch",
                 "jquery",
                 "moment",

@@ -1,10 +1,11 @@
 ﻿<template>
     <div class="container alerts-list">
         <div repeat.for="alert of items" class="alert alert-${alert.level}">
+            <button type="button" click.trigger="alerts.remove(alert)" class="close">
+                <icon icon="remove"></icon>
+            </button>
+
             ${alert.text}
-            <a click.trigger="alerts.remove(alert)" class="btn btn-link pull-right">
-                <span class="glyphicon glyphicon-remove-sign"></span>
-            </a>
         </div>
     </div>
 </template>

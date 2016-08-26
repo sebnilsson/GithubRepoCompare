@@ -1,30 +1,45 @@
 ﻿import {autoinject, bindable, bindingMode, customAttribute} from 'aurelia-framework';
-import * as bootstrap from "bootstrap";
 import * as $ from 'jquery';
+import * as bootstrap from 'bootstrap';
 
 @autoinject
 @customAttribute('modal')
 export class ModalCustomAttribute {
-    private $element;
-    private $target;
-
     @bindable({ defaultBindingMode: bindingMode.oneTime })
     target;
+    @bindable({ defaultBindingMode: bindingMode.oneTime })
+    command: string = 'toggle';
 
-    constructor(private element: Element) {}
+    private $element;
+    private $target;
+    private onClickFunc; // TODO: Replicate in other .on/.off-functionality
+
+    constructor(private element: Element) {
+        this.$element = $(this.element);
+
+        var that = this;
+        var onClick = this.onClick;
+
+        this.onClickFunc = function() {
+            onClick.call(that, arguments);
+        };
+    }
 
     bind() {
-        this.$element = $(this.element);
         this.$target = $(this.target);
 
-        this.$element.on('click', () => this.onClick());
+        this.$element.on('click', this.onClickFunc);
     }
-    
+
     unbind() {
-        this.$element.off('click', () => this.onClick());
+        this.$element.off('click', this.onClickFunc);
     }
 
     private onClick() {
-        this.$target.modal('toggle');
+        console.log('ModalCustomAttribute.onClick -- this: ', this);
+
+        this.$target
+            .modal(this.command)
+            .removeAttr('hidden');
     }
 }

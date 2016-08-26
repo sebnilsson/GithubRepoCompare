@@ -2,8 +2,8 @@
     <require from="./repo-compare/compare-history"></require>
     <require from="./repo-compare/compare-stats"></require>
 
-    <div if.bind="!hasReposToCompare" class="panel panel-default">
-        <div class="panel-body bg-warning">
+    <div if.bind="!hasReposToCompare" class="card">
+        <div class="card-block bg-warning">
             Add repositories to compare
         </div>
     </div>

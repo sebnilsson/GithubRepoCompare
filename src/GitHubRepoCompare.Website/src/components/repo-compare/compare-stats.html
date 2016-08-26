@@ -1,12 +1,12 @@
 ﻿<template>
     <require from="../shared/google-chart"></require>
 
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h2 class="panel-title">Stats</h2>
+    <div class="card">
+        <div class="card-header card-inverse card-info">
+            <div class="card-title">Stats</div>
         </div>
 
-        <div class="panel-body">
+        <div class="card-block">
             <div class="col-md-4 col-sm-6">
                 <google-chart type.one-time="'PieChart'" data.bind="sizesData" options.one-time="sizesOptions"></google-chart>
             </div>

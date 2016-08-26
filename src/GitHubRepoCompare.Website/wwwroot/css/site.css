@@ -23,18 +23,13 @@ html, body {
   height: 40px; 
 }
 
-/*.compare-wrapper {
-    width: 100%;
-}
-.compare {
-    overflow-x: auto;
-    white-space: nowrap;
+table tr.collapse.in {
+    display: table-row;
 }
 
-.compare-item {
-    display: inline-block;
-    width: 400px;
-}*/
+.fa-fw {
+    height: 1.28571429em;
+}
 
 .alerts-list .alert {
     margin-bottom: 0;
@@ -50,8 +45,40 @@ html, body {
     width: 32px;
 }
 
-.panel-footer .panel, .panel-body .panel {
+.card-block .list-inline {
     margin-bottom: 0;
+}
+
+.card-block .list-inline .list-inline-item {
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+
+.card-header {
+    padding: 0.5rem 0.75rem;
+}
+
+.card-header > .card-title {
+    margin-bottom: 0;
+}
+
+.card-header .btn,
+.card-header button {
+    line-height: 1.5;
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.card-footer .panel, .card-block .card {
+    margin-bottom: 0;
+}
+
+.btn-xs {
+    border-radius: 0.15rem;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.25rem;
 }
 
 .no-wrap {

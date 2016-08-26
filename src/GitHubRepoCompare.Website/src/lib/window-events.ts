@@ -1,10 +1,30 @@
 ﻿export class WindowEvents {
     private eventHandlers = [];
 
-    add(type: string, eventHandler: EventListener) {
-        this.eventHandlers.push({ type: type, eventHandler: eventHandler });
+    add(type: string, eventHandler: EventListener): () => void {
+        let func = function() {
+            eventHandler.call(this, arguments);
+        };
 
-        window.addEventListener(type, eventHandler);
+        this.eventHandlers.push({ type: type, eventHandler: func });
+
+        window.addEventListener(type, func);
+
+        let cancel = () => this.remove(type, func);;
+        return cancel;
+    }
+
+    addOnce(type: string, eventHandler: EventListener): () => void {
+        let removeFunc = () => {};
+
+        let func = function() {
+            eventHandler.call(this, arguments);
+
+            removeFunc();
+        };
+
+        removeFunc = this.add(type, func);
+        return removeFunc;
     }
 
     remove(type: string, eventHandler: EventListener) {

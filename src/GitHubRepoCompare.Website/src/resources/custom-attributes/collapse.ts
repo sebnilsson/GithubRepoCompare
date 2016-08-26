@@ -1,7 +1,7 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
 import {autoinject, bindable, bindingMode, customAttribute} from 'aurelia-framework';
-import * as bootstrap from "bootstrap";
 import * as $ from 'jquery';
+import * as bootstrap from 'bootstrap';
 
 import {CollapseGroupCustomAttribute} from './collapse-group';
 
@@ -26,10 +26,12 @@ export class CollapseCustomAttribute {
 
     constructor(private ea: EventAggregator,
         private element: Element) {
+        this.$element = $(this.element);
     }
 
     bind() {
-        this.$element = $(this.element);
+        this.show = !!this.show;
+
         this.$target = $(this.target);
 
         this.$element.on('click', () => this.onClick());
@@ -60,7 +62,9 @@ export class CollapseCustomAttribute {
     }
 
     private onClick() {
-        this.$target.collapse(this.command);
+        this.$target
+            .collapse(this.command)
+            .removeAttr('hidden');
     }
 
     private onCollapseHide() {

@@ -1,5 +1,4 @@
 ﻿import {autoinject, bindable, bindingMode, customAttribute} from 'aurelia-framework';
-import * as $ from 'jquery';
 
 import {CollapseGroupCustomAttribute} from './collapse-group';
 
@@ -13,13 +12,10 @@ export class CollapseIconCustomAttribute {
     @bindable({ defaultBindingMode: bindingMode.oneTime })
     show: string;
 
-    private $element;
-
-    constructor(private element: Element) {
-    }
+    constructor(private element: Element) {}
 
     bind() {
-        this.$element = $(this.element);
+        this.toggle = !!this.toggle;
 
         this.toggleClass();
     }
@@ -29,7 +25,7 @@ export class CollapseIconCustomAttribute {
     }
 
     private toggleClass() {
-        this.$element.toggleClass(this.show, this.toggle);
-        this.$element.toggleClass(this.hide, !this.toggle);
+        this.element.classList.toggle(this.show, this.toggle);
+        this.element.classList.toggle(this.hide, !this.toggle);
     }
 }

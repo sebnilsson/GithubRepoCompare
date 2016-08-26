@@ -12,7 +12,7 @@ export class AlertsList {
     }
 
     //bind() {
-    //    this.alerts.addInfo('Test-info');
-    //    this.alerts.addWarning('Test-warning', 10000);
+    //    this.alerts.addInfo('Test-info', false);
+    //    this.alerts.addWarning('Test-warning');
     //}
 }

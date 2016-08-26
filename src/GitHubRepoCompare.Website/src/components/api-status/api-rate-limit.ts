@@ -30,4 +30,16 @@ export class ApiRateLimit {
         let remaining = (this.remaining / this.limit) * 100;
         return Math.round(remaining);
     }
+
+    @computedFrom('remainingPercent')
+    get contextName(): string {
+        if (!this.remainingPercent) {
+            return 'default';
+        }
+
+        var contextName = (this.remainingPercent <= 25)
+            ? 'danger'
+            : (this.remainingPercent <= 50 ? 'warning' : 'success');
+        return contextName;
+    }
 }
