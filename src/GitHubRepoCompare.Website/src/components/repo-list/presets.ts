@@ -75,6 +75,16 @@ function getPresets(): Array<IPreset> {
             ]
         },
         {
+            name: 'Text editors',
+            repos: [
+                'atom/atom',
+                'vim/vim',
+                'adobe/brackets',
+                'textmate/textmate',
+                'Microsoft/vscode'
+            ]
+        },
+        {
             name: 'DevOps',
             repos: [
                 'ansible/ansible',
