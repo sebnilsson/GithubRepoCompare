@@ -4,6 +4,7 @@ import * as $ from 'jquery';
 import * as bootstrap from 'bootstrap';
 
 import {CollapseGroupCustomAttribute} from './collapse-group';
+import {JqueryHelper} from '../../lib/jquery-helper';
 
 const collapseHideEvents = 'hide.bs.collapse';
 const collapseShowEvents = 'show.bs.collapse';
@@ -23,17 +24,14 @@ export class CollapseCustomAttribute {
     private $element;
     private $target;
     private groupSubscription;
-    private onClickFunc;
-    private onCollapseHideFunc;
-    private onCollapseShowFunc;
+    private onClickOff;
+    private onCollapseHideOff;
+    private onCollapseShowOff;
 
     constructor(private ea: EventAggregator,
         private element: Element) {
         this.$element = $(this.element);
 
-        this.onClickFunc = () => this.onClick;
-        this.onCollapseHideFunc = () => this.onCollapseHide;
-        this.onCollapseShowFunc = () => this.onCollapseShow;
     }
 
     bind() {
@@ -41,13 +39,14 @@ export class CollapseCustomAttribute {
 
         this.$target = $(this.target);
 
-        this.$element.on('click', this.onClickFunc);
+        this.onClickOff = JqueryHelper.on(this.$element, 'click', () => this.onClick());
+
+        this.onCollapseHideOff = JqueryHelper.on(this.$target, collapseHideEvents, () => this.onCollapseHide());
+        this.onCollapseShowOff = JqueryHelper.on(this.$target, collapseShowEvents, () => this.onCollapseShow());
 
         this.$target
             .addClass('collapse')
-            .toggleClass('in', this.show)
-            .on(collapseShowEvents, this.onCollapseShowFunc)
-            .on(collapseHideEvents, this.onCollapseHideFunc);
+            .toggleClass('in', this.show);
 
         if (this.group) {
             let groupEventName = CollapseGroupCustomAttribute.getGroupEventName(this.group);
@@ -57,18 +56,16 @@ export class CollapseCustomAttribute {
     }
 
     unbind() {
-        this.$element.off('click', this.onClickFunc);
-
-        this.$target
-            .off(collapseShowEvents, this.onCollapseShowFunc)
-            .off(collapseHideEvents, this.onCollapseHideFunc);
+        this.onClickOff();
+        this.onCollapseHideOff();
+        this.onCollapseShowOff();
 
         if (this.groupSubscription) {
             this.groupSubscription.dispose();
         }
     }
 
-    private onClick() {
+    onClick() {
         this.$target
             .collapse(this.command)
             .removeAttr('hidden');

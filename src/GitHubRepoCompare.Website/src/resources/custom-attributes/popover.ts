@@ -2,6 +2,7 @@
 import * as $ from 'jquery';
 import * as bootstrap from 'bootstrap';
 
+import {JqueryHelper} from '../../lib/jquery-helper';
 import {WindowEvents} from '../../lib/window-events';
 
 const template = `<div class="popover">
@@ -24,22 +25,16 @@ export class PopoverCustomAttribute {
 
     private $element;
     private $content;
-    private onClickFunc;
-    private onHideFunc;
-    private onHideContentElementFunc;
-    private onShowFunc;
-    private onShowContentElementFunc;
+    private onClickOff;
+    private onHideOff;
+    private onHideContentElementOff;
+    private onShowOff;
+    private onShowContentElementOff;
     private windowClickEventCancel;
 
     constructor(private element: Element,
         private windowEvents: WindowEvents) {
         this.$element = $(this.element);
-
-        this.onClickFunc = () => this.onClick();
-        this.onHideFunc = () => this.onHide();
-        this.onHideContentElementFunc = () => this.onHideContentElement();
-        this.onShowFunc = () => this.onShow();
-        this.onShowContentElementFunc = () => this.onShowContentElement();
     }
 
     attached() {
@@ -55,32 +50,41 @@ export class PopoverCustomAttribute {
             trigger: 'manual'
         });
 
-        this.$element.on('show.bs.popover', this.onShowFunc);
-        this.$element.on('hide.bs.popover', this.onHideFunc);
+        this.onShowOff = JqueryHelper.on(this.$element, 'show.bs.popover', () => this.onShow());
+        this.onHideOff = JqueryHelper.on(this.$element, 'hide.bs.popover', () => this.onHide());
 
         if (!isContentString) {
             this.$content = $(this.content);
 
-            this.$element.on('shown.bs.popover', this.onShowContentElementFunc);
-            this.$element.on('hide.bs.popover', this.onHideContentElementFunc);
+            this.onShowContentElementOff = JqueryHelper.on(this.$element,
+                'shown.bs.popover',
+                () => this.onShowContentElement());
+            this.onHideContentElementOff = JqueryHelper.on(this.$element,
+                'hide.bs.popover',
+                () => this.onHideContentElement());
         }
     }
 
     bind() {
-        this.$element.on('click', this.onClickFunc);
+        this.onClickOff = JqueryHelper.on(this.$element, 'click', () => this.onClick());
     }
 
     detached() {
         this.$element.popover('dispose');
 
-        this.$element.off('show.bs.popover', this.onShowFunc);
-        this.$element.off('hide.bs.popover', this.onHideFunc);
-        this.$element.off('shown.bs.popover', this.onShowContentElementFunc);
-        this.$element.off('hide.bs.popover', this.onHideContentElementFunc);
+        this.onShowOff();
+        this.onHideOff();
+
+        if (this.onShowContentElementOff) {
+            this.onShowContentElementOff();
+        }
+        if (this.onHideContentElementOff) {
+            this.onHideContentElementOff();
+        }
     }
 
     unbind() {
-        this.$element.off('click', this.onClickFunc);
+        this.onClickOff();
     }
 
     private onClick() {

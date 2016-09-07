@@ -2,6 +2,8 @@
 import * as $ from 'jquery';
 import * as bootstrap from 'bootstrap';
 
+import {JqueryHelper} from '../../lib/jquery-helper';
+
 @autoinject
 @customAttribute('modal')
 export class ModalCustomAttribute {
@@ -12,25 +14,24 @@ export class ModalCustomAttribute {
 
     private $element;
     private $target;
-    private onClickFunc;
+    private onClickOff;
 
     constructor(private element: Element) {
         this.$element = $(this.element);
-
-        this.onClickFunc = () => this.onClick();
     }
 
     bind() {
         this.$target = $(this.target);
 
-        this.$element.on('click', this.onClickFunc);
+        this.onClickOff = JqueryHelper.on(this.$element, 'click', () => this.onClick());
     }
 
     unbind() {
-        this.$element.off('click', this.onClickFunc);
+        this.onClickOff();
     }
 
     private onClick() {
+        console.log('Modal.onClick');
         this.$target
             .modal(this.command)
             .removeAttr('hidden');
