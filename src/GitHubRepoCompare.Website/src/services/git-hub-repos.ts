@@ -1,7 +1,6 @@
 ﻿import {EventAggregator} from 'aurelia-event-aggregator';
 import {autoinject, BindingEngine, computedFrom, Disposable} from 'aurelia-framework';
 
-import {Alerts} from '../lib/alerts';
 import debounce from '../lib/debounce';
 import {GitHubApi} from './git-hub-api';
 import {localStorage, LocalStorageObserver} from '../lib/local-storage';
@@ -25,8 +24,7 @@ export class GitHubRepos {
         return this._items;
     }
 
-    constructor(private alerts: Alerts,
-        private bindingEngine: BindingEngine,
+    constructor(private bindingEngine: BindingEngine,
         private ea: EventAggregator,
         private gitHubApi: GitHubApi,
         private localStorageObserver: LocalStorageObserver) {
@@ -81,7 +79,7 @@ export class GitHubRepos {
 
         let allPromises = Promise.all(addPromises);
 
-        allPromises.then(() => this.sortItems());
+        allPromises.then(() => this.sortItems(), _ => {});
 
         return allPromises;
     }
