@@ -6,6 +6,7 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
+
   meta: {
     "aurelia-bootstrapper": {
       "deps": [
@@ -14,12 +15,13 @@ System.config({
       ]
     }
   },
+
   map: {
     "FortAwesome/Font-Awesome": "github:FortAwesome/Font-Awesome@4.6.3",
     "aurelia-bootstrapper": "npm:aurelia-bootstrapper@1.0.0",
     "aurelia-event-aggregator": "npm:aurelia-event-aggregator@1.0.0",
     "aurelia-fetch-client": "npm:aurelia-fetch-client@1.0.0",
-    "aurelia-framework": "npm:aurelia-framework@1.0.2",
+    "aurelia-framework": "npm:aurelia-framework@1.0.3",
     "aurelia-templating-resources": "npm:aurelia-templating-resources@1.0.0",
     "babel": "npm:babel-core@6.14.0",
     "babel-runtime": "npm:babel-runtime@6.11.6",
@@ -27,7 +29,7 @@ System.config({
     "core-js": "npm:core-js@2.4.1",
     "fetch": "github:github/fetch@1.0.0",
     "jquery": "npm:jquery@2.2.4",
-    "moment": "npm:moment@2.14.1",
+    "moment": "npm:moment@2.15.0",
     "numeral": "npm:numeral@1.5.3",
     "text": "github:systemjs/plugin-text@0.0.8",
     "github:jspm/nodelibs-assert@0.1.0": {
@@ -84,7 +86,7 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "util": "npm:util@0.10.3"
     },
-    "npm:aurelia-binding@1.0.3": {
+    "npm:aurelia-binding@1.0.4": {
       "aurelia-logging": "npm:aurelia-logging@1.0.0",
       "aurelia-metadata": "npm:aurelia-metadata@1.0.0",
       "aurelia-pal": "npm:aurelia-pal@1.0.0",
@@ -92,15 +94,15 @@ System.config({
     },
     "npm:aurelia-bootstrapper@1.0.0": {
       "aurelia-event-aggregator": "npm:aurelia-event-aggregator@1.0.0",
-      "aurelia-framework": "npm:aurelia-framework@1.0.2",
+      "aurelia-framework": "npm:aurelia-framework@1.0.3",
       "aurelia-history": "npm:aurelia-history@1.0.0",
       "aurelia-history-browser": "npm:aurelia-history-browser@1.0.0",
       "aurelia-loader-default": "npm:aurelia-loader-default@1.0.0",
       "aurelia-logging-console": "npm:aurelia-logging-console@1.0.0",
       "aurelia-pal": "npm:aurelia-pal@1.0.0",
       "aurelia-pal-browser": "npm:aurelia-pal-browser@1.0.0",
-      "aurelia-polyfills": "npm:aurelia-polyfills@1.1.0",
-      "aurelia-router": "npm:aurelia-router@1.0.2",
+      "aurelia-polyfills": "npm:aurelia-polyfills@1.1.1",
+      "aurelia-router": "npm:aurelia-router@1.0.3",
       "aurelia-templating": "npm:aurelia-templating@1.1.0",
       "aurelia-templating-binding": "npm:aurelia-templating-binding@1.0.0",
       "aurelia-templating-resources": "npm:aurelia-templating-resources@1.0.0",
@@ -113,8 +115,8 @@ System.config({
     "npm:aurelia-event-aggregator@1.0.0": {
       "aurelia-logging": "npm:aurelia-logging@1.0.0"
     },
-    "npm:aurelia-framework@1.0.2": {
-      "aurelia-binding": "npm:aurelia-binding@1.0.3",
+    "npm:aurelia-framework@1.0.3": {
+      "aurelia-binding": "npm:aurelia-binding@1.0.4",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0",
       "aurelia-loader": "npm:aurelia-loader@1.0.0",
       "aurelia-logging": "npm:aurelia-logging@1.0.0",
@@ -146,13 +148,13 @@ System.config({
     "npm:aurelia-pal-browser@1.0.0": {
       "aurelia-pal": "npm:aurelia-pal@1.0.0"
     },
-    "npm:aurelia-polyfills@1.1.0": {
+    "npm:aurelia-polyfills@1.1.1": {
       "aurelia-pal": "npm:aurelia-pal@1.0.0"
     },
     "npm:aurelia-route-recognizer@1.0.0": {
       "aurelia-path": "npm:aurelia-path@1.0.0"
     },
-    "npm:aurelia-router@1.0.2": {
+    "npm:aurelia-router@1.0.3": {
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0",
       "aurelia-event-aggregator": "npm:aurelia-event-aggregator@1.0.0",
       "aurelia-history": "npm:aurelia-history@1.0.0",
@@ -164,12 +166,12 @@ System.config({
       "aurelia-pal": "npm:aurelia-pal@1.0.0"
     },
     "npm:aurelia-templating-binding@1.0.0": {
-      "aurelia-binding": "npm:aurelia-binding@1.0.3",
+      "aurelia-binding": "npm:aurelia-binding@1.0.4",
       "aurelia-logging": "npm:aurelia-logging@1.0.0",
       "aurelia-templating": "npm:aurelia-templating@1.1.0"
     },
     "npm:aurelia-templating-resources@1.0.0": {
-      "aurelia-binding": "npm:aurelia-binding@1.0.3",
+      "aurelia-binding": "npm:aurelia-binding@1.0.4",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0",
       "aurelia-loader": "npm:aurelia-loader@1.0.0",
       "aurelia-logging": "npm:aurelia-logging@1.0.0",
@@ -185,11 +187,11 @@ System.config({
       "aurelia-metadata": "npm:aurelia-metadata@1.0.0",
       "aurelia-pal": "npm:aurelia-pal@1.0.0",
       "aurelia-path": "npm:aurelia-path@1.0.0",
-      "aurelia-router": "npm:aurelia-router@1.0.2",
+      "aurelia-router": "npm:aurelia-router@1.0.3",
       "aurelia-templating": "npm:aurelia-templating@1.1.0"
     },
     "npm:aurelia-templating@1.1.0": {
-      "aurelia-binding": "npm:aurelia-binding@1.0.3",
+      "aurelia-binding": "npm:aurelia-binding@1.0.4",
       "aurelia-dependency-injection": "npm:aurelia-dependency-injection@1.0.0",
       "aurelia-loader": "npm:aurelia-loader@1.0.0",
       "aurelia-logging": "npm:aurelia-logging@1.0.0",
@@ -214,7 +216,7 @@ System.config({
       "babel-template": "npm:babel-template@6.15.0",
       "babel-traverse": "npm:babel-traverse@6.15.0",
       "babel-types": "npm:babel-types@6.15.0",
-      "babylon": "npm:babylon@6.9.1",
+      "babylon": "npm:babylon@6.9.2",
       "convert-source-map": "npm:convert-source-map@1.3.0",
       "debug": "npm:debug@2.2.0",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
@@ -271,7 +273,7 @@ System.config({
       "babel-runtime": "npm:babel-runtime@6.11.6",
       "babel-traverse": "npm:babel-traverse@6.15.0",
       "babel-types": "npm:babel-types@6.15.0",
-      "babylon": "npm:babylon@6.9.1",
+      "babylon": "npm:babylon@6.9.2",
       "lodash": "npm:lodash@4.15.0"
     },
     "npm:babel-traverse@6.15.0": {
@@ -279,7 +281,7 @@ System.config({
       "babel-messages": "npm:babel-messages@6.8.0",
       "babel-runtime": "npm:babel-runtime@6.11.6",
       "babel-types": "npm:babel-types@6.15.0",
-      "babylon": "npm:babylon@6.9.1",
+      "babylon": "npm:babylon@6.9.2",
       "debug": "npm:debug@2.2.0",
       "globals": "npm:globals@8.18.0",
       "invariant": "npm:invariant@2.2.1",
@@ -292,8 +294,7 @@ System.config({
       "lodash": "npm:lodash@4.15.0",
       "to-fast-properties": "npm:to-fast-properties@1.0.2"
     },
-    "npm:babylon@6.9.1": {
-      "babel-runtime": "npm:babel-runtime@6.11.6",
+    "npm:babylon@6.9.2": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
