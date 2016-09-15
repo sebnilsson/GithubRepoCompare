@@ -68,5 +68,9 @@
 
   "commands": {
     "web": "Microsoft.AspNetCore.Server.Kestrel"
+  },
+
+  "runtimes": {
+    "win10-x64": {}
   }
 }

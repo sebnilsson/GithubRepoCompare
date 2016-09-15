@@ -35,9 +35,13 @@
             </footer>
         </div>
     </div>
-    
+
     @RenderSection("scripts", required: false)
 
-    @Html.Partial("_Analytics")
+    <environment names="Production">
+        @Html.Partial("_ErrorTracking")
+
+        @Html.Partial("_Analytics")
+    </environment>
 </body>
 </html>
