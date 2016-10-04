@@ -36,6 +36,14 @@
         </div>
     </div>
 
+    <environment names="Development">
+        <script>
+            window.hostingEnvironment = {
+                environmentName: 'Development'
+            };
+        </script>
+    </environment>
+
     @RenderSection("scripts", required: false)
 
     <environment names="Production">
