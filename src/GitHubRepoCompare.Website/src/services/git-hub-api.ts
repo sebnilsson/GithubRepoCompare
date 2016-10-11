@@ -1,5 +1,6 @@
 ﻿import {HttpClient} from 'aurelia-fetch-client';
 import {autoinject} from 'aurelia-framework';
+import 'fetch';
 
 import {GitHubApiCredentials} from './git-hub-api-credentials';
 import {GitHubApiRateLimit, GitHubApiRateLimits} from './git-hub-api-rate-limits';
