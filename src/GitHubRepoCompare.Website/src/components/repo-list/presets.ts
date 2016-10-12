@@ -1,9 +1,8 @@
-﻿import {autoinject, computedFrom} from 'aurelia-framework';
+﻿import { autoinject, computedFrom } from 'aurelia-framework';
 
-import {Alerts} from '../../lib/alerts';
-import {localStorage, LocalStorageObserver} from '../../lib/local-storage';
-import {GitHubApiRateLimits} from '../../services/git-hub-api-rate-limits';
-import {GitHubRepos} from '../../services/git-hub-repos';
+import { Alerts } from '../../lib/alerts';
+import { localStorage, LocalStorageObserver } from '../../lib/local-storage';
+import { GitHubRepos } from '../../services/git-hub-repos';
 
 @autoinject
 export class Presets {
@@ -11,7 +10,6 @@ export class Presets {
 
     constructor(private alerts: Alerts,
         private localStorageObserver: LocalStorageObserver,
-        private rateLimits: GitHubApiRateLimits,
         private repos: GitHubRepos) {
         this.localStorageObserver.subscribe(this);
     }
@@ -23,13 +21,7 @@ export class Presets {
     get presets(): Array<IPreset> {
         return this._presets;
     }
-
-    bind() {
-        if (!this.repos.items.length && this.rateLimits.core.remaining >= 6) {
-            this.selectPreset(this.presets[0]);
-        }
-    }
-
+    
     selectPreset(preset: IPreset) {
         this.repos.setRepos(preset.repos)
             .catch(error => {
@@ -37,6 +29,10 @@ export class Presets {
 
                 this.alerts.addDanger(message);
             });
+    }
+
+    selectDefaultPreset() {
+        this.selectPreset(this.presets[3]);
     }
 }
 

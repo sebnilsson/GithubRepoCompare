@@ -2,16 +2,11 @@
     private eventHandlers = [];
 
     add(type: string, eventHandler: EventListener): () => void {
-        let func = function() {
-            eventHandler.call(this, arguments);
-        };
+        let result = addWindowEventListenerInternal(type, eventHandler);
 
-        this.eventHandlers.push({ type: type, eventHandler: func });
+        this.eventHandlers.push({ type: type, eventHandler: result.func });
 
-        window.addEventListener(type, func);
-
-        let cancel = () => this.remove(type, func);;
-        return cancel;
+        return result.cancel;
     }
 
     addOnce(type: string, eventHandler: EventListener): () => void {
@@ -45,4 +40,25 @@
             this.remove(type, eventHandler);
         }
     }
+}
+
+export function addWindowEventListener(type: string, eventHandler: EventListener): () => void {
+    let result = addWindowEventListenerInternal(type, eventHandler);
+    return result.cancel;
+}
+
+function addWindowEventListenerInternal(type: string, eventHandler: EventListener): IAddResult {
+    let func = function() {
+        eventHandler.call(this, arguments);
+    };
+
+    window.addEventListener(type, func);
+
+    let cancel = () => this.remove(type, func);
+    return { cancel, func };
+}
+
+interface IAddResult {
+    func: () => void;
+    cancel: () => void;
 }

@@ -1,9 +1,12 @@
-﻿import {EventAggregator} from 'aurelia-event-aggregator';
-import {autoinject, BindingEngine, computedFrom, Disposable} from 'aurelia-framework';
+﻿import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject, BindingEngine, computedFrom, Disposable } from 'aurelia-framework';
 
+import { Alerts } from '../lib/alerts';
 import debounce from '../lib/debounce';
-import {GitHubApi} from './git-hub-api';
-import {localStorage, LocalStorageObserver} from '../lib/local-storage';
+import { GitHubApi } from './git-hub-api';
+import { GitHubApiRateLimits } from './git-hub-api-rate-limits';
+import { LocationHashHelper } from '../lib/location-hash-helper';
+import { localStorage, LocalStorageObserver } from '../lib/local-storage';
 
 @autoinject
 export class GitHubRepos {
@@ -14,19 +17,11 @@ export class GitHubRepos {
     @localStorage
     private _items: Array<any> = [];
 
-    @computedFrom('_addingCount')
-    get addingCount(): number {
-        return this._addingCount;
-    }
-
-    @computedFrom('_items')
-    get items(): Array<any> {
-        return this._items;
-    }
-
-    constructor(private bindingEngine: BindingEngine,
+    constructor(private alerts: Alerts,
+        private bindingEngine: BindingEngine,
         private ea: EventAggregator,
         private gitHubApi: GitHubApi,
+        private rateLimits: GitHubApiRateLimits,
         private localStorageObserver: LocalStorageObserver) {
         this.localStorageObserver.subscribe(this);
 
@@ -41,6 +36,20 @@ export class GitHubRepos {
                 250);
 
         collectionObserver.subscribe(collectionObserverCallback);
+
+        this.handleLocationHashChange();
+
+        LocationHashHelper.subscribeHashChange(() => this.handleLocationHashChange());
+    }
+
+    @computedFrom('_addingCount')
+    get addingCount(): number {
+        return this._addingCount;
+    }
+
+    @computedFrom('_items')
+    get items(): Array<any> {
+        return this._items;
     }
 
     add(fullName: string): Promise<any> {
@@ -73,9 +82,25 @@ export class GitHubRepos {
     }
 
     setRepos(repoFullNames: Array<string>): Promise<any> {
-        this._items.splice(0, this._items.length);
+        let removedRepos = this._items
+            .map(x => {
+                let index = this._items.indexOf(x);
+                return { item: x, index: index };
+            })
+            .filter(x => repoFullNames.indexOf(x.item.full_name) < 0);
 
-        let addPromises = repoFullNames.map(x => this.add(x));
+        removedRepos.sort((a, b) => {
+            if (a.index < b.index) {
+                return 1;
+            }
+            return (a.index > b.index) ? -1 : 0;
+        });
+
+        removedRepos.forEach(x => this._items.splice(x.index, 1));
+
+        let addedRepoFullNames = repoFullNames.filter(x => !this._items.some(item => item.full_name === x));
+
+        let addPromises = addedRepoFullNames.map(x => this.add(x));
 
         let allPromises = Promise.all(addPromises);
 
@@ -95,13 +120,28 @@ export class GitHubRepos {
         let loadPromise = this.loadRepo(fullName, repo);
 
         loadPromise.then(data => {
-            let index = this.items.indexOf(repo);
+                let index = this.items.indexOf(repo);
 
-            this.items.splice(index, 1, data);
-        },
-        () => {});
+                this.items.splice(index, 1, data);
+            },
+            () => {});
 
         return loadPromise;
+    }
+
+    private handleLocationHashChange() {
+        let hashRepos = LocationHashHelper.getHashRepos();
+        let hasHashRepos = !!(hashRepos && hashRepos.length);
+
+        if (hasHashRepos) {
+            this.setRepos(hashRepos)
+                .then(() => LocationHashHelper.resetHash(),
+                    error => {
+                        let message = `Failed to load from location-hash: ${(error || {}).message || ''}`;
+
+                        this.alerts.addDanger(message);
+                    });
+        }
     }
 
     private loadRepo(fullName: string, repo?: any): Promise<any> {

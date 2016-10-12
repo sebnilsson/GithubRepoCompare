@@ -10,7 +10,7 @@ export module JqueryHelper {
 
         element.on(events, handler);
 
-        var offFunc = () => {
+        let offFunc = () => {
             return element.off(events, handler);
         };
         return offFunc;

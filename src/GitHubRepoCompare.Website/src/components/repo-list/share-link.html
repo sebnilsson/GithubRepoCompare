@@ -1,0 +1,17 @@
+﻿<template>
+    <div if.bind="shareUrl" class="card">
+        <div class="card-header card-inverse card-success">
+            <div class="card-title">
+                <button collapse="target.bind: collapseTarget; show.bind: collapseShow"
+                        class="btn btn-default btn-xs">
+                    <icon icon="${collapseShow ? 'chevron-up' : 'chevron-down'}"></icon>
+                </button>
+
+                Share
+            </div>
+        </div>
+        <div class="card-block collapse" element.ref="collapseTarget">
+            <code>${shareUrl}</code>
+        </div>
+    </div>
+</template>

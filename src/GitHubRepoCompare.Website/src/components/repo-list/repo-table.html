@@ -1,7 +1,7 @@
 ﻿<template>
     <require from="./repo-table-item"></require>
 
-    <div class="table-responsive">
+    <div if.bind="repos.items.length" class="table-responsive">
         <table class="table table-sm table-bordered table-hover">
             <thead class="thead-inverse">
             <tr>
@@ -42,5 +42,13 @@
             </tr>
             </tfoot>
         </table>
+    </div>
+    
+    <div if.bind="!repos.items.length" class="card-block bg-info text-xs-center">
+        <em>No repositories added yet...</em>
+        <button click.trigger="addDefaultRepos()" class="btn btn-default btn-xs">
+            <icon icon="plus"></icon>
+            Add defaults
+        </button>
     </div>
 </template>

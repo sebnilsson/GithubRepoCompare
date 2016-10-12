@@ -1,7 +1,8 @@
-﻿import {EventAggregator} from 'aurelia-event-aggregator';
-import {autoinject, computedFrom} from 'aurelia-framework';
+﻿import { EventAggregator } from 'aurelia-event-aggregator';
+import { autoinject, computedFrom } from 'aurelia-framework';
 
-import {GitHubRepos} from '../../services/git-hub-repos';
+import { GitHubRepos } from '../../services/git-hub-repos';
+import { Presets } from './presets';
 
 export const defaultGitHubImageUrl = 'https://avatars.githubusercontent.com/u/9919?v=3';
 
@@ -15,7 +16,8 @@ export class RepoTable {
     private loadingRepos = [];
 
     constructor(private ea: EventAggregator,
-        private repos: GitHubRepos) {
+        private repos: GitHubRepos,
+        private presets: Presets) {
     }
 
     @computedFrom('defaultGitHubImageUrl')
@@ -31,6 +33,10 @@ export class RepoTable {
     @computedFrom('repos.addingCount')
     get isRepoAdding(): boolean {
         return (this.repos.addingCount > 0);
+    }
+
+    addDefaultRepos() {
+        this.presets.selectDefaultPreset();
     }
 
     removeAll() {

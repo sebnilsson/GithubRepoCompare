@@ -148,7 +148,7 @@ export class GitHubApi {
     }
 
     private httpFetchRetry(uri: string, delay: number) {
-        var promise = new Promise((resolve, reject) => {
+        let promise = new Promise((resolve, reject) => {
             let increasedRetryDelay = (delay * 2);
 
             setTimeout(() =>

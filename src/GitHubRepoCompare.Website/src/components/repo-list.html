@@ -1,4 +1,5 @@
 ﻿<template>
+    <require from="./repo-list/share-link"></require>
     <require from="./repo-list/presets"></require>
     <require from="./repo-list/repo-table"></require>
 
@@ -40,6 +41,8 @@
             <repo-table repos.bind="repos"></repo-table>
 
             <div class="card-footer">
+                <share-link></share-link>
+
                 <presets></presets>
             </div>
         </div>
