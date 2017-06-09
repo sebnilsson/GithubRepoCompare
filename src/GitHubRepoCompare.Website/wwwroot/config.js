@@ -6,6 +6,7 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
+
   meta: {
     "aurelia-bootstrapper": {
       "deps": [
@@ -14,6 +15,7 @@ System.config({
       ]
     }
   },
+
   map: {
     "FortAwesome/Font-Awesome": "github:FortAwesome/Font-Awesome@4.6.3",
     "aurelia-bootstrapper": "npm:aurelia-bootstrapper@1.0.1",

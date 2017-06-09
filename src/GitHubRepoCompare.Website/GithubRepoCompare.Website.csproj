@@ -28,8 +28,7 @@
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
-    <Exec Command="npm install yarn" />
-    <Exec Command=".\node_modules\.bin\yarn install" />
+    <Exec Command="npm install" />
     <Exec Command="gulp bundle" />
   </Target>
 
