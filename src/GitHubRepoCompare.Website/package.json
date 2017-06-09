@@ -2,7 +2,7 @@
   "name": "githubrepocompare",
   "version": "0.0.1",
   "private": true,
-  "devDependencies": {
+  "dependencies": {
     "@types/es6-promise": "0.0.28",
     "aurelia-bundler": "^0.4.0",
     "aurelia-tools": "^0.2.4",
